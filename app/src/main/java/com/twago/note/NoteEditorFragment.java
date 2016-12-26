@@ -1,6 +1,5 @@
 package com.twago.note;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -45,6 +44,7 @@ public class NoteEditorFragment extends Fragment {
         /************ PUT DATA FROM EXIST NOTE TO FRAGMENT (IF IS EXIST) ************/
         if (!NoteTransaction.isNew){
             Note noteToEdit = NoteTransaction.getNote(NoteTransaction.ID);
+            assert noteToEdit != null;
             titleNoteEdit.setText(noteToEdit.getTitle());
             textNoteEdit.setText(noteToEdit.getText());
         }
@@ -52,7 +52,6 @@ public class NoteEditorFragment extends Fragment {
 
         return v;
     }
-
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -65,27 +64,30 @@ public class NoteEditorFragment extends Fragment {
         String title = titleNoteEdit.getText().toString();
         String text = textNoteEdit.getText().toString();
 
-        /***** IF THE NOTE IS NEW THEN CREATE NEW NOTE **/
-        if (NoteTransaction.isNew){
-            /***************** GENERATE RANDOM ID ***************/
-            Random random = new Random();
-            int randomID = 0;
-            do {
-                randomID = random.nextInt(1000);
+        /******************* IF NOTE ISN'T EMPTY ************************/
+        if (!(title.equals("") && text.equals(""))) {
+
+            /***** IF THE NOTE IS NEW THEN CREATE NEW NOTE **/
+            if (NoteTransaction.isNew) {
+                Random random = new Random();
+                int randomID;
+                do {
+                    randomID = random.nextInt(1000);
+                }
+                while (NoteTransaction.isIdExist(randomID));
+
+                NoteTransaction.ID = randomID;
+                Note newNote = new Note(title, text, NoteTransaction.ID);
+                NoteTransaction.notes.add(newNote);
             }
-            while(NoteTransaction.isIdExist(randomID));
-            /****************************************************/
 
-            NoteTransaction.ID = randomID;
-            Note newNote = new Note(title,text,NoteTransaction.ID);
-            NoteTransaction.notes.add(newNote);
+            /***** IF THE NOTE IS EXIST THEN UPDATE THE NOTE ***/
+            else {
+                NoteTransaction.setNote(title, text, NoteTransaction.ID);
+            }
         }
 
-        /***** IF THE NOTE IS EXIST THEN UPDATE THE NOTE ***/
-        else{
-            NoteTransaction.setNote(title,text,NoteTransaction.ID);
-        }
-
-        MyFragments.noteEditorFragment = null;
+        MyFragments.noteEditorFragment = null; // DELETE THE FRAGMENT
     }
 }
+
