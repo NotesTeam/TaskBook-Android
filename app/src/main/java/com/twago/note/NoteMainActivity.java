@@ -4,9 +4,11 @@ import android.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.FrameLayout;
 
 public class NoteMainActivity extends AppCompatActivity{
     FragmentTransaction fragmentTransaction;
+    FrameLayout fragmentContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,5 +43,23 @@ public class NoteMainActivity extends AppCompatActivity{
         fragmentTransaction.add(R.id.fragmentLayout, MyFragments.noteListFragment);
 
         fragmentTransaction.commit();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        /******************** CLEAR FRAGMENTS CONTAINER **********************/
+        fragmentContainer = (FrameLayout) findViewById(R.id.fragmentLayout);
+        fragmentContainer.removeAllViews();
+        MyFragments.noteEditorFragment = null;
+        MyFragments.noteListFragment = null;
+
+        /******************** CREATE LIST OF NOTES ***************************/
+        if (NoteTransaction.notes != null){
+            fragmentTransaction = getFragmentManager().beginTransaction();
+            MyFragments.noteListFragment = new NoteListFragment(); // CREATE NEW LIST FRAGMENT
+            fragmentTransaction.add(R.id.fragmentLayout, MyFragments.noteListFragment);
+            fragmentTransaction.commit();
+        }
     }
 }
