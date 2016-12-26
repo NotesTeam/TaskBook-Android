@@ -23,6 +23,7 @@ public class NoteListFragment extends Fragment {
     private LinearLayout noteListLayout; // LIST OF NOTE LAYOUT (VERTICAL)
     private List<Button> noteViews; // LIST OF NOTE VIEWS
     private FragmentTransaction fragmentTransaction;
+    private Button addNote;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -34,9 +35,30 @@ public class NoteListFragment extends Fragment {
         noteListLayout = (LinearLayout) v.findViewById(R.id.noteList);
         noteViews = new ArrayList<>();
         fragmentTransaction = getFragmentManager().beginTransaction();
+        addNote = (Button) v.findViewById(R.id.buttonAdd);
 
         /*********************** CREATE LIST OF NOTES ********************/
         createListOfNotes();
+        addNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                /****************** CREATE NEW NOTE *********************************/
+                NoteTransaction.isNew = true;
+                NoteTransaction.ID = null;  // PASS NULL ID TO NEW NOTE TO NEW FRAGMENT
+                /********************************************************************/
+
+                MyFragments.fragmentTransaction = getFragmentManager().beginTransaction();
+                MyFragments.noteEditorFragment = new NoteEditorFragment(); // CREATE NEW EDITOR FRAGMENT
+                MyFragments.fragmentTransaction.add(R.id.fragmentLayout, MyFragments.noteEditorFragment);
+
+                if(MyFragments.noteListFragment != null) {
+                    MyFragments.fragmentTransaction.remove(MyFragments.noteListFragment); // DELETE OLD LIST FRAGMENT
+                    MyFragments.noteListFragment = null;
+                }
+
+                MyFragments.fragmentTransaction.commit();
+            }
+        });
 
         return v;
     }

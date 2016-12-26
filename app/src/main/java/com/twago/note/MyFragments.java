@@ -1,10 +1,13 @@
 package com.twago.note;
 
+import android.app.FragmentTransaction;
+
 /**
  * Created by twago on 25.12.16.
  */
 
-public class MyFragments {
-    public static NoteEditorFragment noteEditorFragment;
-    public static NoteListFragment noteListFragment;
+class MyFragments {
+    static FragmentTransaction fragmentTransaction;
+    static NoteEditorFragment noteEditorFragment;
+    static NoteListFragment noteListFragment;
 }

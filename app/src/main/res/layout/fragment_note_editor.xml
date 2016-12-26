@@ -4,6 +4,12 @@
     android:orientation="vertical"
     android:padding="15dp"
     android:id="@+id/editNoteBackground">
+    <Button
+        android:id="@+id/buttonBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/minus"
+        android:layout_gravity="right"/>
     <EditText
         android:id="@+id/titleEditNote"
         android:layout_width="match_parent"

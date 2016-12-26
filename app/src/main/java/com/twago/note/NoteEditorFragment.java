@@ -20,7 +20,6 @@ public class NoteEditorFragment extends Fragment {
     LinearLayout editNoteBackground;
     EditText titleNoteEdit;
     EditText textNoteEdit;
-    Button addButton;
     Button backButton;
 
     @Override
@@ -32,14 +31,24 @@ public class NoteEditorFragment extends Fragment {
         editNoteBackground = (LinearLayout) v.findViewById(R.id.editNoteBackground);
         titleNoteEdit = (EditText) v.findViewById(R.id.titleEditNote);
         textNoteEdit = (EditText) v.findViewById(R.id.textEditNote);
-        addButton = (Button) getActivity().findViewById(R.id.buttonAdd);
-        backButton = (Button) getActivity().findViewById(R.id.buttonBack);
+        backButton = (Button) v.findViewById(R.id.buttonBack);
         /****************************************************************************/
 
-        /************* BLOCK (ADD BUTTON) AND SHOW (SAVE BUTTON) ********************/
-        addButton.setVisibility(View.INVISIBLE);
-        backButton.setVisibility(View.VISIBLE);
-        /****************************************************************************/
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MyFragments.fragmentTransaction = getFragmentManager().beginTransaction();
+                MyFragments.fragmentTransaction.remove(MyFragments.noteEditorFragment);
+                MyFragments.noteEditorFragment = null;
+
+                MyFragments.noteListFragment = new NoteListFragment(); // CREATE NEW LIST FRAGMENT
+                MyFragments.fragmentTransaction.add(R.id.fragmentLayout, MyFragments.noteListFragment);
+
+                MyFragments.fragmentTransaction.commit();
+            }
+        });
+
 
         /************ PUT DATA FROM EXIST NOTE TO FRAGMENT (IF IS EXIST) ************/
         if (!NoteTransaction.isNew){
@@ -56,7 +65,6 @@ public class NoteEditorFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
 
-        addButton.setVisibility(View.VISIBLE);
         backButton.setVisibility(View.INVISIBLE);
 
 
