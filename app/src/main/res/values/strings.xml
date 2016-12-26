@@ -11,4 +11,8 @@
     <string name="plus">+</string>
     <string name="minus">-</string>
     <string name="color">Color</string>
+    <string name="save">SAVE</string>
+    <string name="delete">DELETE</string>
+    <string name="create">CREATE</string>
+    <string name="cancel">CANCEL</string>
 </resources>

@@ -26,33 +26,30 @@ public class NoteEditorFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_note_editor,container,false);
-
-        /************************** INITIAL VIEWS IN THE FRAGMENT *******************/
         editNoteBackground = (LinearLayout) v.findViewById(R.id.editNoteBackground);
         titleNoteEdit = (EditText) v.findViewById(R.id.titleEditNote);
         textNoteEdit = (EditText) v.findViewById(R.id.textEditNote);
-        backButton = (Button) v.findViewById(R.id.buttonBack);
+        backButton = (Button) v.findViewById(R.id.buttonSave);
         /****************************************************************************/
-
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MyFragments.fragmentTransaction = getFragmentManager().beginTransaction();
-                MyFragments.fragmentTransaction.remove(MyFragments.noteEditorFragment);
-                MyFragments.noteEditorFragment = null;
+                createNote();
+                FragmentOptions.fragmentTransaction = getFragmentManager().beginTransaction();
+                FragmentOptions.fragmentTransaction.remove(FragmentOptions.noteEditorFragment);
+                FragmentOptions.noteEditorFragment = null;
+                FragmentOptions.noteListFragment = new NoteListFragment(); // CREATE NEW LIST FRAGMENT
+                FragmentOptions.fragmentTransaction.add(R.id.fragmentLayout, FragmentOptions.noteListFragment);
 
-                MyFragments.noteListFragment = new NoteListFragment(); // CREATE NEW LIST FRAGMENT
-                MyFragments.fragmentTransaction.add(R.id.fragmentLayout, MyFragments.noteListFragment);
-
-                MyFragments.fragmentTransaction.commit();
+                FragmentOptions.fragmentTransaction.commit();
             }
         });
 
 
         /************ PUT DATA FROM EXIST NOTE TO FRAGMENT (IF IS EXIST) ************/
-        if (!NoteTransaction.isNew){
-            Note noteToEdit = NoteTransaction.getNote(NoteTransaction.ID);
+        if (!NoteConfigurations.isNew){
+            Note noteToEdit = NoteConfigurations.getNote(NoteConfigurations.ID);
             assert noteToEdit != null;
             titleNoteEdit.setText(noteToEdit.getTitle());
             textNoteEdit.setText(noteToEdit.getText());
@@ -61,13 +58,8 @@ public class NoteEditorFragment extends Fragment {
 
         return v;
     }
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
 
-        backButton.setVisibility(View.INVISIBLE);
-
-
+    public void createNote(){
         /****** GET DATA FROM THE FRAGMENT ********/
         String title = titleNoteEdit.getText().toString();
         String text = textNoteEdit.getText().toString();
@@ -76,26 +68,24 @@ public class NoteEditorFragment extends Fragment {
         if (!(title.equals("") && text.equals(""))) {
 
             /***** IF THE NOTE IS NEW THEN CREATE NEW NOTE **/
-            if (NoteTransaction.isNew) {
+            if (NoteConfigurations.isNew) {
                 Random random = new Random();
                 int randomID;
                 do {
                     randomID = random.nextInt(1000);
                 }
-                while (NoteTransaction.isIdExist(randomID));
+                while (NoteConfigurations.isIdExist(randomID));
 
-                NoteTransaction.ID = randomID;
-                Note newNote = new Note(title, text, NoteTransaction.ID);
-                NoteTransaction.notes.add(newNote);
+                NoteConfigurations.ID = randomID;
+                Note newNote = new Note(title, text, NoteConfigurations.ID);
+                NoteConfigurations.addNote(newNote);
             }
 
             /***** IF THE NOTE IS EXIST THEN UPDATE THE NOTE ***/
             else {
-                NoteTransaction.setNote(title, text, NoteTransaction.ID);
+                NoteConfigurations.setNote(title, text, NoteConfigurations.ID);
             }
         }
-
-        MyFragments.noteEditorFragment = null; // DELETE THE FRAGMENT
     }
 }
 

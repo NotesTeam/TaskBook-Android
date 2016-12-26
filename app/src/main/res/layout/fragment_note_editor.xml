@@ -2,14 +2,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="15dp"
     android:id="@+id/editNoteBackground">
-    <Button
-        android:id="@+id/buttonBack"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/minus"
-        android:layout_gravity="right"/>
+        android:orientation="horizontal"
+        android:gravity="right">
+        <Button
+            android:id="@+id/buttonSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/save"/>
+    </LinearLayout>
+
     <EditText
         android:id="@+id/titleEditNote"
         android:layout_width="match_parent"
@@ -17,6 +22,8 @@
         android:hint="@string/title"
         android:textStyle="bold"
         android:textSize="20sp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
         android:background="#0000"
         android:textCursorDrawable="@drawable/color_cursor"/>
     <EditText
@@ -25,6 +32,8 @@
         android:layout_height="match_parent"
         android:hint="@string/text"
         android:gravity="top"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
         android:paddingTop="20dp"
         android:background="#0000"
         android:textCursorDrawable="@drawable/color_cursor"/>

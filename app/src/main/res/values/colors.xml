@@ -6,6 +6,7 @@
     <color name="orange">#99ffdd99</color>
     <color name="green">#99b7ffac</color>
     <color name="blue">#99acfffb</color>
-    <color name="gray">#99aeaeae</color>
-    <color name="dark_gray">#991a1a1a</color>
+    <color name="gray">#7eaeaeae</color>
+    <color name="dark_gray">#b51a1a1a</color>
+    <color name="buttonColor">#00ff0000</color>
 </resources>
