@@ -42,4 +42,5 @@ public class NoteMainActivity extends AppCompatActivity{
 
         fragmentTransaction.commit();
     }
+
 }
