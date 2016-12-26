@@ -20,7 +20,7 @@ public class NoteEditorFragment extends Fragment {
     LinearLayout editNoteBackground;
     EditText titleNoteEdit;
     EditText textNoteEdit;
-    Button backButton;
+    Button saveButton;
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
@@ -29,23 +29,7 @@ public class NoteEditorFragment extends Fragment {
         editNoteBackground = (LinearLayout) v.findViewById(R.id.editNoteBackground);
         titleNoteEdit = (EditText) v.findViewById(R.id.titleEditNote);
         textNoteEdit = (EditText) v.findViewById(R.id.textEditNote);
-        backButton = (Button) v.findViewById(R.id.buttonSave);
-        /****************************************************************************/
-
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                createNote();
-                FragmentOptions.fragmentTransaction = getFragmentManager().beginTransaction();
-                FragmentOptions.fragmentTransaction.remove(FragmentOptions.noteEditorFragment);
-                FragmentOptions.noteEditorFragment = null;
-                FragmentOptions.noteListFragment = new NoteListFragment(); // CREATE NEW LIST FRAGMENT
-                FragmentOptions.fragmentTransaction.add(R.id.fragmentLayout, FragmentOptions.noteListFragment);
-
-                FragmentOptions.fragmentTransaction.commit();
-            }
-        });
-
+        saveButton = (Button) v.findViewById(R.id.buttonSave);
 
         /************ PUT DATA FROM EXIST NOTE TO FRAGMENT (IF IS EXIST) ************/
         if (!NoteConfigurations.isNew){
@@ -56,6 +40,21 @@ public class NoteEditorFragment extends Fragment {
         }
         /****************************************************************************/
 
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                createNote();
+                FragmentOptions.fragmentTransaction = getFragmentManager().beginTransaction();
+                FragmentOptions.fragmentTransaction.remove(FragmentOptions.noteEditorFragment);
+                FragmentOptions.noteEditorFragment = null;
+                FragmentOptions.noteListFragment = new NoteListFragment(); // CREATE NEW LIST FRAGMENT
+                FragmentOptions.fragmentTransaction.add(R.id.fragmentLayout, FragmentOptions.noteListFragment);
+                FragmentOptions.fragmentTransaction.commit();
+            }
+        });
+
+        /****************************************************************************/
+
         return v;
     }
 
@@ -64,28 +63,27 @@ public class NoteEditorFragment extends Fragment {
         String title = titleNoteEdit.getText().toString();
         String text = textNoteEdit.getText().toString();
 
-        /******************* IF NOTE ISN'T EMPTY ************************/
-        if (!(title.equals("") && text.equals(""))) {
-
-            /***** IF THE NOTE IS NEW THEN CREATE NEW NOTE **/
             if (NoteConfigurations.isNew) {
-                Random random = new Random();
-                int randomID;
-                do {
-                    randomID = random.nextInt(1000);
+                if (!(title.equals("") && text.equals(""))) {
+                    Random random = new Random();
+                    int randomID;
+                    do {
+                        randomID = random.nextInt(1000);
+                    }
+                    while (NoteConfigurations.isIdExist(randomID));
+
+                    NoteConfigurations.ID = randomID;
+                    Note newNote = new Note(title, text, NoteConfigurations.ID);
+                    NoteConfigurations.addNote(newNote);
                 }
-                while (NoteConfigurations.isIdExist(randomID));
-
-                NoteConfigurations.ID = randomID;
-                Note newNote = new Note(title, text, NoteConfigurations.ID);
-                NoteConfigurations.addNote(newNote);
             }
-
-            /***** IF THE NOTE IS EXIST THEN UPDATE THE NOTE ***/
             else {
-                NoteConfigurations.setNote(title, text, NoteConfigurations.ID);
+                if (title.equals("") && text.equals(""))
+                    NoteConfigurations.deleteNote(NoteConfigurations.ID);
+                else
+                    NoteConfigurations.setNote(title, text, NoteConfigurations.ID);
             }
-        }
+
     }
 }
 
