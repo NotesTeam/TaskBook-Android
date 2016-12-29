@@ -1,5 +1,7 @@
 package com.twago.note;
 
+import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.Gravity;
@@ -21,6 +23,7 @@ public class NoteListFragment extends Fragment {
     private Button addNote;
     private Button deleteNote;
     private Button cancelNote;
+    private Button colorNote;
     private View v;
 
 
@@ -33,6 +36,7 @@ public class NoteListFragment extends Fragment {
         addNote = (Button) v.findViewById(R.id.buttonAdd);
         deleteNote = (Button) v.findViewById(R.id.buttonDelete);
         cancelNote = (Button) v.findViewById(R.id.buttonCancel);
+        colorNote = (Button) v.findViewById(R.id.buttonColor);
         noteViews = new ArrayList<>();
 
 
@@ -61,8 +65,17 @@ public class NoteListFragment extends Fragment {
             }
         });
 
+        colorNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), ColorActivity.class);
+                startActivity(intent);
+            }
+        });
+
         return v;
     }
+
 
     private void createListOfNotes(){
 
@@ -79,7 +92,8 @@ public class NoteListFragment extends Fragment {
             Button noteButton = new Button(getActivity());
             noteButton.setText(note.getTitle());
             noteButton.setPadding(30,30,30,30);
-            noteButton.setTextSize(18);
+            noteButton.setTextSize(16);
+            noteButton.setTypeface(Typeface.DEFAULT_BOLD);
             noteButton.setId(note.getID());
             noteButton.setGravity(Gravity.LEFT);
             noteButton.setTextColor(getResources().getColor(R.color.dark_gray));
@@ -123,6 +137,7 @@ public class NoteListFragment extends Fragment {
         NoteConfigurations.reverseNoteList(); // BACK REVERSE
         /**************************************************************************/
     }
+
     private void createNote(){
         /****************** CREATE NEW NOTE *********************************/
         NoteConfigurations.isNew = true;
