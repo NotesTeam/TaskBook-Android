@@ -1,10 +1,12 @@
 package com.twago.note;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -25,7 +27,7 @@ public class NoteEditorFragment extends Fragment {
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_note_editor,container,false);
+        final View v = inflater.inflate(R.layout.fragment_note_editor,container,false);
         editNoteBackground = (LinearLayout) v.findViewById(R.id.editNoteBackground);
         titleNoteEdit = (EditText) v.findViewById(R.id.titleEditNote);
         textNoteEdit = (EditText) v.findViewById(R.id.textEditNote);
@@ -44,12 +46,14 @@ public class NoteEditorFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 createNote();
+                hideKeyboard();
                 FragmentOptions.fragmentTransaction = getFragmentManager().beginTransaction();
                 FragmentOptions.fragmentTransaction.remove(FragmentOptions.noteEditorFragment);
                 FragmentOptions.noteEditorFragment = null;
                 FragmentOptions.noteListFragment = new NoteListFragment(); // CREATE NEW LIST FRAGMENT
                 FragmentOptions.fragmentTransaction.add(R.id.fragmentLayout, FragmentOptions.noteListFragment);
                 FragmentOptions.fragmentTransaction.commit();
+
             }
         });
 
@@ -84,6 +88,10 @@ public class NoteEditorFragment extends Fragment {
                     NoteConfigurations.setNote(title, text, NoteConfigurations.ID);
             }
 
+    }
+    private void hideKeyboard(){
+        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(editNoteBackground.getWindowToken(), 0);
     }
 }
 
