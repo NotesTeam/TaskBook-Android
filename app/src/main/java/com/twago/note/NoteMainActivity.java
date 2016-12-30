@@ -40,6 +40,7 @@ public class NoteMainActivity extends AppCompatActivity{
             FragmentOptions.fragmentTransaction.add(R.id.fragmentLayout,FragmentOptions.noteListFragment);
         }
         else{
+            FragmentOptions.isRotated = true;
             FragmentOptions.fragmentTransaction.remove(FragmentOptions.noteEditorFragment);
             FragmentOptions.noteEditorFragment = new NoteEditorFragment();
             FragmentOptions.fragmentTransaction.add(R.id.fragmentLayout,FragmentOptions.noteEditorFragment);

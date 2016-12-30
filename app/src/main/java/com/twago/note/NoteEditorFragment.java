@@ -33,6 +33,13 @@ public class NoteEditorFragment extends Fragment {
         textNoteEdit = (EditText) v.findViewById(R.id.textEditNote);
         saveButton = (Button) v.findViewById(R.id.buttonSave);
 
+        /******************* PUT SAVED DATA AFTER ROTATIONS *************************/
+        if(FragmentOptions.isRotated){
+            titleNoteEdit.setText(FragmentOptions.editorSavedTitle);
+            textNoteEdit.setText(FragmentOptions.editorSavedText);
+            FragmentOptions.isRotated = false;
+        }
+
         /************ PUT DATA FROM EXIST NOTE TO FRAGMENT (IF IS EXIST) ************/
         if (!NoteConfigurations.isNew){
             Note noteToEdit = NoteConfigurations.getNote(NoteConfigurations.ID);
@@ -92,6 +99,15 @@ public class NoteEditorFragment extends Fragment {
     private void hideKeyboard(){
         InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(editNoteBackground.getWindowToken(), 0);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(FragmentOptions.isRotated){
+            FragmentOptions.editorSavedTitle = titleNoteEdit.getText().toString();
+            FragmentOptions.editorSavedText = textNoteEdit.getText().toString();
+        }
     }
 }
 

@@ -12,4 +12,8 @@ class FragmentOptions {
     static NoteEditorFragment noteEditorFragment;
     static NoteListFragment noteListFragment;
 
+    static String editorSavedTitle;
+    static String editorSavedText;
+    static boolean isRotated = false;
+
 }
