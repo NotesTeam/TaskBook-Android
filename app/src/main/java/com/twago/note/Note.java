@@ -1,14 +1,18 @@
 package com.twago.note;
 
+import io.realm.RealmObject;
+
 /**
  * Created by twago on 24.12.16.
  */
 
-public class Note {
+public class Note extends RealmObject {
 
     private int ID;
     private String title;
     private String text;
+
+    public Note(){}
 
     public Note(String title, String text, int ID) {
         this.title = title;

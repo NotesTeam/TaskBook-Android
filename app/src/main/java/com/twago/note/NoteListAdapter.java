@@ -1,7 +1,6 @@
 package com.twago.note;
 
 
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,18 +8,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import io.realm.RealmResults;
 
 class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHolder> {
-    private static final int COLOR_GRAY = Color.parseColor("#efefef");
-    private static final int COLOR_WHITE = Color.parseColor("#FFFFFF");
     private static final String TAG = NoteListAdapter.class.getSimpleName();
-    private ArrayList<Note> noteArrayList;
+    private RealmResults<Note> noteList;
     private NoteListAdapterInterface noteListAdapterInterface;
 
-    NoteListAdapter(NoteListAdapterInterface noteListAdapterInterface,ArrayList<Note> noteArrayList) {
+    NoteListAdapter(NoteListAdapterInterface noteListAdapterInterface,RealmResults<Note> noteList) {
         this.noteListAdapterInterface = noteListAdapterInterface;
-        this.noteArrayList = noteArrayList;
+        this.noteList = noteList;
     }
 
     @Override
@@ -31,10 +28,10 @@ class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(final NoteListAdapter.ViewHolder holder, final int position) {
-        final Note note = noteArrayList.get(position);
+        final Note note = noteList.get(position);
         holder.title.setText(note.getTitle());
         holder.text.setText(note.getText());
-        holder.itemView.setBackgroundColor(position % 2 == 0 ? COLOR_WHITE : COLOR_GRAY);
+        holder.itemView.setBackgroundColor(position % 2 == 0 ? Constants.COLOR_WHITE : Constants.COLOR_GRAY);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,7 +44,7 @@ class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return noteArrayList.size();
+        return noteList.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

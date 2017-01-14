@@ -1,13 +1,10 @@
 package com.twago.note;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +14,15 @@ import android.widget.LinearLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Realm;
+import io.realm.RealmResults;
+
 public class NoteListFragment extends Fragment {
 
     private LinearLayout noteListLayout; // LIST OF NOTE LAYOUT (VERTICAL)
     private List<Button> noteViews; // LIST OF NOTE VIEWS
     private NoteMainActivity activity;
-    private Button addNote;
+    private Button createNote;
     private Button cancelNote;
     private Button colorNote;
     private Button deleteNote;
@@ -53,23 +53,21 @@ public class NoteListFragment extends Fragment {
 
 
         noteListLayout = (LinearLayout) view.findViewById(R.id.noteList);
-        addNote = (Button) view.findViewById(R.id.buttonAdd);
+        createNote = (Button) view.findViewById(R.id.buttonCreate);
         deleteNote = (Button) view.findViewById(R.id.buttonDelete);
         cancelNote = (Button) view.findViewById(R.id.buttonCancel);
         colorNote = (Button) view.findViewById(R.id.buttonColor);
         recyclerView = (RecyclerView) view.findViewById(R.id.note_list_recycler_view);
         noteViews = new ArrayList<>();
 
-        //createListOfNotes(); // CREATE LIST OF NOTES
-
-        /*addNote.setOnClickListener(new View.OnClickListener() {
+        createNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                createNote();
+                activity.openDialogFragment(Constants.NEW_NOTE_ID);
             }
         });
 
-        deleteNote.setOnClickListener(new View.OnClickListener() {
+        /*deleteNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 deleteNote();
@@ -83,24 +81,23 @@ public class NoteListFragment extends Fragment {
             }
         });*/
 
-        colorNote.setOnClickListener(new View.OnClickListener() {
+        /*colorNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), ColorActivity.class);
                 startActivity(intent);
             }
-        });
+        });*/
 
 
-        bindFakeData();
+        inflateRecyclerView();
         return view;
     }
 
-    private void bindFakeData() {
-        ArrayList<Note> noteAr = new ArrayList<>();
-        noteAr.add(new Note("A ja jebię HAHAHA","A co ty jebiesz kurwa?",0));
-        noteAr.add(new Note("Jebię wszystkich HAHAHA","JESTEM JEBACZEM!!!!",1));
-        NoteListAdapter noteListAdapter = new NoteListAdapter(activity,noteAr);
+    private void inflateRecyclerView() {
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<Note> results = realm.where(Note.class).findAll();
+        NoteListAdapter noteListAdapter = new NoteListAdapter(activity,results);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(noteListAdapter);
     }
@@ -149,7 +146,7 @@ public class NoteListFragment extends Fragment {
                 public boolean onLongClick(View view) {
                     deleteNote.setVisibility(View.VISIBLE);
                     cancelNote.setVisibility(View.VISIBLE);
-                    addNote.setVisibility(View.INVISIBLE);
+                    createNote.setVisibility(View.INVISIBLE);
                     NoteConfigurations.setCheckedView(view);
                     NoteConfigurations.ID_TO_DELETE = view.getId();
                     System.out.println(NoteConfigurations.ID_TO_DELETE);
@@ -202,7 +199,7 @@ public class NoteListFragment extends Fragment {
         System.out.println(view.getId());
         deleteNote.setVisibility(View.INVISIBLE);
         cancelNote.setVisibility(View.INVISIBLE);
-        addNote.setVisibility(View.VISIBLE);
+        createNote.setVisibility(View.VISIBLE);
         NoteConfigurations.ID_TO_DELETE = null;
         unfreezeNotes();
     }

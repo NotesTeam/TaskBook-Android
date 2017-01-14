@@ -1,6 +1,7 @@
 package com.twago.note;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -12,6 +13,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import java.util.Random;
+
+import io.realm.Realm;
 
 
 public class NoteEditorFragment extends DialogFragment {
@@ -33,41 +36,27 @@ public class NoteEditorFragment extends DialogFragment {
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View v = inflater.inflate(R.layout.fragment_note_editor,container,false);
-        editNoteBackground = (LinearLayout) v.findViewById(R.id.editNoteBackground);
-        titleNoteEdit = (EditText) v.findViewById(R.id.titleEditNote);
-        textNoteEdit = (EditText) v.findViewById(R.id.textEditNote);
-        saveButton = (Button) v.findViewById(R.id.buttonSave);
+        final View view = inflater.inflate(R.layout.fragment_note_editor,container,false);
+        editNoteBackground = (LinearLayout) view.findViewById(R.id.editNoteBackground);
+        titleNoteEdit = (EditText) view.findViewById(R.id.titleEditNote);
+        textNoteEdit = (EditText) view.findViewById(R.id.textEditNote);
+        saveButton = (Button) view.findViewById(R.id.buttonSave);
 
-       /* if(FragmentOptions.isRotated){
-            titleNoteEdit.setText(FragmentOptions.editorSavedTitle);
-            textNoteEdit.setText(FragmentOptions.editorSavedText);
-            FragmentOptions.isRotated = false;
-        }
+        return view;
+    }
 
-        if (!NoteConfigurations.isNew){
-            Note noteToEdit = NoteConfigurations.getNote(NoteConfigurations.ID);
-            assert noteToEdit != null;
-            titleNoteEdit.setText(noteToEdit.getTitle());
-            textNoteEdit.setText(noteToEdit.getText());
-        }
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
 
-        saveButton.setOnClickListener(new View.OnClickListener() {
+        Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction() {
             @Override
-            public void onClick(View view) {
-                createNote();
-                hideKeyboard();
-                FragmentOptions.fragmentTransaction = getFragmentManager().beginTransaction();
-                FragmentOptions.fragmentTransaction.remove(FragmentOptions.noteEditorFragment);
-                FragmentOptions.noteEditorFragment = null;
-                FragmentOptions.noteListFragment = new NoteListFragment(); // CREATE NEW LIST FRAGMENT
-                FragmentOptions.fragmentTransaction.add(R.id.fragmentLayout, FragmentOptions.noteListFragment);
-                FragmentOptions.fragmentTransaction.commit();
-
+            public void execute(Realm realm) {
+                Note note = new Note(titleNoteEdit.getText().toString(),textNoteEdit.getText().toString(),0);
+                realm.copyToRealm(note);
             }
         });
-*/
-        return v;
     }
 
     public void createNote(){
