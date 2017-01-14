@@ -1,50 +1,34 @@
 package com.twago.note;
 
-import android.content.res.Configuration;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.FrameLayout;
 
-public class NoteMainActivity extends AppCompatActivity{
-    FrameLayout fragmentContainer;
-    boolean isRotated = false;
+public class NoteMainActivity extends AppCompatActivity implements NoteListAdapterInterface{
+    private NoteListFragment noteListFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_main);
 
-        createNoteListFragment();
+        noteListFragment = NoteListFragment.newInstance();
+        initSetUp();
     }
 
-    private void createNoteListFragment(){
-        FragmentOptions.fragmentTransaction = getFragmentManager().beginTransaction();
-        FragmentOptions.noteListFragment = new NoteListFragment();
-        FragmentOptions.fragmentTransaction.add(R.id.fragmentLayout, FragmentOptions.noteListFragment);
-        FragmentOptions.fragmentTransaction.commit();
-    }
-    private void createNoteEditorFragment(){
-        FragmentOptions.fragmentTransaction = getFragmentManager().beginTransaction();
-        FragmentOptions.noteEditorFragment = new NoteEditorFragment();
-        FragmentOptions.fragmentTransaction.add(R.id.fragmentLayout, FragmentOptions.noteEditorFragment);
-        FragmentOptions.fragmentTransaction.commit();
+    private void initSetUp(){
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        noteListFragment = new NoteListFragment();
+        fragmentTransaction.add(R.id.fragmentLayout, noteListFragment);
+        fragmentTransaction.commit();
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        FragmentOptions.fragmentTransaction = getFragmentManager().beginTransaction();
-        if(FragmentOptions.noteListFragment != null){
-            FragmentOptions.fragmentTransaction.remove(FragmentOptions.noteListFragment);
-            FragmentOptions.noteListFragment = new NoteListFragment();
-            FragmentOptions.fragmentTransaction.add(R.id.fragmentLayout,FragmentOptions.noteListFragment);
-        }
-        else{
-            FragmentOptions.isRotated = true;
-            FragmentOptions.fragmentTransaction.remove(FragmentOptions.noteEditorFragment);
-            FragmentOptions.noteEditorFragment = new NoteEditorFragment();
-            FragmentOptions.fragmentTransaction.add(R.id.fragmentLayout,FragmentOptions.noteEditorFragment);
-        }
-        FragmentOptions.fragmentTransaction.commit();
+    public void openDialogFragment(int id) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        DialogFragment newFragment = NoteEditorFragment.newInstance(id);
+        newFragment.setStyle(DialogFragment.STYLE_NORMAL,R.style.FullScreenDialog);
+        newFragment.show(ft, "");
     }
 }

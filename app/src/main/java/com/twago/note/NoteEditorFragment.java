@@ -2,7 +2,7 @@ package com.twago.note;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,15 +14,21 @@ import android.widget.LinearLayout;
 import java.util.Random;
 
 
-/**
- * A simple {@link Fragment} subclass.
- */
-public class NoteEditorFragment extends Fragment {
+public class NoteEditorFragment extends DialogFragment {
 
+    private static final String TAG_ID = "TAG_ID";
     LinearLayout editNoteBackground;
     EditText titleNoteEdit;
     EditText textNoteEdit;
     Button saveButton;
+
+    public static NoteEditorFragment newInstance(int id) {
+        Bundle args = new Bundle();
+        args.putInt(TAG_ID, id);
+        NoteEditorFragment fragment = new NoteEditorFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
@@ -33,21 +39,18 @@ public class NoteEditorFragment extends Fragment {
         textNoteEdit = (EditText) v.findViewById(R.id.textEditNote);
         saveButton = (Button) v.findViewById(R.id.buttonSave);
 
-        /******************* PUT SAVED DATA AFTER ROTATIONS *************************/
-        if(FragmentOptions.isRotated){
+       /* if(FragmentOptions.isRotated){
             titleNoteEdit.setText(FragmentOptions.editorSavedTitle);
             textNoteEdit.setText(FragmentOptions.editorSavedText);
             FragmentOptions.isRotated = false;
         }
 
-        /************ PUT DATA FROM EXIST NOTE TO FRAGMENT (IF IS EXIST) ************/
         if (!NoteConfigurations.isNew){
             Note noteToEdit = NoteConfigurations.getNote(NoteConfigurations.ID);
             assert noteToEdit != null;
             titleNoteEdit.setText(noteToEdit.getTitle());
             textNoteEdit.setText(noteToEdit.getText());
         }
-        /****************************************************************************/
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,9 +66,7 @@ public class NoteEditorFragment extends Fragment {
 
             }
         });
-
-        /****************************************************************************/
-
+*/
         return v;
     }
 
@@ -104,10 +105,10 @@ public class NoteEditorFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        if(FragmentOptions.isRotated){
+        /*if(FragmentOptions.isRotated){
             FragmentOptions.editorSavedTitle = titleNoteEdit.getText().toString();
             FragmentOptions.editorSavedText = textNoteEdit.getText().toString();
-        }
+        }*/
     }
 }
 

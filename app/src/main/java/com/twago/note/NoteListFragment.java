@@ -1,50 +1,68 @@
 package com.twago.note;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class NoteListFragment extends Fragment {
 
     private LinearLayout noteListLayout; // LIST OF NOTE LAYOUT (VERTICAL)
     private List<Button> noteViews; // LIST OF NOTE VIEWS
+    private NoteMainActivity activity;
     private Button addNote;
-    private Button deleteNote;
     private Button cancelNote;
     private Button colorNote;
-    private View v;
+    private Button deleteNote;
+    private View view;
+    private RecyclerView recyclerView;
 
+    public static NoteListFragment newInstance() {
+
+        Bundle args = new Bundle();
+
+        NoteListFragment fragment = new NoteListFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if (context instanceof NoteMainActivity)
+            activity = (NoteMainActivity) context;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.fragment_note_list, container, false);
+        view = inflater.inflate(R.layout.fragment_note_list, container, false);
 
-        noteListLayout = (LinearLayout) v.findViewById(R.id.noteList);
-        addNote = (Button) v.findViewById(R.id.buttonAdd);
-        deleteNote = (Button) v.findViewById(R.id.buttonDelete);
-        cancelNote = (Button) v.findViewById(R.id.buttonCancel);
-        colorNote = (Button) v.findViewById(R.id.buttonColor);
+
+        noteListLayout = (LinearLayout) view.findViewById(R.id.noteList);
+        addNote = (Button) view.findViewById(R.id.buttonAdd);
+        deleteNote = (Button) view.findViewById(R.id.buttonDelete);
+        cancelNote = (Button) view.findViewById(R.id.buttonCancel);
+        colorNote = (Button) view.findViewById(R.id.buttonColor);
+        recyclerView = (RecyclerView) view.findViewById(R.id.note_list_recycler_view);
         noteViews = new ArrayList<>();
 
+        //createListOfNotes(); // CREATE LIST OF NOTES
 
-        /********************************************************************************/
-
-        createListOfNotes(); // CREATE LIST OF NOTES
-
-        addNote.setOnClickListener(new View.OnClickListener() {
+        /*addNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 createNote();
@@ -63,7 +81,7 @@ public class NoteListFragment extends Fragment {
             public void onClick(View view) {
                 cancel();
             }
-        });
+        });*/
 
         colorNote.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,25 +91,36 @@ public class NoteListFragment extends Fragment {
             }
         });
 
-        return v;
+
+        bindFakeData();
+        return view;
+    }
+
+    private void bindFakeData() {
+        ArrayList<Note> noteAr = new ArrayList<>();
+        noteAr.add(new Note("A ja jebię HAHAHA","A co ty jebiesz kurwa?",0));
+        noteAr.add(new Note("Jebię wszystkich HAHAHA","JESTEM JEBACZEM!!!!",1));
+        NoteListAdapter noteListAdapter = new NoteListAdapter(activity,noteAr);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setAdapter(noteListAdapter);
     }
 
 
-    private void createListOfNotes(){
+    /*private void createListOfNotes() {
 
-        /*********************** PARAMS FOR VIEW OF NOTE ****************************/
+        *//*********************** PARAMS FOR VIEW OF NOTE ****************************//*
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams
                 (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(20,20,20,20);
-        /****************************************************************************/
+        layoutParams.setMargins(20, 20, 20, 20);
+        *//****************************************************************************//*
 
-        /*********************** CREATE LIST OF NOTES ******************************/
+        *//*********************** CREATE LIST OF NOTES ******************************//*
         NoteConfigurations.reverseNoteList(); // REVERSE LIST FOR CHANGE ORDER OF LIST OF NOTES
 
-        for (Note note : NoteConfigurations.getNoteList()){
+        for (Note note : NoteConfigurations.getNoteList()) {
             Button noteButton = new Button(getActivity());
             noteButton.setText(note.getTitle());
-            noteButton.setPadding(30,30,30,30);
+            noteButton.setPadding(30, 30, 30, 30);
             noteButton.setTextSize(16);
             noteButton.setTypeface(Typeface.DEFAULT_BOLD);
             noteButton.setId(note.getID());
@@ -102,18 +131,16 @@ public class NoteListFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
 
-                    /************** EDIT EXIST NOTE ********/
-                    System.out.println(view.getId());
                     NoteConfigurations.ID = view.getId();
                     NoteConfigurations.isNew = false;
 
-                    FragmentOptions.fragmentTransaction = getFragmentManager().beginTransaction();
+                    fragmentTransaction = getFragmentManager().beginTransaction();
                     FragmentOptions.noteEditorFragment = new NoteEditorFragment();
                     FragmentOptions.fragmentTransaction.add(R.id.fragmentLayout, FragmentOptions.noteEditorFragment);
                     FragmentOptions.fragmentTransaction.remove(FragmentOptions.noteListFragment);
                     FragmentOptions.noteListFragment = null;
                     FragmentOptions.fragmentTransaction.commit();
-                    /***************************************/
+                    *//***************************************//*
                 }
             });
 
@@ -135,27 +162,28 @@ public class NoteListFragment extends Fragment {
 
         }
         NoteConfigurations.reverseNoteList(); // BACK REVERSE
-        /**************************************************************************/
-    }
+        *//**************************************************************************//*
+    }*/
 
-    private void createNote(){
-        /****************** CREATE NEW NOTE *********************************/
+    /*private void createNote() {
+        *//****************** CREATE NEW NOTE *********************************//*
         NoteConfigurations.isNew = true;
         NoteConfigurations.ID = null;  // PASS NULL ID TO NEW NOTE TO NEW FRAGMENT
-        /********************************************************************/
+        *//********************************************************************//*
 
         FragmentOptions.fragmentTransaction = getFragmentManager().beginTransaction();
         FragmentOptions.noteEditorFragment = new NoteEditorFragment(); // CREATE NEW EDITOR FRAGMENT
         FragmentOptions.fragmentTransaction.add(R.id.fragmentLayout, FragmentOptions.noteEditorFragment);
 
-        if(FragmentOptions.noteListFragment != null) {
+        if (FragmentOptions.noteListFragment != null) {
             FragmentOptions.fragmentTransaction.remove(FragmentOptions.noteListFragment); // DELETE OLD LIST FRAGMENT
             FragmentOptions.noteListFragment = null;
         }
 
         FragmentOptions.fragmentTransaction.commit();
     }
-    private void deleteNote(){
+
+    private void deleteNote() {
         NoteConfigurations.deleteNote(NoteConfigurations.ID_TO_DELETE);
         deleteNote.setVisibility(View.INVISIBLE);
         cancelNote.setVisibility(View.INVISIBLE);
@@ -163,13 +191,14 @@ public class NoteListFragment extends Fragment {
 
         FragmentOptions.fragmentTransaction = getFragmentManager().beginTransaction();
         FragmentOptions.noteListFragment = new NoteListFragment();
-        FragmentOptions.fragmentTransaction.replace(R.id.fragmentLayout,FragmentOptions.noteListFragment);
+        FragmentOptions.fragmentTransaction.replace(R.id.fragmentLayout, FragmentOptions.noteListFragment);
         FragmentOptions.fragmentTransaction.commit();
         unfreezeNotes();
         NoteConfigurations.ID_TO_DELETE = null;
     }
-    private void cancel(){
-        Button view = (Button) v.findViewById(NoteConfigurations.ID_TO_DELETE);
+
+    private void cancel() {
+        Button view = (Button) this.view.findViewById(NoteConfigurations.ID_TO_DELETE);
         System.out.println(view.getId());
         deleteNote.setVisibility(View.INVISIBLE);
         cancelNote.setVisibility(View.INVISIBLE);
@@ -178,16 +207,17 @@ public class NoteListFragment extends Fragment {
         unfreezeNotes();
     }
 
-    private void freezeNotes(){
-        for (int i = 0; i < noteViews.size(); i++){
+    private void freezeNotes() {
+        for (int i = 0; i < noteViews.size(); i++) {
             noteViews.get(i).setEnabled(false);
         }
     }
-    private void unfreezeNotes(){
-        for (int i = 0; i < noteViews.size(); i++){
+
+    private void unfreezeNotes() {
+        for (int i = 0; i < noteViews.size(); i++) {
             noteViews.get(i).setEnabled(true);
         }
-    }
+    }*/
 
 
 }

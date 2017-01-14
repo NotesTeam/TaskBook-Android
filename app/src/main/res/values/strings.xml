@@ -16,4 +16,5 @@
     <string name="create">CREATE</string>
     <string name="cancel">CANCEL</string>
     <string name="color_button">COLOR</string>
+    <string name="placeholder">placeholder</string>
 </resources>
