@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +13,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
-import java.util.Random;
-
 import io.realm.Realm;
+import io.realm.RealmResults;
 
 
 public class NoteEditorFragment extends DialogFragment {
 
     private static final String TAG_ID = "TAG_ID";
+    private int noteId;
     LinearLayout editNoteBackground;
     EditText titleNoteEdit;
     EditText textNoteEdit;
@@ -42,62 +43,96 @@ public class NoteEditorFragment extends DialogFragment {
         textNoteEdit = (EditText) view.findViewById(R.id.textEditNote);
         saveButton = (Button) view.findViewById(R.id.buttonSave);
 
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismiss();
+            }
+        });
+
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        noteId = getArguments().getInt("TAG_ID");
+        if (!isNoteNew())
+            inflateNoteData(noteId);
+    }
+
+    private void inflateNoteData(int noteId) {
+        Note note = getNoteWithId(noteId);
+        inflateNoteData(note);
+    }
+
+    private void inflateNoteData(Note note) {
+        if (note != null){
+            titleNoteEdit.setText(note.getTitle());
+            textNoteEdit.setText(note.getText());
+        }
+    }
+
+    private Note getNoteWithId(int noteId) {
+        Realm realm = Realm.getDefaultInstance();
+        return realm.where(Note.class).equalTo(Note.ID,noteId).findFirst();
     }
 
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
+        saveNoteToDatabase();
+        Fragment parentFragment = getParentFragment();
+        if (parentFragment instanceof DialogInterface.OnDismissListener){
+            ((DialogInterface.OnDismissListener)parentFragment).onDismiss(dialog);
+        }
+    }
 
+    private void saveNoteToDatabase() {
         Realm realm = Realm.getDefaultInstance();
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                Note note = new Note(titleNoteEdit.getText().toString(),textNoteEdit.getText().toString(),0);
-                realm.copyToRealm(note);
+                if (isNoteNew()) {
+                    if (!isNoteEmpty())
+                        createNewNote(realm);
+                }
+                else
+                    updateNote(realm);
             }
         });
     }
 
-    public void createNote(){
-        /****** GET DATA FROM THE FRAGMENT ********/
-        String title = titleNoteEdit.getText().toString();
-        String text = textNoteEdit.getText().toString();
-
-            if (NoteConfigurations.isNew) {
-                if (!(title.equals("") && text.equals(""))) {
-                    Random random = new Random();
-                    int randomID;
-                    do {
-                        randomID = random.nextInt(1000);
-                    }
-                    while (NoteConfigurations.isIdExist(randomID));
-
-                    NoteConfigurations.ID = randomID;
-                    Note newNote = new Note(title, text, NoteConfigurations.ID);
-                    NoteConfigurations.addNote(newNote);
-                }
-            }
-            else {
-                if (title.equals("") && text.equals(""))
-                    NoteConfigurations.deleteNote(NoteConfigurations.ID);
-                else
-                    NoteConfigurations.setNote(title, text, NoteConfigurations.ID);
-            }
-
+    private void updateNote(Realm realm) {
+        Note note = realm.where(Note.class).equalTo(Note.ID,noteId).findFirst();
+        if (note != null){
+            note.setTitle(titleNoteEdit.getText().toString());
+            note.setText(textNoteEdit.getText().toString());
+        }
     }
+
+    private void createNewNote(Realm realm) {
+        Note note = new Note(generateNewId(realm), titleNoteEdit.getText().toString(), textNoteEdit.getText().toString());
+        realm.copyToRealm(note);
+    }
+
+    private int generateNewId(Realm realm) {
+        RealmResults<Note> results = realm.where(Note.class).findAll();
+        if (results.isEmpty()) return 0;
+        return results.max(Note.ID).intValue() + 1;
+    }
+
+    private boolean isNoteNew() {
+        return noteId == Constants.NEW_NOTE_ID;
+    }
+
     private void hideKeyboard(){
         InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(editNoteBackground.getWindowToken(), 0);
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        /*if(FragmentOptions.isRotated){
-            FragmentOptions.editorSavedTitle = titleNoteEdit.getText().toString();
-            FragmentOptions.editorSavedText = textNoteEdit.getText().toString();
-        }*/
+    private boolean isNoteEmpty(){
+        return titleNoteEdit.getText().toString().equals("") && textNoteEdit.getText().toString().equals("");
     }
 }
 

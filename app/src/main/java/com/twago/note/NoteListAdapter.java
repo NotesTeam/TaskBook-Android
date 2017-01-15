@@ -36,8 +36,8 @@ class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHolder> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG,String.format("item clicked: %d",note.getID()));
-                noteListAdapterInterface.openDialogFragment(note.getID());
+                Log.d(TAG,String.format("item clicked: %d",note.getId()));
+                noteListAdapterInterface.openDialogFragment(note.getId());
             }
         });
     }

@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="72dp"
     android:gravity="center_vertical"
-    android:paddingTop="8dp">
+    android:layout_marginTop="10dp">
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -31,6 +31,8 @@
             android:id="@+id/note_list_row_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:maxLines="2"
+            android:ellipsize="end"
             android:text="@string/placeholder"/>
     </LinearLayout>
 

@@ -9,7 +9,7 @@ import android.util.Log;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
-public class NoteMainActivity extends AppCompatActivity implements NoteListAdapterInterface{
+public class NoteMainActivity extends AppCompatActivity {
     private static final String TAG = NoteMainActivity.class.getSimpleName();
     private NoteListFragment noteListFragment;
 
@@ -37,11 +37,4 @@ public class NoteMainActivity extends AppCompatActivity implements NoteListAdapt
         fragmentTransaction.commit();
     }
 
-    @Override
-    public void openDialogFragment(int id) {
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        DialogFragment newFragment = NoteEditorFragment.newInstance(id);
-        newFragment.setStyle(DialogFragment.STYLE_NORMAL,R.style.FullScreenDialog);
-        newFragment.show(ft, "");
-    }
 }

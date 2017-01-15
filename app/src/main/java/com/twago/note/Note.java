@@ -7,17 +7,17 @@ import io.realm.RealmObject;
  */
 
 public class Note extends RealmObject {
-
-    private int ID;
+    public static final String ID = "id";
+    private int id;
     private String title;
     private String text;
 
     public Note(){}
 
-    public Note(String title, String text, int ID) {
+    public Note(int id, String title, String text) {
+        this.id = id;
         this.title = title;
         this.text = text;
-        this.ID = ID;
     }
 
     public String getTitle() {
@@ -36,8 +36,8 @@ public class Note extends RealmObject {
         this.text = text;
     }
 
-    public int getID() {
-        return ID;
+    public int getId() {
+        return id;
     }
 
 }

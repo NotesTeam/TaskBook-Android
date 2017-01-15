@@ -1,6 +1,5 @@
 package com.twago.note;
 
-import android.content.Intent;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -28,7 +27,7 @@ class NoteConfigurations {
 
     static Note getNote(int ID){
         for (Note note : notes){
-            if (ID == note.getID()) return note;
+            if (ID == note.getId()) return note;
         }
         return null;
     }
