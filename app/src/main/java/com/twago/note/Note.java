@@ -2,12 +2,7 @@ package com.twago.note;
 
 import io.realm.RealmObject;
 
-/**
- * Created by twago on 24.12.16.
- */
-
 public class Note extends RealmObject {
-    public static final String ID = "id";
     private int id;
     private String title;
     private String text;

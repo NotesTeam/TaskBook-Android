@@ -61,6 +61,11 @@ public class NoteEditorFragment extends DialogFragment {
             inflateNoteData(noteId);
     }
 
+
+    private boolean isNoteNew() {
+        return noteId == Constants.NEW_NOTE_ID;
+    }
+
     private void inflateNoteData(int noteId) {
         Note note = getNoteWithId(noteId);
         inflateNoteData(note);
@@ -75,17 +80,7 @@ public class NoteEditorFragment extends DialogFragment {
 
     private Note getNoteWithId(int noteId) {
         Realm realm = Realm.getDefaultInstance();
-        return realm.where(Note.class).equalTo(Note.ID,noteId).findFirst();
-    }
-
-    @Override
-    public void onDismiss(DialogInterface dialog) {
-        super.onDismiss(dialog);
-        saveNoteToDatabase();
-        Fragment parentFragment = getParentFragment();
-        if (parentFragment instanceof DialogInterface.OnDismissListener){
-            ((DialogInterface.OnDismissListener)parentFragment).onDismiss(dialog);
-        }
+        return realm.where(Note.class).equalTo(Constants.ID,noteId).findFirst(); // Constants.ID
     }
 
     private void saveNoteToDatabase() {
@@ -104,7 +99,7 @@ public class NoteEditorFragment extends DialogFragment {
     }
 
     private void updateNote(Realm realm) {
-        Note note = realm.where(Note.class).equalTo(Note.ID,noteId).findFirst();
+        Note note = realm.where(Note.class).equalTo(Constants.ID,noteId).findFirst();
         if (note != null){
             note.setTitle(titleNoteEdit.getText().toString());
             note.setText(textNoteEdit.getText().toString());
@@ -119,20 +114,21 @@ public class NoteEditorFragment extends DialogFragment {
     private int generateNewId(Realm realm) {
         RealmResults<Note> results = realm.where(Note.class).findAll();
         if (results.isEmpty()) return 0;
-        return results.max(Note.ID).intValue() + 1;
-    }
-
-    private boolean isNoteNew() {
-        return noteId == Constants.NEW_NOTE_ID;
-    }
-
-    private void hideKeyboard(){
-        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(editNoteBackground.getWindowToken(), 0);
+        return results.max(Constants.ID).intValue() + 1;
     }
 
     private boolean isNoteEmpty(){
         return titleNoteEdit.getText().toString().equals("") && textNoteEdit.getText().toString().equals("");
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        saveNoteToDatabase();
+        Fragment parentFragment = getParentFragment();
+        if (parentFragment instanceof DialogInterface.OnDismissListener){
+            ((DialogInterface.OnDismissListener)parentFragment).onDismiss(dialog); // co to?
+        }
     }
 }
 

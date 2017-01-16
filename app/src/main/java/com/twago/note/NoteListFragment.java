@@ -23,19 +23,15 @@ import io.realm.RealmResults;
 
 public class NoteListFragment extends Fragment implements NoteListAdapterInterface, DialogInterface.OnDismissListener {
 
-    private LinearLayout noteListLayout; // LIST OF NOTE LAYOUT (VERTICAL)
-    private List<Button> noteViews; // LIST OF NOTE VIEWS
+    private LinearLayout noteListLayout;
+    private List<Button> noteViews;
     private NoteMainActivity activity;
     private Button createNote;
-    private Button cancelNote;
-    private Button colorNote;
-    private Button deleteNote;
     private View view;
     private RecyclerView recyclerView;
     private NoteListAdapter noteListAdapter;
 
     public static NoteListFragment newInstance() {
-
         Bundle args = new Bundle();
 
         NoteListFragment fragment = new NoteListFragment();
@@ -58,11 +54,8 @@ public class NoteListFragment extends Fragment implements NoteListAdapterInterfa
 
 
         noteListLayout = (LinearLayout) view.findViewById(R.id.noteList);
-        createNote = (Button) view.findViewById(R.id.buttonCreate);
-        deleteNote = (Button) view.findViewById(R.id.buttonDelete);
-        cancelNote = (Button) view.findViewById(R.id.buttonCancel);
-        colorNote = (Button) view.findViewById(R.id.buttonColor);
         recyclerView = (RecyclerView) view.findViewById(R.id.note_list_recycler_view);
+        createNote = (Button) view.findViewById(R.id.buttonCreate);
         noteViews = new ArrayList<>();
 
         createNote.setOnClickListener(new View.OnClickListener() {
@@ -79,23 +72,22 @@ public class NoteListFragment extends Fragment implements NoteListAdapterInterfa
     private void inflateRecyclerView() {
         Realm realm = Realm.getDefaultInstance();
         RealmResults<Note> results = realm.where(Note.class).findAll();
-        noteListAdapter = new NoteListAdapter(this,results);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        noteListAdapter = new NoteListAdapter(this,results);  // results??
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity())); //??
         recyclerView.setAdapter(noteListAdapter);
     }
 
     @Override
     public void onDismiss(DialogInterface dialogInterface) {
-        Log.d(NoteListFragment.class.getSimpleName(),"DialogDismiss");
         inflateRecyclerView();
     }
 
     @Override
     public void openDialogFragment(int id) {
-        FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
         DialogFragment newFragment = NoteEditorFragment.newInstance(id);
         newFragment.setStyle(DialogFragment.STYLE_NORMAL,R.style.FullScreenDialog);
-        newFragment.show(ft, "");
+        newFragment.show(fragmentTransaction, "");
     }
 
 }

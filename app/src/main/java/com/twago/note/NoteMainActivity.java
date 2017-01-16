@@ -1,13 +1,8 @@
 package com.twago.note;
 
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-
 import io.realm.Realm;
-import io.realm.RealmResults;
 
 public class NoteMainActivity extends AppCompatActivity {
     private static final String TAG = NoteMainActivity.class.getSimpleName();
@@ -18,23 +13,17 @@ public class NoteMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_main);
         Realm.init(this);
-        logDataBaseContent();
 
-        noteListFragment = NoteListFragment.newInstance();
+        noteListFragment = NoteListFragment.newInstance(); // Dlaczego newInstance zamiast new NoteListFragment?
         initSetUp();
     }
 
-    private void logDataBaseContent() {
-        Realm realm = Realm.getDefaultInstance();
-        RealmResults<Note> results = realm.where(Note.class).findAll();
-        Log.d(TAG,results.toString());
-    }
-
     private void initSetUp(){
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         noteListFragment = new NoteListFragment();
-        fragmentTransaction.add(R.id.fragmentLayout, noteListFragment);
-        fragmentTransaction.commit();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.fragmentLayout, noteListFragment)
+                .commit();
     }
 
 }
