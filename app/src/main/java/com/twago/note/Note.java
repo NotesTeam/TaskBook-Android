@@ -3,7 +3,9 @@ package com.twago.note;
 import io.realm.RealmObject;
 
 public class Note extends RealmObject {
+    static final String ID = "id";
     private int id;
+    private boolean isChecked;
     private String title;
     private String text;
 
@@ -13,6 +15,7 @@ public class Note extends RealmObject {
         this.id = id;
         this.title = title;
         this.text = text;
+        isChecked = false;
     }
 
     public String getTitle() {
@@ -35,4 +38,11 @@ public class Note extends RealmObject {
         return id;
     }
 
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+    }
 }

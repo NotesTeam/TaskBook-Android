@@ -18,8 +18,8 @@
         android:orientation="vertical"
         android:layout_marginLeft="72dp"
         android:layout_marginStart="72dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp">
+        android:layout_marginEnd="72dp"
+        android:layout_marginRight="72dp">
         <TextView
             android:id="@+id/note_list_row_title"
             android:layout_width="match_parent"
@@ -35,5 +35,14 @@
             android:ellipsize="end"
             android:text="@string/placeholder"/>
     </LinearLayout>
+    <CheckBox
+        android:id="@+id/note_list_row_check_note"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:paddingEnd="16dp"
+        android:paddingRight="16dp"
+        android:visibility="invisible"
+        />
 
 </RelativeLayout>

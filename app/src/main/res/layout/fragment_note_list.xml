@@ -3,40 +3,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="right"
-        android:orientation="horizontal">
-
+        android:gravity="right">
         <Button
-            android:id="@+id/buttonColor"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:text="@string/color_button" />
-
-        <Button
-            android:id="@+id/buttonCancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/cancel"
-            android:visibility="invisible" />
-
-        <Button
-            android:id="@+id/buttonDelete"
+            android:id="@+id/button_delete_note"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/delete"
             android:visibility="invisible" />
 
         <Button
-            android:id="@+id/buttonCreate"
+            android:id="@+id/button_create_note"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/create" />
-    </LinearLayout>
+    </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/note_list_recycler_view"

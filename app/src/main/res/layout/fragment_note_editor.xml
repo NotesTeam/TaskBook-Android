@@ -2,21 +2,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:id="@+id/editNoteBackground">
+    android:id="@+id/edit_note_background">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="right">
         <Button
-            android:id="@+id/buttonSave"
+            android:id="@+id/button_save_note"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/save"/>
     </LinearLayout>
 
     <EditText
-        android:id="@+id/titleEditNote"
+        android:id="@+id/title_edit_note"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/title"
@@ -27,7 +27,7 @@
         android:background="#0000"
         android:textCursorDrawable="@drawable/color_cursor"/>
     <EditText
-        android:id="@+id/textEditNote"
+        android:id="@+id/text_edit_note"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:hint="@string/text"

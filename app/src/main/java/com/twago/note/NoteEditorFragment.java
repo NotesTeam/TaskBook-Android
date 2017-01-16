@@ -1,6 +1,6 @@
 package com.twago.note;
 
-import android.content.Context;
+
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -38,10 +37,10 @@ public class NoteEditorFragment extends DialogFragment {
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_note_editor,container,false);
-        editNoteBackground = (LinearLayout) view.findViewById(R.id.editNoteBackground);
-        titleNoteEdit = (EditText) view.findViewById(R.id.titleEditNote);
-        textNoteEdit = (EditText) view.findViewById(R.id.textEditNote);
-        saveButton = (Button) view.findViewById(R.id.buttonSave);
+        editNoteBackground = (LinearLayout) view.findViewById(R.id.edit_note_background);
+        titleNoteEdit = (EditText) view.findViewById(R.id.title_edit_note);
+        textNoteEdit = (EditText) view.findViewById(R.id.text_edit_note);
+        saveButton = (Button) view.findViewById(R.id.button_save_note);
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,7 +79,7 @@ public class NoteEditorFragment extends DialogFragment {
 
     private Note getNoteWithId(int noteId) {
         Realm realm = Realm.getDefaultInstance();
-        return realm.where(Note.class).equalTo(Constants.ID,noteId).findFirst(); // Constants.ID
+        return realm.where(Note.class).equalTo(Note.ID,noteId).findFirst();
     }
 
     private void saveNoteToDatabase() {
@@ -99,7 +98,7 @@ public class NoteEditorFragment extends DialogFragment {
     }
 
     private void updateNote(Realm realm) {
-        Note note = realm.where(Note.class).equalTo(Constants.ID,noteId).findFirst();
+        Note note = realm.where(Note.class).equalTo(Note.ID,noteId).findFirst();
         if (note != null){
             note.setTitle(titleNoteEdit.getText().toString());
             note.setText(textNoteEdit.getText().toString());
@@ -114,7 +113,7 @@ public class NoteEditorFragment extends DialogFragment {
     private int generateNewId(Realm realm) {
         RealmResults<Note> results = realm.where(Note.class).findAll();
         if (results.isEmpty()) return 0;
-        return results.max(Constants.ID).intValue() + 1;
+        return results.max(Note.ID).intValue() + 1;
     }
 
     private boolean isNoteEmpty(){
@@ -127,7 +126,7 @@ public class NoteEditorFragment extends DialogFragment {
         saveNoteToDatabase();
         Fragment parentFragment = getParentFragment();
         if (parentFragment instanceof DialogInterface.OnDismissListener){
-            ((DialogInterface.OnDismissListener)parentFragment).onDismiss(dialog); // co to?
+            ((DialogInterface.OnDismissListener)parentFragment).onDismiss(dialog);
         }
     }
 }

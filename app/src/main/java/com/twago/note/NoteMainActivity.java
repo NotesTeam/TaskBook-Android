@@ -22,7 +22,7 @@ public class NoteMainActivity extends AppCompatActivity {
         noteListFragment = new NoteListFragment();
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.fragmentLayout, noteListFragment)
+                .add(R.id.fragment_layout, noteListFragment)
                 .commit();
     }
 
