@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +58,9 @@ public class NoteListFragment extends Fragment implements NoteListAdapterInterfa
         deleteNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                deleteCheckedNotes();
+                hideDeleteButton();
+                inflateRecyclerView();
             }
         });
 
@@ -71,6 +74,23 @@ public class NoteListFragment extends Fragment implements NoteListAdapterInterfa
         noteListAdapter = new NoteListAdapter(this,results);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(noteListAdapter);
+    }
+
+    private void deleteCheckedNotes() {
+        Realm realm = Realm.getDefaultInstance();
+        final RealmResults<Note> realmResults = realm.where(Note.class).findAll();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                Log.d("TAG",realmResults.toString());
+                for (Note note : realmResults) {
+                    if (note.isChecked())
+                        realmResults.deleteFromRealm(note.getId());
+                }
+                Log.d("TAG",realmResults.toString());
+            }
+        });
+
     }
 
     @Override
@@ -87,15 +107,28 @@ public class NoteListFragment extends Fragment implements NoteListAdapterInterfa
     }
 
     @Override
-    public void unblockDeleteButton() {
+    public void showDeleteButton() {
         deleteNote.setVisibility(View.VISIBLE);
         createNote.setVisibility(View.INVISIBLE);
     }
 
     @Override
-    public void unblockCreateButton() {
+    public void hideDeleteButton() {
         deleteNote.setVisibility(View.INVISIBLE);
         createNote.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void checkOrUncheckNote(final int noteId) {
+        Realm realm = Realm.getDefaultInstance();
+        final Note note = realm.where(Note.class).equalTo(Note.ID,noteId).findFirst();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                note.setChecked(!note.isChecked());
+            }
+        });
+
     }
 
 }

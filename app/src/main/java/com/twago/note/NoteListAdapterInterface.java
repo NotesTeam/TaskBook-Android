@@ -2,6 +2,7 @@ package com.twago.note;
 
 interface NoteListAdapterInterface {
     void openDialogFragment(int id);
-    void unblockDeleteButton();
-    void unblockCreateButton();
+    void showDeleteButton();
+    void hideDeleteButton();
+    void checkOrUncheckNote(int noteId);
 }

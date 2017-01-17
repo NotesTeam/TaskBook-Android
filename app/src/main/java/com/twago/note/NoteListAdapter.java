@@ -7,18 +7,20 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import io.realm.RealmResults;
 
 class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHolder> {
     private static final String TAG = NoteListAdapter.class.getSimpleName();
     private RealmResults<Note> noteList;
     private NoteListAdapterInterface noteListAdapterInterface;
-    private boolean checkableMode;
+    private ArrayList<ViewHolder> viewHolders;
 
-    NoteListAdapter(NoteListAdapterInterface noteListAdapterInterface,RealmResults<Note> noteList) {
+    NoteListAdapter(NoteListAdapterInterface noteListAdapterInterface, RealmResults<Note> noteList) {
         this.noteListAdapterInterface = noteListAdapterInterface;
         this.noteList = noteList;
-        checkableMode = false;
+        viewHolders = new ArrayList<>();
     }
 
     @Override
@@ -34,21 +36,54 @@ class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHolder> {
         holder.text.setText(note.getText());
         holder.itemView.setBackgroundColor(position % 2 == 0 ? Constants.COLOR_WHITE : Constants.COLOR_GRAY);
 
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    noteListAdapterInterface.openDialogFragment(note.getId());
+                    if (!isAnyHolderChecked())
+                        noteListAdapterInterface.openDialogFragment(note.getId());
+                    else{
+                        holder.checkNote.setChecked(!holder.checkNote.isChecked());
+                        if (!isAnyHolderChecked()) {
+                            hideAllCheckBoxes();
+                            noteListAdapterInterface.hideDeleteButton();
+                            noteListAdapterInterface.checkOrUncheckNote(note.getId());
+                        }
+                    }
                 }
             });
-            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    noteListAdapterInterface.unblockDeleteButton();
-                    note.setChecked(true);
-
+                    if (!isAnyHolderChecked()) {
+                        showAllCheckBoxes();
+                        noteListAdapterInterface.showDeleteButton();
+                        holder.checkNote.setChecked(true);
+                        noteListAdapterInterface.checkOrUncheckNote(note.getId());
+                    }
                     return true;
                 }
             });
+
+        viewHolders.add(holder);
+    }
+
+    private void showAllCheckBoxes(){
+        for (ViewHolder holder : viewHolders){
+            holder.checkNote.setVisibility(View.VISIBLE);
+        }
+    }
+    private void hideAllCheckBoxes(){
+        for (ViewHolder holder : viewHolders){
+            holder.checkNote.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private boolean isAnyHolderChecked(){
+        for (ViewHolder holder : viewHolders){
+            if(holder.checkNote.isChecked())
+                return true;
+        }
+        return false;
     }
 
     @Override

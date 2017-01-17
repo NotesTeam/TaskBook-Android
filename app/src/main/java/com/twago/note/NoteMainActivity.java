@@ -14,7 +14,7 @@ public class NoteMainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_note_main);
         Realm.init(this);
 
-        noteListFragment = NoteListFragment.newInstance(); // Dlaczego newInstance zamiast new NoteListFragment?
+        noteListFragment = NoteListFragment.newInstance();
         initSetUp();
     }
 
