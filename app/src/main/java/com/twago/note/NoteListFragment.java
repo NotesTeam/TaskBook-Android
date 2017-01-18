@@ -45,8 +45,7 @@ public class NoteListFragment extends Fragment implements NoteListAdapterInterfa
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_note_list, container, false);
         ButterKnife.bind(this, view);
         inflateRecyclerView();
@@ -80,15 +79,7 @@ public class NoteListFragment extends Fragment implements NoteListAdapterInterfa
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                Log.d(TAG, realmResults.toString());
                 realmResults.deleteAllFromRealm();
-
-//                for (Note note : realmResults) {
-//                    if (note.isChecked())
-//                        realm.where(Note.class).;
-//                        realmResults.deleteFromRealm(note.getId());
-//                }
-                Log.d(TAG, realmResults.toString());
             }
         });
 
@@ -127,30 +118,6 @@ public class NoteListFragment extends Fragment implements NoteListAdapterInterfa
             @Override
             public void execute(Realm realm) {
                 note.setChecked(!note.isChecked());
-            }
-        });
-    }
-
-    @Override
-    public void checkNote(int noteId) {
-        Realm realm = Realm.getDefaultInstance();
-        final Note note = realm.where(Note.class).equalTo(Note.ID, noteId).findFirst();
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                note.setChecked(true);
-            }
-        });
-    }
-
-    @Override
-    public void uncheckNote(int noteId) {
-        Realm realm = Realm.getDefaultInstance();
-        final Note note = realm.where(Note.class).equalTo(Note.ID, noteId).findFirst();
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                note.setChecked(false);
             }
         });
     }

@@ -19,11 +19,11 @@ import lombok.Getter;
 class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHolder> {
     private static final String TAG = NoteListAdapter.class.getSimpleName();
     @Getter
-    private boolean selectableMode = false;
+    private boolean checkableMode = false;
     private RealmResults<Note> noteList;
     private NoteListAdapterInterface noteListAdapterInterface;
     private ArrayList<ViewHolder> viewHolders;
-    private HashMap<Integer,Boolean> selectedNotes = new HashMap<>();
+    private HashMap<Integer, Boolean> checkedNotesList = new HashMap<>();
 
     NoteListAdapter(NoteListAdapterInterface noteListAdapterInterface, RealmResults<Note> noteList) {
         this.noteListAdapterInterface = noteListAdapterInterface;
@@ -47,86 +47,63 @@ class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHolder> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!selectableMode)
-                    noteListAdapterInterface.openDialogFragment(note.getId());
-                else{
-                    toggleCheckNote(note.getId(),holder.checkNote);
-                    if (!isAnyHolderChecked()){
-                        selectableMode = false;
-                        hideAllCheckBoxes();
-                        noteListAdapterInterface.hideDeleteButton();
-                    }
-                }
-                /*if (!isAnyHolderChecked())
+                if (!checkableMode)
                     noteListAdapterInterface.openDialogFragment(note.getId());
                 else {
-                    holder.checkNote.setChecked(!holder.checkNote.isChecked());
-                    noteListAdapterInterface.toggleCheckNote(note.getId());
-                    if (!isAnyHolderChecked()) {
-                        hideAllCheckBoxes();
-                        noteListAdapterInterface.hideDeleteButton();
-                    }
-                }*/
+                    toggleCheckNote(note.getId(), holder.checkNote);
+                    if (!isAnyHolderChecked())
+                        setCheckableMode(Constants.START_MODE);
+                }
 
             }
         });
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                if (!selectableMode) {
-                    selectableMode = true;
-                    showAllCheckBoxes();
-                    noteListAdapterInterface.showDeleteButton();
-                    checkNote(note.getId(),holder.checkNote);
+                if (!checkableMode) {
+                    setCheckableMode(Constants.END_MODE);
+                    toggleCheckNote(note.getId(), holder.checkNote);
                 }
-                /*if (!isAnyHolderChecked()) {
-                    showAllCheckBoxes();
-                    noteListAdapterInterface.showDeleteButton();
-                    holder.checkNote.setChecked(true);
-                    noteListAdapterInterface.toggleCheckNote(note.getId());
-                }*/
                 return true;
             }
         });
-
         viewHolders.add(holder);
     }
 
-    private void checkNote(int id, CheckBox checkBox) {
-        noteListAdapterInterface.checkNote(id);
-        selectedNotes.put(id,true);
-        checkBox.setChecked(true);
+    private void setCheckableMode(boolean mode) {
+        if (mode) {
+            checkableMode = true;
+            setVisibilityRecyclerListCheckBoxes(Constants.VISIBLE);
+            noteListAdapterInterface.showDeleteButton();
+        } else {
+            checkableMode = false;
+            setVisibilityRecyclerListCheckBoxes(Constants.INVISIBLE);
+            noteListAdapterInterface.hideDeleteButton();
+        }
     }
-    private void uncheckNote(int id, CheckBox checkBox) {
-        noteListAdapterInterface.uncheckNote(id);
-        selectedNotes.put(id,false);
-        checkBox.setChecked(false);
+
+    private void setVisibilityRecyclerListCheckBoxes(boolean visibility) {
+        if (visibility == Constants.VISIBLE) {
+            for (ViewHolder holder : viewHolders)
+                holder.checkNote.setVisibility(View.VISIBLE);
+        } else {
+            for (ViewHolder holder : viewHolders)
+                holder.checkNote.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void toggleCheckNote(int id, CheckBox checkBox) {
         noteListAdapterInterface.toggleCheckNote(id);
-        if (!selectedNotes.containsKey(id))
-            selectedNotes.put(id,true);
+        if (!checkedNotesList.containsKey(id))
+            checkedNotesList.put(id, true);
         else
-            selectedNotes.put(id,!selectedNotes.get(id));
+            checkedNotesList.put(id, !checkedNotesList.get(id));
         checkBox.toggle();
 
     }
 
-    private void showAllCheckBoxes() {
-        for (ViewHolder holder : viewHolders) {
-            holder.checkNote.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void hideAllCheckBoxes() {
-        for (ViewHolder holder : viewHolders) {
-            holder.checkNote.setVisibility(View.INVISIBLE);
-        }
-    }
-
-    private boolean isAnyHolderChecked(){
-        for (Map.Entry<Integer,Boolean> entery : selectedNotes.entrySet()){
+    private boolean isAnyHolderChecked() {
+        for (Map.Entry<Integer, Boolean> entery : checkedNotesList.entrySet()) {
             if (entery.getValue()) return true;
         }
         return false;
