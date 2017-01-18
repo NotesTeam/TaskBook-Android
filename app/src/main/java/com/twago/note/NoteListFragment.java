@@ -61,7 +61,7 @@ public class NoteListFragment extends Fragment implements NoteListAdapterInterfa
     @OnClick(R.id.button_delete_note)
     public void deleteNote() {
         deleteCheckedNotes();
-        hideDeleteButton();
+        setVisibilityDeleteButton(false);
         inflateRecyclerView();
     }
 
@@ -99,15 +99,11 @@ public class NoteListFragment extends Fragment implements NoteListAdapterInterfa
     }
 
     @Override
-    public void showDeleteButton() {
-        deleteNote.setVisibility(View.VISIBLE);
-        createNote.setVisibility(View.INVISIBLE);
-    }
-
-    @Override
-    public void hideDeleteButton() {
-        deleteNote.setVisibility(View.INVISIBLE);
-        createNote.setVisibility(View.VISIBLE);
+    public void setVisibilityDeleteButton(boolean mode) {
+        int visibilityCreateNoteMode = mode ? View.VISIBLE : View.INVISIBLE;
+        int visibilityDeleteNoteMode = mode ? View.INVISIBLE : View.VISIBLE;
+        createNote.setVisibility(visibilityCreateNoteMode);
+        deleteNote.setVisibility(visibilityDeleteNoteMode);
     }
 
     @Override

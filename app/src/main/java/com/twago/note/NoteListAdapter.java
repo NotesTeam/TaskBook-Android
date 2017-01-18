@@ -47,21 +47,20 @@ class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHolder> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!checkableMode)
-                    noteListAdapterInterface.openDialogFragment(note.getId());
-                else {
+                if (checkableMode)
                     toggleCheckNote(note.getId(), holder.checkNote);
-                    if (!isAnyHolderChecked())
-                        setCheckableMode(Constants.START_MODE);
-                }
+                else
+                    noteListAdapterInterface.openDialogFragment(note.getId());
 
+                if (!isAnyHolderChecked())
+                    setCheckableMode(false);
             }
         });
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 if (!checkableMode) {
-                    setCheckableMode(Constants.END_MODE);
+                    setCheckableMode(true);
                     toggleCheckNote(note.getId(), holder.checkNote);
                 }
                 return true;
@@ -71,25 +70,15 @@ class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHolder> {
     }
 
     private void setCheckableMode(boolean mode) {
-        if (mode) {
-            checkableMode = true;
-            setVisibilityRecyclerListCheckBoxes(Constants.VISIBLE);
-            noteListAdapterInterface.showDeleteButton();
-        } else {
-            checkableMode = false;
-            setVisibilityRecyclerListCheckBoxes(Constants.INVISIBLE);
-            noteListAdapterInterface.hideDeleteButton();
-        }
+        checkableMode = mode;
+        setVisibilityRecyclerListCheckBoxes(mode);
+        noteListAdapterInterface.setVisibilityDeleteButton(mode);
     }
 
     private void setVisibilityRecyclerListCheckBoxes(boolean visibility) {
-        if (visibility == Constants.VISIBLE) {
-            for (ViewHolder holder : viewHolders)
-                holder.checkNote.setVisibility(View.VISIBLE);
-        } else {
-            for (ViewHolder holder : viewHolders)
-                holder.checkNote.setVisibility(View.INVISIBLE);
-        }
+        int viewVisibility = visibility ? View.VISIBLE : View.INVISIBLE;
+        for (ViewHolder holder : viewHolders)
+            holder.checkNote.setVisibility(viewVisibility);
     }
 
     private void toggleCheckNote(int id, CheckBox checkBox) {
