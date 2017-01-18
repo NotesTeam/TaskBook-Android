@@ -19,6 +19,7 @@ import io.realm.RealmResults;
 
 public class NoteListFragment extends Fragment implements NoteListAdapterInterface, DialogInterface.OnDismissListener {
 
+    public static final String TAG = NoteListFragment.class.getSimpleName();
     private Button createNote;
     private Button deleteNote;
     private View view;
@@ -82,12 +83,12 @@ public class NoteListFragment extends Fragment implements NoteListAdapterInterfa
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                Log.d("TAG",realmResults.toString());
+                Log.d(TAG,realmResults.toString());
                 for (Note note : realmResults) {
                     if (note.isChecked())
                         realmResults.deleteFromRealm(note.getId());
                 }
-                Log.d("TAG",realmResults.toString());
+                Log.d(TAG,realmResults.toString());
             }
         });
 
