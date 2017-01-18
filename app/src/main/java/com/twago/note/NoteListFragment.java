@@ -14,17 +14,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
 public class NoteListFragment extends Fragment implements NoteListAdapterInterface, DialogInterface.OnDismissListener {
 
     public static final String TAG = NoteListFragment.class.getSimpleName();
-    private Button createNote;
-    private Button deleteNote;
-    private View view;
-    private RecyclerView recyclerView;
-    private NoteListAdapter noteListAdapter;
+    @BindView(R.id.button_create_note)
+    Button createNote;
+    @BindView(R.id.button_delete_note)
+    Button deleteNote;
+    @BindView(R.id.note_list_recycler_view)
+    RecyclerView recyclerView;
 
 
     public static NoteListFragment newInstance() {
@@ -43,52 +47,48 @@ public class NoteListFragment extends Fragment implements NoteListAdapterInterfa
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_note_list, container, false);
-
-        recyclerView = (RecyclerView) view.findViewById(R.id.note_list_recycler_view);
-        createNote = (Button) view.findViewById(R.id.button_create_note);
-        deleteNote = (Button) view.findViewById(R.id.button_delete_note);
-
-        createNote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openDialogFragment(Constants.NEW_NOTE_ID);
-            }
-        });
-
-        deleteNote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                deleteCheckedNotes();
-                hideDeleteButton();
-                inflateRecyclerView();
-            }
-        });
-
+        View view = inflater.inflate(R.layout.fragment_note_list, container, false);
+        ButterKnife.bind(this, view);
         inflateRecyclerView();
+
         return view;
+    }
+
+    @OnClick(R.id.button_create_note)
+    public void openNewNoteDialogFragment() {
+        openDialogFragment(Constants.NEW_NOTE_ID);
+    }
+
+    @OnClick(R.id.button_delete_note)
+    public void deleteNote() {
+        deleteCheckedNotes();
+        hideDeleteButton();
+        inflateRecyclerView();
     }
 
     private void inflateRecyclerView() {
         Realm realm = Realm.getDefaultInstance();
         RealmResults<Note> results = realm.where(Note.class).findAll();
-        noteListAdapter = new NoteListAdapter(this,results);
+        NoteListAdapter noteListAdapter = new NoteListAdapter(this, results);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(noteListAdapter);
     }
 
     private void deleteCheckedNotes() {
         Realm realm = Realm.getDefaultInstance();
-        final RealmResults<Note> realmResults = realm.where(Note.class).findAll();
+        final RealmResults<Note> realmResults = realm.where(Note.class).equalTo("isChecked", true).findAll();
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                Log.d(TAG,realmResults.toString());
-                for (Note note : realmResults) {
-                    if (note.isChecked())
-                        realmResults.deleteFromRealm(note.getId());
-                }
-                Log.d(TAG,realmResults.toString());
+                Log.d(TAG, realmResults.toString());
+                realmResults.deleteAllFromRealm();
+
+//                for (Note note : realmResults) {
+//                    if (note.isChecked())
+//                        realm.where(Note.class).;
+//                        realmResults.deleteFromRealm(note.getId());
+//                }
+                Log.d(TAG, realmResults.toString());
             }
         });
 
@@ -103,7 +103,7 @@ public class NoteListFragment extends Fragment implements NoteListAdapterInterfa
     public void openDialogFragment(int id) {
         FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
         DialogFragment newFragment = NoteEditorFragment.newInstance(id);
-        newFragment.setStyle(DialogFragment.STYLE_NORMAL,R.style.FullScreenDialog);
+        newFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.FullScreenDialog);
         newFragment.show(fragmentTransaction, "");
     }
 
@@ -120,16 +120,39 @@ public class NoteListFragment extends Fragment implements NoteListAdapterInterfa
     }
 
     @Override
-    public void checkOrUncheckNote(final int noteId) {
+    public void toggleCheckNote(final int noteId) {
         Realm realm = Realm.getDefaultInstance();
-        final Note note = realm.where(Note.class).equalTo(Note.ID,noteId).findFirst();
+        final Note note = realm.where(Note.class).equalTo(Note.ID, noteId).findFirst();
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 note.setChecked(!note.isChecked());
             }
         });
+    }
 
+    @Override
+    public void checkNote(int noteId) {
+        Realm realm = Realm.getDefaultInstance();
+        final Note note = realm.where(Note.class).equalTo(Note.ID, noteId).findFirst();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                note.setChecked(true);
+            }
+        });
+    }
+
+    @Override
+    public void uncheckNote(int noteId) {
+        Realm realm = Realm.getDefaultInstance();
+        final Note note = realm.where(Note.class).equalTo(Note.ID, noteId).findFirst();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                note.setChecked(false);
+            }
+        });
     }
 
 }

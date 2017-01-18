@@ -8,14 +8,22 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.realm.RealmResults;
+import lombok.Getter;
 
 class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHolder> {
     private static final String TAG = NoteListAdapter.class.getSimpleName();
+    @Getter
+    private boolean selectableMode = false;
     private RealmResults<Note> noteList;
     private NoteListAdapterInterface noteListAdapterInterface;
     private ArrayList<ViewHolder> viewHolders;
+    private HashMap<Integer,Boolean> selectedNotes = new HashMap<>();
 
     NoteListAdapter(NoteListAdapterInterface noteListAdapterInterface, RealmResults<Note> noteList) {
         this.noteListAdapterInterface = noteListAdapterInterface;
@@ -37,51 +45,89 @@ class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHolder> {
         holder.itemView.setBackgroundColor(position % 2 == 0 ? Constants.COLOR_WHITE : Constants.COLOR_GRAY);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (!isAnyHolderChecked())
-                        noteListAdapterInterface.openDialogFragment(note.getId());
-                    else{
-                        holder.checkNote.setChecked(!holder.checkNote.isChecked());
-                        if (!isAnyHolderChecked()) {
-                            hideAllCheckBoxes();
-                            noteListAdapterInterface.hideDeleteButton();
-                            noteListAdapterInterface.checkOrUncheckNote(note.getId());
-                        }
+            @Override
+            public void onClick(View view) {
+                if (!selectableMode)
+                    noteListAdapterInterface.openDialogFragment(note.getId());
+                else{
+                    toggleCheckNote(note.getId(),holder.checkNote);
+                    if (!isAnyHolderChecked()){
+                        selectableMode = false;
+                        hideAllCheckBoxes();
+                        noteListAdapterInterface.hideDeleteButton();
                     }
                 }
-            });
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
+                /*if (!isAnyHolderChecked())
+                    noteListAdapterInterface.openDialogFragment(note.getId());
+                else {
+                    holder.checkNote.setChecked(!holder.checkNote.isChecked());
+                    noteListAdapterInterface.toggleCheckNote(note.getId());
                     if (!isAnyHolderChecked()) {
-                        showAllCheckBoxes();
-                        noteListAdapterInterface.showDeleteButton();
-                        holder.checkNote.setChecked(true);
-                        noteListAdapterInterface.checkOrUncheckNote(note.getId());
+                        hideAllCheckBoxes();
+                        noteListAdapterInterface.hideDeleteButton();
                     }
-                    return true;
+                }*/
+
+            }
+        });
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if (!selectableMode) {
+                    selectableMode = true;
+                    showAllCheckBoxes();
+                    noteListAdapterInterface.showDeleteButton();
+                    checkNote(note.getId(),holder.checkNote);
                 }
-            });
+                /*if (!isAnyHolderChecked()) {
+                    showAllCheckBoxes();
+                    noteListAdapterInterface.showDeleteButton();
+                    holder.checkNote.setChecked(true);
+                    noteListAdapterInterface.toggleCheckNote(note.getId());
+                }*/
+                return true;
+            }
+        });
 
         viewHolders.add(holder);
     }
 
-    private void showAllCheckBoxes(){
-        for (ViewHolder holder : viewHolders){
+    private void checkNote(int id, CheckBox checkBox) {
+        noteListAdapterInterface.checkNote(id);
+        selectedNotes.put(id,true);
+        checkBox.setChecked(true);
+    }
+    private void uncheckNote(int id, CheckBox checkBox) {
+        noteListAdapterInterface.uncheckNote(id);
+        selectedNotes.put(id,false);
+        checkBox.setChecked(false);
+    }
+
+    private void toggleCheckNote(int id, CheckBox checkBox) {
+        noteListAdapterInterface.toggleCheckNote(id);
+        if (!selectedNotes.containsKey(id))
+            selectedNotes.put(id,true);
+        else
+            selectedNotes.put(id,!selectedNotes.get(id));
+        checkBox.toggle();
+
+    }
+
+    private void showAllCheckBoxes() {
+        for (ViewHolder holder : viewHolders) {
             holder.checkNote.setVisibility(View.VISIBLE);
         }
     }
-    private void hideAllCheckBoxes(){
-        for (ViewHolder holder : viewHolders){
+
+    private void hideAllCheckBoxes() {
+        for (ViewHolder holder : viewHolders) {
             holder.checkNote.setVisibility(View.INVISIBLE);
         }
     }
 
     private boolean isAnyHolderChecked(){
-        for (ViewHolder holder : viewHolders){
-            if(holder.checkNote.isChecked())
-                return true;
+        for (Map.Entry<Integer,Boolean> entery : selectedNotes.entrySet()){
+            if (entery.getValue()) return true;
         }
         return false;
     }
@@ -92,15 +138,16 @@ class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHolder> {
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.note_list_row_title)
         TextView title;
+        @BindView(R.id.note_list_row_text)
         TextView text;
+        @BindView(R.id.note_list_row_check_note)
         CheckBox checkNote;
 
         ViewHolder(View itemView) {
             super(itemView);
-            title = (TextView) itemView.findViewById(R.id.note_list_row_title);
-            text = (TextView) itemView.findViewById(R.id.note_list_row_text);
-            checkNote = (CheckBox) itemView.findViewById(R.id.note_list_row_check_note);
+            ButterKnife.bind(this, itemView);
         }
     }
 }

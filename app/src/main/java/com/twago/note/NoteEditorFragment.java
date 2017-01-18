@@ -12,6 +12,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -20,10 +23,12 @@ public class NoteEditorFragment extends DialogFragment {
 
     private static final String TAG_ID = "TAG_ID";
     private int noteId;
+    @BindView(R.id.edit_note_background)
     LinearLayout editNoteBackground;
+    @BindView(R.id.title_edit_note)
     EditText titleNoteEdit;
+    @BindView(R.id.text_edit_note)
     EditText textNoteEdit;
-    Button saveButton;
 
     public static NoteEditorFragment newInstance(int id) {
         Bundle args = new Bundle();
@@ -36,20 +41,15 @@ public class NoteEditorFragment extends DialogFragment {
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_note_editor,container,false);
-        editNoteBackground = (LinearLayout) view.findViewById(R.id.edit_note_background);
-        titleNoteEdit = (EditText) view.findViewById(R.id.title_edit_note);
-        textNoteEdit = (EditText) view.findViewById(R.id.text_edit_note);
-        saveButton = (Button) view.findViewById(R.id.button_save_note);
-
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dismiss();
-            }
-        });
+        final View view = inflater.inflate(R.layout.fragment_note_editor, container, false);
+        ButterKnife.bind(this, view);
 
         return view;
+    }
+
+    @OnClick(R.id.button_save_note)
+    public void saveNote() {
+        dismiss();
     }
 
     @Override
@@ -71,7 +71,7 @@ public class NoteEditorFragment extends DialogFragment {
     }
 
     private void inflateNoteData(Note note) {
-        if (note != null){
+        if (note != null) {
             titleNoteEdit.setText(note.getTitle());
             textNoteEdit.setText(note.getText());
         }
@@ -79,7 +79,7 @@ public class NoteEditorFragment extends DialogFragment {
 
     private Note getNoteWithId(int noteId) {
         Realm realm = Realm.getDefaultInstance();
-        return realm.where(Note.class).equalTo(Note.ID,noteId).findFirst();
+        return realm.where(Note.class).equalTo(Note.ID, noteId).findFirst();
     }
 
     private void saveNoteToDatabase() {
@@ -90,16 +90,15 @@ public class NoteEditorFragment extends DialogFragment {
                 if (isNoteNew()) {
                     if (!isNoteEmpty())
                         createNewNote(realm);
-                }
-                else
+                } else
                     updateNote(realm);
             }
         });
     }
 
     private void updateNote(Realm realm) {
-        Note note = realm.where(Note.class).equalTo(Note.ID,noteId).findFirst();
-        if (note != null){
+        Note note = realm.where(Note.class).equalTo(Note.ID, noteId).findFirst();
+        if (note != null) {
             note.setTitle(titleNoteEdit.getText().toString());
             note.setText(textNoteEdit.getText().toString());
         }
@@ -116,7 +115,7 @@ public class NoteEditorFragment extends DialogFragment {
         return results.max(Note.ID).intValue() + 1;
     }
 
-    private boolean isNoteEmpty(){
+    private boolean isNoteEmpty() {
         return titleNoteEdit.getText().toString().equals("") && textNoteEdit.getText().toString().equals("");
     }
 
@@ -125,9 +124,8 @@ public class NoteEditorFragment extends DialogFragment {
         super.onDismiss(dialog);
         saveNoteToDatabase();
         Fragment parentFragment = getParentFragment();
-        if (parentFragment instanceof DialogInterface.OnDismissListener){
-            ((DialogInterface.OnDismissListener)parentFragment).onDismiss(dialog);
-        }
+        if (parentFragment instanceof DialogInterface.OnDismissListener)
+            ((DialogInterface.OnDismissListener) parentFragment).onDismiss(dialog);
     }
 }
 

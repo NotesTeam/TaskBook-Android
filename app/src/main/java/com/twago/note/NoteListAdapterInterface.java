@@ -4,5 +4,7 @@ interface NoteListAdapterInterface {
     void openDialogFragment(int id);
     void showDeleteButton();
     void hideDeleteButton();
-    void checkOrUncheckNote(int noteId);
+    void toggleCheckNote(int noteId);
+    void checkNote(int noteId);
+    void uncheckNote(int noteId);
 }

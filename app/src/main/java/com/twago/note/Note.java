@@ -1,16 +1,23 @@
 package com.twago.note;
 
 import io.realm.RealmObject;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-public @AllArgsConstructor @NoArgsConstructor
-class Note extends RealmObject {
+@Getter
+@Setter
+@NoArgsConstructor
+@RequiredArgsConstructor(suppressConstructorProperties = true)
+public class Note extends RealmObject {
     static final String ID = "id";
-    private @Getter @Setter boolean isChecked = false;
-    private @Getter int id;
-    private @Getter @Setter String title;
-    private @Getter @Setter String text;
+    private boolean isChecked = false;
+    @NonNull
+    private int id;
+    @NonNull
+    private String title;
+    @NonNull
+    String text;
 }
