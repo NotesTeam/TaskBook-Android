@@ -5,15 +5,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.RealmResults;
+import butterknife.BindView;
 import lombok.Getter;
 
 class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHolder> {
@@ -43,6 +42,7 @@ class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHolder> {
         holder.title.setText(note.getTitle());
         holder.text.setText(note.getText());
         holder.itemView.setBackgroundColor(position % 2 == 0 ? Constants.COLOR_WHITE : Constants.COLOR_GRAY);
+        holder.taskIcon.setImageResource(getTaskIcon(note));
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,7 +51,6 @@ class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHolder> {
                     toggleCheckNote(note.getId(), holder.checkNote);
                 else
                     noteListAdapterInterface.openDialogFragment(note.getId());
-
                 if (!isAnyHolderChecked())
                     setCheckableMode(false);
             }
@@ -88,7 +87,6 @@ class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHolder> {
         else
             checkedNotesList.put(id, !checkedNotesList.get(id));
         checkBox.toggle();
-
     }
 
     private boolean isAnyHolderChecked() {
@@ -96,6 +94,20 @@ class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHolder> {
             if (entery.getValue()) return true;
         }
         return false;
+    }
+
+    private int getTaskIcon(Note note){
+        switch (note.getTask()){
+            case Note.MAIN_TASK :
+                return R.drawable.ic_star_indigo_500_24dp;
+            case Note.PART_TASK :
+                return R.drawable.ic_star_half_indigo_500_24dp;
+            case Note.SKILLS_TASK :
+                return R.drawable.ic_lightbulb_outline_indigo_500_24dp;
+            case Note.UNIMPORTANT_TASK :
+                return R.drawable.ic_help_outline_indigo_500_24dp;
+        }
+        return 0;
     }
 
     @Override
@@ -110,6 +122,8 @@ class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHolder> {
         TextView text;
         @BindView(R.id.note_list_row_check_note)
         CheckBox checkNote;
+        @BindView(R.id.note_list_row_task_icon)
+        ImageView taskIcon;
 
         ViewHolder(View itemView) {
             super(itemView);

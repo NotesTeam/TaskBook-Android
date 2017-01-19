@@ -13,12 +13,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
+import lombok.NonNull;
 
 public class NoteListFragment extends Fragment implements NoteListAdapterInterface, DialogInterface.OnDismissListener {
 
@@ -67,8 +70,9 @@ public class NoteListFragment extends Fragment implements NoteListAdapterInterfa
 
     private void inflateRecyclerView() {
         Realm realm = Realm.getDefaultInstance();
-        RealmResults<Note> results = realm.where(Note.class).findAll();
-        NoteListAdapter noteListAdapter = new NoteListAdapter(this, results);
+        RealmResults<Note> realmResults = realm.where(Note.class).findAllSorted(Note.TASK, Sort.ASCENDING);
+
+        NoteListAdapter noteListAdapter = new NoteListAdapter(this, realmResults);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(noteListAdapter);
     }
@@ -100,10 +104,8 @@ public class NoteListFragment extends Fragment implements NoteListAdapterInterfa
 
     @Override
     public void setVisibilityDeleteButton(boolean mode) {
-        int visibilityCreateNoteMode = mode ? View.VISIBLE : View.INVISIBLE;
-        int visibilityDeleteNoteMode = mode ? View.INVISIBLE : View.VISIBLE;
-        createNote.setVisibility(visibilityCreateNoteMode);
-        deleteNote.setVisibility(visibilityDeleteNoteMode);
+        createNote.setVisibility(mode ? View.INVISIBLE : View.VISIBLE);
+        deleteNote.setVisibility(mode ? View.VISIBLE : View.INVISIBLE);
     }
 
     @Override

@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import butterknife.BindView;
@@ -23,12 +24,23 @@ public class NoteEditorFragment extends DialogFragment {
 
     private static final String TAG_ID = "TAG_ID";
     private int noteId;
+    private String task = "";
     @BindView(R.id.edit_note_background)
     LinearLayout editNoteBackground;
+    @BindView(R.id.button_save_note)
+    Button saveNoteButton;
     @BindView(R.id.title_edit_note)
     EditText titleNoteEdit;
     @BindView(R.id.text_edit_note)
     EditText textNoteEdit;
+    @BindView(R.id.main_task_note_editor)
+    ImageView mainTaskButton;
+    @BindView(R.id.part_task_note_editor)
+    ImageView partTaskButton;
+    @BindView(R.id.skills_task_note_editor)
+    ImageView skillsTaskButton;
+    @BindView(R.id.unimportant_task_note_editor)
+    ImageView unimportantTaskButton;
 
     public static NoteEditorFragment newInstance(int id) {
         Bundle args = new Bundle();
@@ -45,6 +57,25 @@ public class NoteEditorFragment extends DialogFragment {
         ButterKnife.bind(this, view);
 
         return view;
+    }
+    @OnClick({R.id.main_task_note_editor, R.id.part_task_note_editor,
+            R.id.skills_task_note_editor, R.id.unimportant_task_note_editor})
+    public void pickTaskNote(ImageView taskView){
+        switch (taskView.getId()){
+            case R.id.main_task_note_editor :
+                task = Note.MAIN_TASK;
+                break;
+            case R.id.part_task_note_editor :
+                task = Note.PART_TASK;
+                break;
+            case R.id.skills_task_note_editor :
+                task = Note.SKILLS_TASK;
+                break;
+            case R.id.unimportant_task_note_editor :
+                task = Note.UNIMPORTANT_TASK;
+                break;
+        }
+        saveNoteButton.setVisibility(View.VISIBLE);
     }
 
     @OnClick(R.id.button_save_note)
@@ -74,6 +105,7 @@ public class NoteEditorFragment extends DialogFragment {
         if (note != null) {
             titleNoteEdit.setText(note.getTitle());
             textNoteEdit.setText(note.getText());
+            task = note.getTask();
         }
     }
 
@@ -101,11 +133,12 @@ public class NoteEditorFragment extends DialogFragment {
         if (note != null) {
             note.setTitle(titleNoteEdit.getText().toString());
             note.setText(textNoteEdit.getText().toString());
+            note.setTask(task);
         }
     }
 
     private void createNewNote(Realm realm) {
-        Note note = new Note(generateNewId(realm), titleNoteEdit.getText().toString(), textNoteEdit.getText().toString());
+        Note note = new Note(generateNewId(realm), titleNoteEdit.getText().toString(), textNoteEdit.getText().toString(),task);
         realm.copyToRealm(note);
     }
 
