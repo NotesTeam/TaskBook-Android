@@ -61,6 +61,7 @@ public class NoteEditorFragment extends DialogFragment {
     @OnClick({R.id.main_task_note_editor, R.id.part_task_note_editor,
             R.id.skills_task_note_editor, R.id.unimportant_task_note_editor})
     public void pickTaskNote(ImageView taskView){
+
         switch (taskView.getId()){
             case R.id.main_task_note_editor :
                 task = Note.MAIN_TASK;
@@ -106,6 +107,8 @@ public class NoteEditorFragment extends DialogFragment {
             titleNoteEdit.setText(note.getTitle());
             textNoteEdit.setText(note.getText());
             task = note.getTask();
+            if(!task.equals(""))
+                saveNoteButton.setVisibility(View.VISIBLE);
         }
     }
 
