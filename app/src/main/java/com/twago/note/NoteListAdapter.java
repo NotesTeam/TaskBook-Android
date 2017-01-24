@@ -7,9 +7,6 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -51,6 +48,26 @@ class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHolder> {
         holder.taskIcon.setImageResource(getTaskIcon(note));
         holder.date.setText(getFormatedDate(note));
 
+        setOnClickListener(holder, note);
+        setOnLongClickListener(holder, note);
+
+        viewHolders.add(holder);
+    }
+
+    private void setOnLongClickListener(final ViewHolder holder, final Note note) {
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if (!checkableMode) {
+                    setCheckableMode(true);
+                    toggleCheckNote(note.getId(), holder.checkNote);
+                }
+                return true;
+            }
+        });
+    }
+
+    private void setOnClickListener(final ViewHolder holder, final Note note) {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -62,17 +79,6 @@ class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHolder> {
                     setCheckableMode(false);
             }
         });
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                if (!checkableMode) {
-                    setCheckableMode(true);
-                    toggleCheckNote(note.getId(), holder.checkNote);
-                }
-                return true;
-            }
-        });
-        viewHolders.add(holder);
     }
 
     private String getFormatedDate(Note note) {
