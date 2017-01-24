@@ -7,8 +7,14 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import butterknife.ButterKnife;
 import io.realm.RealmResults;
@@ -43,6 +49,7 @@ class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHolder> {
         holder.text.setText(note.getText());
         holder.itemView.setBackgroundColor(position % 2 == 0 ? Constants.COLOR_WHITE : Constants.COLOR_GRAY);
         holder.taskIcon.setImageResource(getTaskIcon(note));
+        holder.date.setText(getFormatedDate(note));
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,6 +73,11 @@ class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHolder> {
             }
         });
         viewHolders.add(holder);
+    }
+
+    private String getFormatedDate(Note note) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE dd MMM yyyy",Locale.getDefault());
+        return simpleDateFormat.format(new Date(note.getDate()));
     }
 
     private void setCheckableMode(boolean mode) {
@@ -98,13 +110,13 @@ class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHolder> {
 
     private int getTaskIcon(Note note){
         switch (note.getTask()){
-            case Note.MAIN_TASK :
+            case Constants.MAIN_TASK :
                 return R.drawable.ic_star_indigo_500_24dp;
-            case Note.PART_TASK :
+            case Constants.PART_TASK :
                 return R.drawable.ic_star_half_indigo_500_24dp;
-            case Note.SKILLS_TASK :
+            case Constants.SKILLS_TASK :
                 return R.drawable.ic_lightbulb_outline_indigo_500_24dp;
-            case Note.UNIMPORTANT_TASK :
+            case Constants.UNIMPORTANT_TASK :
                 return R.drawable.ic_help_outline_indigo_500_24dp;
         }
         return 0;
@@ -124,6 +136,8 @@ class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHolder> {
         CheckBox checkNote;
         @BindView(R.id.note_list_row_task_icon)
         ImageView taskIcon;
+        @BindView(R.id.note_list_row_date_text)
+        TextView date;
 
         ViewHolder(View itemView) {
             super(itemView);

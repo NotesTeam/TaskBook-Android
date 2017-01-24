@@ -1,10 +1,10 @@
 package com.twago.note;
 
-
+import android.app.DialogFragment;
+import android.app.Fragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +12,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
+import java.util.Calendar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -20,11 +21,13 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 
 
-public class NoteEditorFragment extends DialogFragment {
+public class NoteEditorFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
     private static final String TAG_ID = "TAG_ID";
+    private static final String TAG = NoteEditorFragment.class.getSimpleName();
     private int noteId;
     private String task = "";
+    private long currentNoteDate = Calendar.getInstance().getTimeInMillis();
     @BindView(R.id.edit_note_background)
     LinearLayout editNoteBackground;
     @BindView(R.id.button_save_note)
@@ -64,19 +67,31 @@ public class NoteEditorFragment extends DialogFragment {
 
         switch (taskView.getId()){
             case R.id.main_task_note_editor :
-                task = Note.MAIN_TASK;
+                task = Constants.MAIN_TASK;
                 break;
             case R.id.part_task_note_editor :
-                task = Note.PART_TASK;
+                task = Constants.PART_TASK;
                 break;
             case R.id.skills_task_note_editor :
-                task = Note.SKILLS_TASK;
+                task = Constants.SKILLS_TASK;
                 break;
             case R.id.unimportant_task_note_editor :
-                task = Note.UNIMPORTANT_TASK;
+                task = Constants.UNIMPORTANT_TASK;
                 break;
         }
         saveNoteButton.setVisibility(View.VISIBLE);
+    }
+
+    @OnClick(R.id.button_set_date)
+    public void pickDate(){
+        Calendar now = Calendar.getInstance();
+        DatePickerDialog dpd = DatePickerDialog.newInstance(
+                this,
+                now.get(Calendar.YEAR),
+                now.get(Calendar.MONTH),
+                now.get(Calendar.DAY_OF_MONTH)
+        );
+        dpd.show(getChildFragmentManager(), "Datepickerdialog");
     }
 
     @OnClick(R.id.button_save_note)
@@ -141,7 +156,8 @@ public class NoteEditorFragment extends DialogFragment {
     }
 
     private void createNewNote(Realm realm) {
-        Note note = new Note(generateNewId(realm), titleNoteEdit.getText().toString(), textNoteEdit.getText().toString(),task);
+        Note note = new Note(generateNewId(realm), titleNoteEdit.getText().toString(),
+                textNoteEdit.getText().toString(),task,currentNoteDate);
         realm.copyToRealm(note);
     }
 
@@ -162,6 +178,16 @@ public class NoteEditorFragment extends DialogFragment {
         Fragment parentFragment = getParentFragment();
         if (parentFragment instanceof DialogInterface.OnDismissListener)
             ((DialogInterface.OnDismissListener) parentFragment).onDismiss(dialog);
+    }
+
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        Log.d(TAG,String.format("%d.%d.%d",year,monthOfYear,dayOfMonth));
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year,monthOfYear,dayOfMonth);
+        currentNoteDate = calendar.getTimeInMillis();
+        Log.d(TAG,String.format("current note date: %d%n",currentNoteDate));
     }
 }
 

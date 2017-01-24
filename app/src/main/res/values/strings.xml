@@ -17,4 +17,5 @@
     <string name="cancel">CANCEL</string>
     <string name="color_button">COLOR</string>
     <string name="placeholder">placeholder</string>
+    <string name="date">DATE</string>
 </resources>
