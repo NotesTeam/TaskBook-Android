@@ -2,12 +2,13 @@ package com.twago.note;
 
 import android.graphics.Color;
 
-class Constants {
-    static final int NEW_NOTE_ID = -1;
-    static final int COLOR_GRAY = Color.parseColor("#efefef");
-    static final int COLOR_WHITE = Color.parseColor("#FFFFFF");
-    static final String MAIN_TASK = "main";
-    static final String PART_TASK = "part";
-    static final String SKILLS_TASK = "skills";
-    static final String UNIMPORTANT_TASK = "unimportant";
+public class Constants {
+    public static final int NEW_NOTE_ID = -1;
+    public static final int COLOR_GRAY = Color.parseColor("#efefef");
+    public static final int COLOR_WHITE = Color.parseColor("#FFFFFF");
+    public static final int COLOR_DARK_GRAY = Color.parseColor("#B5212121");
+    public static final String MAIN_TASK = "main";
+    public static final String PART_TASK = "part";
+    public static final String SKILLS_TASK = "skills";
+    public static final String UNIMPORTANT_TASK = "unimportant";
 }

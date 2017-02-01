@@ -1,14 +1,18 @@
-package com.twago.note;
+package com.twago.note.NoteList;
 
+import android.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.twago.note.Constants;
+import com.twago.note.Note;
+import com.twago.note.R;
+
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -18,29 +22,31 @@ import io.realm.RealmResults;
 import butterknife.BindView;
 import lombok.Getter;
 
-class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHolder> {
-    private static final String TAG = NoteListAdapter.class.getSimpleName();
+class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
+    private static final String TAG = ListAdapter.class.getSimpleName();
+    private ListContract.UserActionListener userActionListener;
+    private RealmResults<Note> noteList;
+    private FragmentManager fragmentManager;
+
+    //TODO delete
     @Getter
     private boolean checkableMode = false;
-    private RealmResults<Note> noteList;
-    private NoteListAdapterInterface noteListAdapterInterface;
-    private ArrayList<ViewHolder> viewHolders;
     private HashMap<Integer, Boolean> checkedNotesList = new HashMap<>();
 
-    NoteListAdapter(NoteListAdapterInterface noteListAdapterInterface, RealmResults<Note> noteList) {
-        this.noteListAdapterInterface = noteListAdapterInterface;
+    ListAdapter(ListContract.UserActionListener userActionListener, RealmResults<Note> noteList, FragmentManager fragmentManager) {
+        this.userActionListener = userActionListener;
         this.noteList = noteList;
-        viewHolders = new ArrayList<>();
+        this.fragmentManager = fragmentManager;
     }
 
     @Override
-    public NoteListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.note_list_row, parent, false);
         return new ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(final NoteListAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ListAdapter.ViewHolder holder, final int position) {
         final Note note = noteList.get(position);
         holder.title.setText(note.getTitle());
         holder.text.setText(note.getText());
@@ -50,8 +56,6 @@ class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHolder> {
 
         setOnClickListener(holder, note);
         setOnLongClickListener(holder, note);
-
-        viewHolders.add(holder);
     }
 
     private void setOnLongClickListener(final ViewHolder holder, final Note note) {
@@ -60,7 +64,7 @@ class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHolder> {
             public boolean onLongClick(View view) {
                 if (!checkableMode) {
                     setCheckableMode(true);
-                    toggleCheckNote(note.getId(), holder.checkNote);
+                    toggleCheckNote(note, holder.itemView);
                 }
                 return true;
             }
@@ -72,9 +76,9 @@ class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHolder> {
             @Override
             public void onClick(View view) {
                 if (checkableMode)
-                    toggleCheckNote(note.getId(), holder.checkNote);
+                    toggleCheckNote(note, holder.itemView);
                 else
-                    noteListAdapterInterface.openDialogFragment(note.getId());
+                userActionListener.openNewEditor(note.getId(),fragmentManager);
                 if (!isAnyHolderChecked())
                     setCheckableMode(false);
             }
@@ -88,23 +92,24 @@ class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHolder> {
 
     private void setCheckableMode(boolean mode) {
         checkableMode = mode;
-        setVisibilityRecyclerListCheckBoxes(mode);
-        noteListAdapterInterface.setVisibilityDeleteButton(mode);
+        //listAdapterInterface.setVisibilityDeleteButton(mode);
     }
 
-    private void setVisibilityRecyclerListCheckBoxes(boolean visibility) {
-        int viewVisibility = visibility ? View.VISIBLE : View.INVISIBLE;
-        for (ViewHolder holder : viewHolders)
-            holder.checkNote.setVisibility(viewVisibility);
-    }
-
-    private void toggleCheckNote(int id, CheckBox checkBox) {
-        noteListAdapterInterface.toggleCheckNote(id);
+    private void toggleCheckNote(Note note, View view) {
+        int id = note.getId();
+        userActionListener.toggleCheckNoteInDB(id);
         if (!checkedNotesList.containsKey(id))
             checkedNotesList.put(id, true);
         else
             checkedNotesList.put(id, !checkedNotesList.get(id));
-        checkBox.toggle();
+        toggleItemView(view, note);
+    }
+
+    private void toggleItemView(View view, Note note) {
+        if (note.isChecked())
+            view.setBackgroundColor(Constants.COLOR_DARK_GRAY);
+        else
+            view.setBackgroundColor(Constants.COLOR_WHITE);
     }
 
     private boolean isAnyHolderChecked() {
@@ -138,8 +143,6 @@ class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHolder> {
         TextView title;
         @BindView(R.id.note_list_row_text)
         TextView text;
-        @BindView(R.id.note_list_row_check_note)
-        CheckBox checkNote;
         @BindView(R.id.note_list_row_task_icon)
         ImageView taskIcon;
         @BindView(R.id.note_list_row_date_text)

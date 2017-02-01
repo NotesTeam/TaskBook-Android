@@ -1,10 +1,9 @@
-package com.twago.note;
+package com.twago.note.NoteEditor;
 
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +13,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.twago.note.Constants;
+import com.twago.note.Note;
+import com.twago.note.R;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.util.Calendar;
@@ -25,10 +27,10 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 
 
-public class NoteEditorFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+public class EditorFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
     private static final String TAG_ID = "TAG_ID";
-    private static final String TAG = NoteEditorFragment.class.getSimpleName();
+    private static final String TAG = EditorFragment.class.getSimpleName();
     private int noteId;
     private String task = "";
     private long currentNoteDate = Calendar.getInstance().getTimeInMillis();
@@ -49,10 +51,10 @@ public class NoteEditorFragment extends DialogFragment implements DatePickerDial
     @BindView(R.id.unimportant_task_note_editor)
     ImageView unimportantTaskButton;
 
-    public static NoteEditorFragment newInstance(int id) {
+    public static EditorFragment newInstance(int id) {
         Bundle args = new Bundle();
         args.putInt(TAG_ID, id);
-        NoteEditorFragment fragment = new NoteEditorFragment();
+        EditorFragment fragment = new EditorFragment();
         fragment.setArguments(args);
         return fragment;
     }
