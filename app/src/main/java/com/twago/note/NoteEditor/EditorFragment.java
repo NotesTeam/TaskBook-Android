@@ -70,6 +70,7 @@ public class EditorFragment extends DialogFragment implements DatePickerDialog.O
 
     @OnClick({R.id.main_task_note_editor, R.id.part_task_note_editor,
             R.id.skills_task_note_editor, R.id.unimportant_task_note_editor})
+
     public void pickTaskNote(ImageView taskView) {
 
         switch (taskView.getId()) {

@@ -28,36 +28,7 @@ public class ListPresenter implements ListContract.UserActionListener {
     }
 
     @Override
-    public void toggleCheckNoteInDB(int noteId) {
-        final Note note = realm.where(Note.class).equalTo(Note.ID, noteId).findFirst();
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                note.setChecked(!note.isChecked());
-            }
-        });
-    }
-
-    private void deleteCheckedNotesFromDB() {
-        final RealmResults<Note> realmResults = realm.where(Note.class).equalTo("isChecked", true).findAll();
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                realmResults.deleteAllFromRealm();
-            }
-        });
-
-    }
-
-    @Override
     public void inflateView() {
-        inflateRecyclerView();
-    }
-
-    @Override
-    public void deleteCheckedNotes() {
-        deleteCheckedNotesFromDB();
-        setInitialStateButtonsVisibility();
         inflateRecyclerView();
     }
 
@@ -68,13 +39,6 @@ public class ListPresenter implements ListContract.UserActionListener {
         newFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.FullScreenDialog);
         newFragment.show(fragmentTransaction, "");
     }
-
-    private void setInitialStateButtonsVisibility(){
-        noteListFragmentView.setDeleteButtonVisibility(View.INVISIBLE);
-        noteListFragmentView.setCreateButtonVisibility(View.VISIBLE);
-    }
-
-
 
     private void inflateRecyclerView(){
         noteListFragmentView.setAdapterOnRecyclerViewFromDB(createNewListAdapter());

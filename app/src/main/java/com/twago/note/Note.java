@@ -15,7 +15,6 @@ public class Note extends RealmObject {
     public static final String ID = "id";
     public static final String TASK = "task";
     public static final String DATE = "date";
-    private boolean isChecked = false;
     @NonNull
     private int id;
     @NonNull
