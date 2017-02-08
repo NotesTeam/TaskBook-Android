@@ -3,10 +3,13 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="orange">#99ffdd99</color>
     <color name="green">#99b7ffac</color>
     <color name="blue">#99acfffb</color>
     <color name="gray">#7eaeaeae</color>
     <color name="dark_gray">#b51a1a1a</color>
     <color name="buttonColor">#00ff0000</color>
+    <color name="dark_blue">#201827</color>
+    <color name="granate">#15101b</color>
+    <color name="white">#FFFF</color>
+    <color name="orange">#fd7b51</color>
 </resources>

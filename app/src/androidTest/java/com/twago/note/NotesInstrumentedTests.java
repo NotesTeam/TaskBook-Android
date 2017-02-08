@@ -47,9 +47,8 @@ public class NotesInstrumentedTests {
         onView(withId(R.id.note_list_recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(2, ViewActions.longClick()));
         onView(withId(R.id.note_list_recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(3, ViewActions.click()));
         onView(withId(R.id.note_list_recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(0, ViewActions.click()));
-        onView(withId(R.id.button_delete_note)).perform(click());
         onView(withId(R.id.note_list_recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(0, ViewActions.longClick()));
-        onView(withId(R.id.button_delete_note)).perform(click());
+
     }
 
     private void checkIfCorrectlyTyped() {
@@ -61,6 +60,6 @@ public class NotesInstrumentedTests {
         onView(withId(R.id.title_edit_note)).perform(typeText(titleToBeTyped), ViewActions.closeSoftKeyboard());
         onView(withId(R.id.text_edit_note)).perform(typeText(textToBeTyped), ViewActions.closeSoftKeyboard());
         checkIfCorrectlyTyped();
-        onView(withId(R.id.button_save_note)).perform(click());
+        onView(withId(R.id.button_close_note)).perform(click());
     }
 }

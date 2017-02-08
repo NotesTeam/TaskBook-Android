@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="72dp"
     android:gravity="center_vertical"
-    android:layout_marginTop="10dp">
+    android:layout_marginTop="10dp"
+    >
     <ImageView
         android:id="@+id/note_list_row_task_icon"
         android:layout_width="wrap_content"
