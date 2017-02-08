@@ -8,6 +8,8 @@ import com.twago.note.Note;
 public interface ListContract {
     interface View {
         void setAdapterOnRecyclerViewFromDB(ListAdapter listAdapter);
+
+        void setDateInInfoBar(String dayText, String monthText);
     }
 
     interface UserActionListener {
@@ -17,6 +19,5 @@ public interface ListContract {
 
         String getFormatedDate(Note note);
         int getTaskIcon(Note note);
-        void setDate(TextView dayText,TextView monthText);
     }
 }

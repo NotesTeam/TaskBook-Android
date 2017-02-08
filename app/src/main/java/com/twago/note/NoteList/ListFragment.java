@@ -31,9 +31,9 @@ public class ListFragment extends Fragment implements DialogInterface.OnDismissL
     @BindView(R.id.note_list_recycler_view)
     RecyclerView recyclerView;
     @BindView(R.id.note_list_day_text)
-    TextView dayText;
+    TextView dayTextView;
     @BindView(R.id.note_list_month_text)
-    TextView monthText;
+    TextView monthTextView;
 
 
     public static ListFragment newInstance() {
@@ -51,7 +51,6 @@ public class ListFragment extends Fragment implements DialogInterface.OnDismissL
         View view = inflater.inflate(R.layout.fragment_note_list, container, false);
         ButterKnife.bind(this, view);
         setupRecyclerView();
-        userActionListener.setDate(dayText,monthText);
         userActionListener.inflateView();
 
         return view;
@@ -74,5 +73,11 @@ public class ListFragment extends Fragment implements DialogInterface.OnDismissL
     @Override
     public void setAdapterOnRecyclerViewFromDB(ListAdapter listAdapter) {
         recyclerView.setAdapter(listAdapter);
+    }
+
+    @Override
+    public void setDateInInfoBar(String dayText, String monthText) {
+        dayTextView.setText(dayText);
+        monthTextView.setText(monthText);
     }
 }

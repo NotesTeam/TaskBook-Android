@@ -2,11 +2,7 @@ package com.twago.note.NoteList;
 
 import android.app.Activity;
 import android.app.DialogFragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.support.annotation.NonNull;
-import android.view.View;
-import android.widget.TextView;
 
 import com.twago.note.Constants;
 import com.twago.note.Note;
@@ -27,7 +23,7 @@ public class ListPresenter implements ListContract.UserActionListener {
     private Realm realm;
     private long currentNoteDate = Calendar.getInstance().getTimeInMillis();
 
-    public ListPresenter(Activity activity, ListContract.View noteListFragmentView) {
+    ListPresenter(Activity activity, ListContract.View noteListFragmentView) {
         this.noteListFragmentView = noteListFragmentView;
         this.realm = Realm.getDefaultInstance();
         this.activity = activity;
@@ -36,6 +32,11 @@ public class ListPresenter implements ListContract.UserActionListener {
     @Override
     public void inflateView() {
         inflateRecyclerView();
+        setCurrentDateInInfoBar();
+    }
+
+    private void setCurrentDateInInfoBar(){
+        noteListFragmentView.setDateInInfoBar(getFormatedDay(),getFormatedMonth());
     }
 
     private void inflateRecyclerView(){
@@ -74,11 +75,6 @@ public class ListPresenter implements ListContract.UserActionListener {
         return 0;
     }
 
-    @Override
-    public void setDate(TextView dayText, TextView monthText){
-        dayText.setText(getFormatedDay());
-        monthText.setText(getFormatedMonth());
-    }
     @Override
     public String getFormatedDate(Note note) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE dd MMM yyyy", Locale.getDefault());
