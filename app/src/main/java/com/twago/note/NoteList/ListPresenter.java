@@ -16,6 +16,7 @@ import java.util.Locale;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import rx.functions.Action1;
 
 public class ListPresenter implements ListContract.UserActionListener {
     private ListContract.View noteListFragmentView;
@@ -23,24 +24,51 @@ public class ListPresenter implements ListContract.UserActionListener {
     private Realm realm;
     private long currentNoteDate = Calendar.getInstance().getTimeInMillis();
 
-    ListPresenter(Activity activity, ListContract.View noteListFragmentView) {
+    ListPresenter(Activity activity, final ListContract.View noteListFragmentView) {
         this.noteListFragmentView = noteListFragmentView;
         this.realm = Realm.getDefaultInstance();
         this.activity = activity;
     }
 
+    private void updateRecyclerView(RealmResults<Note> notes) {
+        ListAdapter recyclerViewAdapter = noteListFragmentView.getRecyclerViewAdapter();
+        recyclerViewAdapter.setData(notes);
+        recyclerViewAdapter.notifyDataSetChanged();
+    }
+
     @Override
-    public void inflateView() {
+    public void initialization() {
+        inflateView();
+        setObserver();
+    }
+
+    private void inflateView() {
         inflateRecyclerView();
-        setCurrentDateInInfoBar();
+        inflateInfoBar();
     }
 
-    private void setCurrentDateInInfoBar(){
-        noteListFragmentView.setDateInInfoBar(getFormatedDay(),getFormatedMonth());
+    private void inflateRecyclerView() {
+        noteListFragmentView.setAdapterOnRecyclerView(new ListAdapter(this));
     }
 
-    private void inflateRecyclerView(){
-        noteListFragmentView.setAdapterOnRecyclerViewFromDB(createNewListAdapter());
+    private void setObserver() {
+        realm.where(Note.class)
+                .findAllSorted(Note.DATE)
+                .asObservable()
+                .subscribe(new Action1<RealmResults<Note>>() {
+                    @Override
+                    public void call(RealmResults<Note> notes) {
+                        updateRecyclerView(notes);
+                    }
+                });
+    }
+
+    private void inflateInfoBar() {
+        setCurrentDate();
+    }
+
+    private void setCurrentDate() {
+        noteListFragmentView.setDateInInfoBar(getFormatedDay(), getFormatedMonth());
     }
 
     @Override
@@ -50,14 +78,6 @@ public class ListPresenter implements ListContract.UserActionListener {
         DialogFragment newFragment = EditorFragment.newInstance(id);
         newFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.FullScreenDialog);
         newFragment.show(fragmentTransaction, "");
-    }
-
-    private ListAdapter createNewListAdapter() {
-        return new ListAdapter(this,getNotesFromDB());
-    }
-
-    private RealmResults<Note> getNotesFromDB() {
-        return realm.where(Note.class).findAllSorted(Note.DATE);
     }
 
     @Override
@@ -81,11 +101,12 @@ public class ListPresenter implements ListContract.UserActionListener {
         return simpleDateFormat.format(new Date(note.getDate()));
     }
 
-    private String getFormatedDay(){
+    private String getFormatedDay() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd", Locale.getDefault());
         return simpleDateFormat.format(new Date(currentNoteDate));
     }
-    private String getFormatedMonth(){
+
+    private String getFormatedMonth() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMMM", Locale.getDefault());
         return simpleDateFormat.format(new Date(currentNoteDate));
     }

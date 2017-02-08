@@ -1,6 +1,5 @@
 package com.twago.note.NoteList;
 
-import android.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,18 +11,17 @@ import com.twago.note.Constants;
 import com.twago.note.Note;
 import com.twago.note.R;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.RealmResults;
-import butterknife.BindView;
 
 class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     private static final String TAG = ListAdapter.class.getSimpleName();
     private ListContract.UserActionListener userActionListener;
     private RealmResults<Note> noteList;
 
-    ListAdapter(ListContract.UserActionListener userActionListener, RealmResults<Note> noteList) {
+    ListAdapter(ListContract.UserActionListener userActionListener) {
         this.userActionListener = userActionListener;
-        this.noteList = noteList;
     }
 
     @Override
@@ -50,6 +48,10 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
                 userActionListener.openNewEditor(note.getId());
             }
         });
+    }
+
+    public void setData(RealmResults<Note> notes){
+        this.noteList = notes;
     }
 
     @Override

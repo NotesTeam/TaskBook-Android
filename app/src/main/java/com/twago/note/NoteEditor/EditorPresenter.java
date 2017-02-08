@@ -1,10 +1,8 @@
 package com.twago.note.NoteEditor;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.content.DialogInterface;
+import android.util.Log;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.twago.note.Constants;
 import com.twago.note.Note;
@@ -17,6 +15,7 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 
 class EditorPresenter implements EditorContract.UserActionListener {
+    private static final String TAG = EditorPresenter.class.getSimpleName();
     private int noteId;
     private String task = "";
     private long currentNoteDate = Calendar.getInstance().getTimeInMillis();
@@ -67,12 +66,14 @@ class EditorPresenter implements EditorContract.UserActionListener {
     }
 
     private void createNewNote(Realm realm) {
+        Log.e(TAG, "Create new note");
         Note note = new Note(generateNewId(realm), noteEditFragmentView.getTitleNote(),
                 noteEditFragmentView.getTextNote(), task, currentNoteDate);
         realm.copyToRealm(note);
     }
 
     private void updateNote(Realm realm) {
+        Log.e(TAG, "Update note");
         Note note = realm.where(Note.class).equalTo(Note.ID, noteId).findFirst();
         if (note != null) {
             note.setTitle(noteEditFragmentView.getTitleNote());

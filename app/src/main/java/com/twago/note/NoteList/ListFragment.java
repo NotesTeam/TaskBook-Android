@@ -1,16 +1,12 @@
 package com.twago.note.NoteList;
 
 import android.app.Fragment;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -21,7 +17,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ListFragment extends Fragment implements DialogInterface.OnDismissListener, ListContract.View {
+public class ListFragment extends Fragment implements ListContract.View {
 
     ListContract.UserActionListener userActionListener;
 
@@ -51,7 +47,7 @@ public class ListFragment extends Fragment implements DialogInterface.OnDismissL
         View view = inflater.inflate(R.layout.fragment_note_list, container, false);
         ButterKnife.bind(this, view);
         setupRecyclerView();
-        userActionListener.inflateView();
+        userActionListener.initialization();
 
         return view;
     }
@@ -66,12 +62,12 @@ public class ListFragment extends Fragment implements DialogInterface.OnDismissL
     }
 
     @Override
-    public void onDismiss(DialogInterface dialogInterface) {
-        userActionListener.inflateView();
+    public ListAdapter getRecyclerViewAdapter() {
+        return (ListAdapter) recyclerView.getAdapter();
     }
 
     @Override
-    public void setAdapterOnRecyclerViewFromDB(ListAdapter listAdapter) {
+    public void setAdapterOnRecyclerView(ListAdapter listAdapter) {
         recyclerView.setAdapter(listAdapter);
     }
 
