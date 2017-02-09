@@ -39,8 +39,8 @@ public class ListFragment extends Fragment implements ListContract.View {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        userActionListener = new ListPresenter(getActivity(),this);
-        }
+        userActionListener = new ListPresenter(getActivity(), this);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

@@ -100,7 +100,7 @@ public class ListPresenter implements ListContract.UserActionListener {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                realm.where(Note.class).equalTo(Note.ID, id).findAll().deleteAllFromRealm();
+                realm.where(Note.class).equalTo(Note.ID, id).findFirst().deleteFromRealm();
             }
         });
     }
