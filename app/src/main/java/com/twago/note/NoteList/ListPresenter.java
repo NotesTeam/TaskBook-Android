@@ -51,6 +51,10 @@ public class ListPresenter implements ListContract.UserActionListener {
         noteListFragmentView.setAdapterOnRecyclerView(new ListAdapter(this));
     }
 
+    private void inflateInfoBar() {
+        setCurrentDate();
+    }
+
     private void setObserver() {
         realm.where(Note.class)
                 .findAllSorted(Note.DATE)
@@ -61,10 +65,6 @@ public class ListPresenter implements ListContract.UserActionListener {
                         updateRecyclerView(notes);
                     }
                 });
-    }
-
-    private void inflateInfoBar() {
-        setCurrentDate();
     }
 
     private void setCurrentDate() {
@@ -93,6 +93,16 @@ public class ListPresenter implements ListContract.UserActionListener {
                 return R.drawable.ic_help_outline_indigo_500_24dp;
         }
         return 0;
+    }
+
+    @Override
+    public void deleteNote(final int id) {
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.where(Note.class).equalTo(Note.ID, id).findAll().deleteAllFromRealm();
+            }
+        });
     }
 
     @Override

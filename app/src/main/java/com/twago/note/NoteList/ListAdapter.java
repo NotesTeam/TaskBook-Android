@@ -35,59 +35,66 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final Note note = noteList.get(position);
         inflateViewHolder(holder, position, note);
-        setViewHolderOnClickListener(holder, note);
-        setViewHolderSwipeLayout(holder);
+        setViewHolderSwipeLayout(holder, note, position);
+        setNoteViewOnClickListener(holder, note);
+        setDeleteViewOnClickListener(holder, note);
     }
 
     private void inflateViewHolder(ViewHolder holder, int position, Note note) {
         holder.title.setText(note.getTitle());
         holder.text.setText(note.getText());
-        holder.itemView.setBackgroundColor(position % 2 == 0 ? Constants.COLOR_WHITE : Constants.COLOR_GRAY);
+        holder.noteView.setBackgroundColor(position % 2 == 0 ? Constants.COLOR_WHITE : Constants.COLOR_GRAY);
         holder.taskIcon.setImageResource(userActionListener.getTaskIcon(note));
         holder.date.setText(userActionListener.getFormatedDate(note));
     }
 
-    private void setViewHolderSwipeLayout(final ViewHolder holder) {
-        holder.swipeLayout.addDrag(SwipeLayout.DragEdge.Left, holder.left);
-        holder.swipeLayout.addDrag(SwipeLayout.DragEdge.Right, holder.right);
+    private void setViewHolderSwipeLayout(final ViewHolder holder, final Note note, final int position) {
+        holder.swipeLayout.addDrag(SwipeLayout.DragEdge.Right, holder.deleteView);
         holder.swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
             @Override
             public void onStartOpen(SwipeLayout layout) {
-                holder.center.setEnabled(false);
+                holder.noteView.setEnabled(false);
             }
 
             @Override
             public void onOpen(SwipeLayout layout) {
-
+                userActionListener.deleteNote(note.getId());
             }
 
             @Override
             public void onStartClose(SwipeLayout layout) {
-
             }
 
             @Override
             public void onClose(SwipeLayout layout) {
-                holder.center.setEnabled(true);
+                holder.noteView.setEnabled(true);
             }
 
             @Override
             public void onUpdate(SwipeLayout layout, int leftOffset, int topOffset) {
-
+                holder.noteView.setEnabled(true);
             }
 
             @Override
             public void onHandRelease(SwipeLayout layout, float xvel, float yvel) {
-
             }
         });
     }
 
-    private void setViewHolderOnClickListener(final ListAdapter.ViewHolder holder, final Note note) {
-        holder.center.setOnClickListener(new View.OnClickListener() {
+    private void setNoteViewOnClickListener(final ListAdapter.ViewHolder holder, final Note note) {
+        holder.noteView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 userActionListener.openNewEditor(note.getId());
+            }
+        });
+    }
+
+    private void setDeleteViewOnClickListener(ViewHolder holder, final Note note) {
+        holder.deleteView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                userActionListener.deleteNote(note.getId());
             }
         });
     }
@@ -103,9 +110,9 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
     class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.note_list_row_bottom_center)
-        View center;
+        View noteView;
         @BindView(R.id.note_list_row_bottom_right)
-        View right;
+        View deleteView;
         @BindView(R.id.note_list_row_bottom_left)
         View left;
         @BindView(R.id.note_list_row_swipe_layout)

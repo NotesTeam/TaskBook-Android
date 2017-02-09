@@ -20,5 +20,7 @@ public interface ListContract {
         String getFormatedDate(Note note);
 
         int getTaskIcon(Note note);
+
+        void deleteNote(int id);
     }
 }

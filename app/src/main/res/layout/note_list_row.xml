@@ -5,21 +5,27 @@
     android:layout_height="72dp"
     android:layout_marginTop="10dp"
     android:gravity="center_vertical">
-    <LinearLayout
-        android:background="#8e0000"
-        android:id="@+id/note_list_row_bottom_right"
-        android:layout_width="50dp"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
-    </LinearLayout>
 
-    <LinearLayout
-        android:background="#00ffd4"
+    <RelativeLayout
+        android:id="@+id/note_list_row_bottom_right"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ff5656">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_delete_white_36dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            />
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/note_list_row_bottom_left"
         android:layout_width="50dp"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
-    </LinearLayout>
+        android:background="#00ffd4" />
 
     <RelativeLayout
         android:id="@+id/note_list_row_bottom_center"
