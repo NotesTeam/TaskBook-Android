@@ -1,55 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.daimajia.swipe.SwipeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/note_list_row_swipe_layout"
     android:layout_width="match_parent"
     android:layout_height="72dp"
-    android:gravity="center_vertical"
     android:layout_marginTop="10dp"
-    >
-    <ImageView
-        android:id="@+id/note_list_row_task_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        />
+    android:gravity="center_vertical">
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:background="#8e0000"
+        android:id="@+id/note_list_row_bottom_right"
+        android:layout_width="50dp"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:layout_marginLeft="72dp"
-        android:layout_marginStart="72dp"
-        android:layout_marginEnd="72dp"
-        android:layout_marginRight="72dp">
-        <TextView
-            android:id="@+id/note_list_row_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/placeholder"
-            android:textSize="16sp"
-            android:textColor="@android:color/black" />
-        <TextView
-            android:id="@+id/note_list_row_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:maxLines="2"
-            android:ellipsize="end"
-            android:text="@string/placeholder"/>
+        android:orientation="horizontal">
     </LinearLayout>
-    <CheckBox
-        android:id="@+id/note_list_row_check_note"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_alignParentRight="true"
-        android:paddingEnd="16dp"
-        android:paddingRight="16dp"
-        android:visibility="invisible"
-        />
-    <TextView
-        android:id="@+id/note_list_row_date_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"/>
 
-</RelativeLayout>
+    <LinearLayout
+        android:background="#00ffd4"
+        android:id="@+id/note_list_row_bottom_left"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/note_list_row_bottom_center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/note_list_row_task_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="72dp"
+            android:layout_marginLeft="72dp"
+            android:layout_marginRight="72dp"
+            android:layout_marginStart="72dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/note_list_row_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/placeholder"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/note_list_row_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:text="@string/placeholder" />
+        </LinearLayout>
+
+        <CheckBox
+            android:id="@+id/note_list_row_check_note"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:paddingEnd="16dp"
+            android:paddingRight="16dp"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/note_list_row_date_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true" />
+
+    </RelativeLayout>
+</com.daimajia.swipe.SwipeLayout>

@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.daimajia.swipe.SwipeLayout;
 import com.twago.note.Constants;
 import com.twago.note.Note;
 import com.twago.note.R;
@@ -33,16 +34,57 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final Note note = noteList.get(position);
+        inflateViewHolder(holder, position, note);
+        setViewHolderOnClickListener(holder, note);
+        setViewHolderSwipeLayout(holder);
+    }
+
+    private void inflateViewHolder(ViewHolder holder, int position, Note note) {
         holder.title.setText(note.getTitle());
         holder.text.setText(note.getText());
         holder.itemView.setBackgroundColor(position % 2 == 0 ? Constants.COLOR_WHITE : Constants.COLOR_GRAY);
         holder.taskIcon.setImageResource(userActionListener.getTaskIcon(note));
         holder.date.setText(userActionListener.getFormatedDate(note));
-        setViewHolderOnClickListener(holder, note);
+    }
+
+    private void setViewHolderSwipeLayout(final ViewHolder holder) {
+        holder.swipeLayout.addDrag(SwipeLayout.DragEdge.Left, holder.left);
+        holder.swipeLayout.addDrag(SwipeLayout.DragEdge.Right, holder.right);
+        holder.swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
+            @Override
+            public void onStartOpen(SwipeLayout layout) {
+                holder.center.setEnabled(false);
+            }
+
+            @Override
+            public void onOpen(SwipeLayout layout) {
+
+            }
+
+            @Override
+            public void onStartClose(SwipeLayout layout) {
+
+            }
+
+            @Override
+            public void onClose(SwipeLayout layout) {
+                holder.center.setEnabled(true);
+            }
+
+            @Override
+            public void onUpdate(SwipeLayout layout, int leftOffset, int topOffset) {
+
+            }
+
+            @Override
+            public void onHandRelease(SwipeLayout layout, float xvel, float yvel) {
+
+            }
+        });
     }
 
     private void setViewHolderOnClickListener(final ListAdapter.ViewHolder holder, final Note note) {
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.center.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 userActionListener.openNewEditor(note.getId());
@@ -50,7 +92,7 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         });
     }
 
-    public void setData(RealmResults<Note> notes){
+    public void setData(RealmResults<Note> notes) {
         this.noteList = notes;
     }
 
@@ -60,6 +102,14 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.note_list_row_bottom_center)
+        View center;
+        @BindView(R.id.note_list_row_bottom_right)
+        View right;
+        @BindView(R.id.note_list_row_bottom_left)
+        View left;
+        @BindView(R.id.note_list_row_swipe_layout)
+        SwipeLayout swipeLayout;
         @BindView(R.id.note_list_row_title)
         TextView title;
         @BindView(R.id.note_list_row_text)
