@@ -1,7 +1,6 @@
-package com.twago.note.NoteList;
+package com.twago.TaskBook.NoteList;
 
-import com.twago.note.Note;
-import com.twago.note.NoteEditor.EditorFragment;
+import com.twago.TaskBook.Note;
 
 public interface ListContract {
     interface View {

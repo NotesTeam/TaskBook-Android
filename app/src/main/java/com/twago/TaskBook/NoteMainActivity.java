@@ -1,18 +1,13 @@
-package com.twago.note;
+package com.twago.TaskBook;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.twago.note.NoteEditor.EditorContract;
-import com.twago.note.NoteEditor.EditorFragment;
-import com.twago.note.NoteList.ListContract;
-import com.twago.note.NoteList.ListFragment;
-import com.twago.note.NoteList.ListPresenter;
-import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
-
-import java.util.Calendar;
+import com.twago.TaskBook.NoteList.ListContract;
+import com.twago.TaskBook.NoteList.ListFragment;
+import com.twago.TaskBook.NoteList.ListPresenter;
 
 import io.realm.Realm;
 

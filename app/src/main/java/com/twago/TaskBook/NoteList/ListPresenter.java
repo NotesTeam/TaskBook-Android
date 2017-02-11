@@ -1,14 +1,13 @@
-package com.twago.note.NoteList;
+package com.twago.TaskBook.NoteList;
 
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.FragmentTransaction;
 
-import com.twago.note.Constants;
-import com.twago.note.Note;
-import com.twago.note.NoteEditor.EditorFragment;
-import com.twago.note.R;
-import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
+import com.twago.TaskBook.Constants;
+import com.twago.TaskBook.Note;
+import com.twago.TaskBook.NoteEditor.EditorFragment;
+import com.twago.TaskBook.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -17,8 +16,6 @@ import java.util.Locale;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
-import rx.Scheduler;
-import rx.Subscription;
 import rx.functions.Action1;
 
 public class ListPresenter implements ListContract.UserActionListener {

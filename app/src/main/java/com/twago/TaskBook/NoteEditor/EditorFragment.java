@@ -1,4 +1,4 @@
-package com.twago.note.NoteEditor;
+package com.twago.TaskBook.NoteEditor;
 
 import android.app.DialogFragment;
 import android.content.DialogInterface;
@@ -8,16 +8,11 @@ import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.twago.note.R;
-import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
+import com.twago.TaskBook.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

@@ -1,4 +1,4 @@
-package com.twago.note.NoteList;
+package com.twago.TaskBook.NoteList;
 
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -8,9 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.twago.note.Constants;
-import com.twago.note.Note;
-import com.twago.note.R;
+import com.twago.TaskBook.Constants;
+import com.twago.TaskBook.Note;
+import com.twago.TaskBook.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

@@ -1,12 +1,12 @@
-package com.twago.note.NoteEditor;
+package com.twago.TaskBook.NoteEditor;
 
 import android.app.Activity;
 import android.util.Log;
 import android.widget.ImageView;
 
-import com.twago.note.Constants;
-import com.twago.note.Note;
-import com.twago.note.R;
+import com.twago.TaskBook.Constants;
+import com.twago.TaskBook.Note;
+import com.twago.TaskBook.R;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.util.Calendar;

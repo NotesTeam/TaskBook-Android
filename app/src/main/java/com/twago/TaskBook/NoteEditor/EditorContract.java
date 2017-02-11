@@ -1,4 +1,4 @@
-package com.twago.note.NoteEditor;
+package com.twago.TaskBook.NoteEditor;
 
 import android.widget.EditText;
 import android.widget.ImageView;
