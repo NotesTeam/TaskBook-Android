@@ -20,4 +20,11 @@
     <string name="date">DATE</string>
     <string name="search">Search</string>
     <string name="choose_date">Choose date</string>
+    <string name="tasks">Tasks</string>
+    <string name="archive">Archive</string>
+    <string name="thrash">Thrash</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>

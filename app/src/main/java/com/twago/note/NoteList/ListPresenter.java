@@ -8,6 +8,7 @@ import com.twago.note.Constants;
 import com.twago.note.Note;
 import com.twago.note.NoteEditor.EditorFragment;
 import com.twago.note.R;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -16,6 +17,8 @@ import java.util.Locale;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import rx.Scheduler;
+import rx.Subscription;
 import rx.functions.Action1;
 
 public class ListPresenter implements ListContract.UserActionListener {
@@ -24,7 +27,7 @@ public class ListPresenter implements ListContract.UserActionListener {
     private Realm realm;
     private long currentNoteDate = Calendar.getInstance().getTimeInMillis();
 
-    ListPresenter(Activity activity, final ListContract.View noteListFragmentView) {
+    public ListPresenter(Activity activity, final ListContract.View noteListFragmentView) {
         this.noteListFragmentView = noteListFragmentView;
         this.realm = Realm.getDefaultInstance();
         this.activity = activity;
@@ -34,12 +37,6 @@ public class ListPresenter implements ListContract.UserActionListener {
         ListAdapter recyclerViewAdapter = noteListFragmentView.getRecyclerViewAdapter();
         recyclerViewAdapter.setData(notes);
         recyclerViewAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void initialization() {
-        inflateView();
-        setObserver();
     }
 
     private void inflateView() {
@@ -55,8 +52,22 @@ public class ListPresenter implements ListContract.UserActionListener {
         setCurrentDate();
     }
 
-    private void setObserver() {
+    private void setActiveTasksObserver() {
         realm.where(Note.class)
+                .equalTo(Note.IS_ARCHIVED, false)
+                .findAllSorted(Note.DATE)
+                .asObservable()
+                .subscribe(new Action1<RealmResults<Note>>() {
+                    @Override
+                    public void call(RealmResults<Note> notes) {
+                        updateRecyclerView(notes);
+                    }
+                });
+    }
+
+    private void setArchivedTasksObserver() {
+        realm.where(Note.class)
+                .equalTo(Note.IS_ARCHIVED, true)
                 .findAllSorted(Note.DATE)
                 .asObservable()
                 .subscribe(new Action1<RealmResults<Note>>() {
@@ -72,12 +83,28 @@ public class ListPresenter implements ListContract.UserActionListener {
     }
 
     @Override
+    public void initialization() {
+        inflateView();
+        openActiveTasks();
+    }
+
+    @Override
     public void openNewEditor(int id) {
         FragmentTransaction fragmentTransaction = activity.getFragmentManager().beginTransaction();
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         DialogFragment newFragment = EditorFragment.newInstance(id);
         newFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.FullScreenDialog);
         newFragment.show(fragmentTransaction, "");
+    }
+
+    @Override
+    public void openActiveTasks() {
+        setActiveTasksObserver();
+    }
+
+    @Override
+    public void openArchive() {
+        setArchivedTasksObserver();
     }
 
     @Override
@@ -100,7 +127,7 @@ public class ListPresenter implements ListContract.UserActionListener {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                realm.where(Note.class).equalTo(Note.ID, id).findFirst().deleteFromRealm();
+                realm.where(Note.class).equalTo(Note.ID, id).findFirst().setArchived(true);
             }
         });
     }

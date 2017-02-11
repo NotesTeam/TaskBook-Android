@@ -15,6 +15,7 @@ public class Note extends RealmObject {
     public static final String ID = "id";
     public static final String TASK = "task";
     public static final String DATE = "date";
+    public static final String IS_ARCHIVED = "isArchived";
     @NonNull
     private int id;
     @NonNull
@@ -25,4 +26,6 @@ public class Note extends RealmObject {
     private String task;
     @NonNull
     private long date;
+    @NonNull
+    private boolean isArchived;
 }

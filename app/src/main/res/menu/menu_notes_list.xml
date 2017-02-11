@@ -4,11 +4,6 @@
     tools:context="com.twago.note.NoteMainActivity">
 
     <item
-        android:id="@+id/find_notes_action"
-        android:icon="@drawable/ic_search_white_24dp"
-        app:showAsAction="ifRoom"
-        android:title="@string/search" />
-    <item
         android:id="@+id/pica_date_action"
         android:icon="@drawable/ic_date_range_white_24dp"
         app:showAsAction="always"

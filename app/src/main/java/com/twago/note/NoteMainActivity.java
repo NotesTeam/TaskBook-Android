@@ -19,9 +19,16 @@ import io.realm.Realm;
 public class NoteMainActivity extends AppCompatActivity {
     private static final String TAG = NoteMainActivity.class.getSimpleName();
     private ListFragment noteListFragment;
+    private ListContract.UserActionListener userActionListener;
 
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_notes_list,menu);
+        getMenuInflater().inflate(R.menu.menu_notes_list, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        noteListFragment.toggleDrawer();
         return true;
     }
 
@@ -29,14 +36,23 @@ public class NoteMainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_main);
+        setTitle(R.string.tasks);
         Realm.init(this);
 
+        initMenuButton();
         noteListFragment = ListFragment.newInstance();
         initSetUp();
     }
 
-    private void initSetUp(){
+    private void initMenuButton() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
+    }
+
+    private void initSetUp() {
         noteListFragment = new ListFragment();
+        userActionListener = new ListPresenter(this, noteListFragment);
         getFragmentManager()
                 .beginTransaction()
                 .add(R.id.fragment_layout, noteListFragment)

@@ -1,6 +1,7 @@
 package com.twago.note.NoteList;
 
 import com.twago.note.Note;
+import com.twago.note.NoteEditor.EditorFragment;
 
 public interface ListContract {
     interface View {
@@ -22,5 +23,9 @@ public interface ListContract {
         int getTaskIcon(Note note);
 
         void deleteNote(int id);
+
+        void openActiveTasks();
+
+        void openArchive();
     }
 }
