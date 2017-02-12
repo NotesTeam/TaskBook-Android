@@ -16,12 +16,14 @@ import java.util.Locale;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import rx.Subscription;
 import rx.functions.Action1;
 
 public class ListPresenter implements ListContract.UserActionListener {
     private ListContract.View noteListFragmentView;
     private Activity activity;
     private Realm realm;
+    private Subscription subscription;
     private long currentNoteDate = Calendar.getInstance().getTimeInMillis();
 
     public ListPresenter(Activity activity, final ListContract.View noteListFragmentView) {
@@ -50,7 +52,7 @@ public class ListPresenter implements ListContract.UserActionListener {
     }
 
     private void setActiveTasksObserver() {
-        realm.where(Note.class)
+        subscription = realm.where(Note.class)
                 .equalTo(Note.IS_ARCHIVED, false)
                 .findAllSorted(Note.DATE)
                 .asObservable()
@@ -63,7 +65,7 @@ public class ListPresenter implements ListContract.UserActionListener {
     }
 
     private void setArchivedTasksObserver() {
-        realm.where(Note.class)
+        subscription = realm.where(Note.class)
                 .equalTo(Note.IS_ARCHIVED, true)
                 .findAllSorted(Note.DATE)
                 .asObservable()
@@ -96,12 +98,19 @@ public class ListPresenter implements ListContract.UserActionListener {
 
     @Override
     public void openActiveTasks() {
+        unsubscribeCurrentObserver();
         setActiveTasksObserver();
     }
 
     @Override
     public void openArchive() {
+        unsubscribeCurrentObserver();
         setArchivedTasksObserver();
+    }
+
+    private void unsubscribeCurrentObserver() {
+        if (subscription != null && !subscription.isUnsubscribed())
+            subscription.unsubscribe();
     }
 
     @Override
@@ -124,9 +133,20 @@ public class ListPresenter implements ListContract.UserActionListener {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
+                realm.where(Note.class).equalTo(Note.ID, id).findFirst().deleteFromRealm();
+            }
+        });
+    }
+
+    @Override
+    public void archiveNote(final int id) {
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
                 realm.where(Note.class).equalTo(Note.ID, id).findFirst().setArchived(true);
             }
         });
+
     }
 
     @Override

@@ -46,9 +46,9 @@ class EditorPresenter implements EditorContract.UserActionListener {
             task = note.getTask();
             currentNoteDate = note.getDate();
         }
+        if (note.isArchived())
+            noteEditFragmentView.blockArchivedNoteViews();
     }
-
-
 
     @Override
     public void saveNoteToDatabase() {
@@ -101,8 +101,6 @@ class EditorPresenter implements EditorContract.UserActionListener {
         Realm realm = Realm.getDefaultInstance();
         return realm.where(Note.class).equalTo(Note.ID, noteId).findFirst();
     }
-
-
 
     @Override
     public void pickDate(EditorFragment editorFragment) {

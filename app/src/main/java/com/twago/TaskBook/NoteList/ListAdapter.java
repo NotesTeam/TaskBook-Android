@@ -42,17 +42,23 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         setDeleteViewOnClickListener(holder, note);
     }
 
-    private void setViewHolderSwipeLayout(ViewHolder holder, final Note note) {
+    private void setViewHolderSwipeLayout(final ViewHolder holder, final Note note) {
         holder.swipeLayout.setOnSwipeListener(new SwipeLayout.OnSwipeListener() {
             @Override
             public void onBeginSwipe(SwipeLayout swipeLayout, boolean moveToRight) {
-
+                if (note.isArchived())
+                    setStyleDeleteButton(holder);
+                else
+                    setStyleArchiveButton(holder);
             }
 
             @Override
             public void onSwipeClampReached(SwipeLayout swipeLayout, boolean moveToRight) {
                 if (!moveToRight) {
-                    userActionListener.deleteNote(note.getId());
+                    if (note.isArchived())
+                        userActionListener.deleteNote(note.getId());
+                    else
+                        userActionListener.archiveNote(note.getId());
                     swipeLayout.reset();
                 }
             }
@@ -65,6 +71,17 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
             public void onRightStickyEdge(SwipeLayout swipeLayout, boolean moveToRight) {
             }
         });
+    }
+
+    private void setStyleDeleteButton(ViewHolder holder) {
+        holder.deleteView.setBackgroundResource(R.color.delete_red);
+        holder.deleteIcon.setBackgroundResource(R.drawable.ic_delete_white_36dp
+        );
+    }
+
+    public void setStyleArchiveButton(ViewHolder holder) {
+        holder.deleteView.setBackgroundResource(R.color.archive_green);
+        holder.deleteIcon.setBackgroundResource(R.drawable.ic_archive_white_36dp);
     }
 
     private void inflateViewHolder(ViewHolder holder, int position, Note note) {
@@ -102,6 +119,7 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         return noteList.size();
     }
 
+
     static class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.note_list_row_bottom_center)
         View noteView;
@@ -117,6 +135,8 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         ImageView taskIcon;
         @BindView(R.id.note_list_row_date_text)
         TextView date;
+        @BindView(R.id.note_list_row_bottom_right_icon)
+        ImageView deleteIcon;
 
         ViewHolder(View itemView) {
             super(itemView);

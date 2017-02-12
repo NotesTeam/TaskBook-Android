@@ -6,9 +6,14 @@ import android.widget.ImageView;
 public interface EditorContract {
     interface View {
         String getTextNote();
+
         String getTitleNote();
+
         EditText getTitleNoteEditText();
+
         EditText getTextNoteEditText();
+
+        void blockArchivedNoteViews();
 
         int getNoteId();
     }

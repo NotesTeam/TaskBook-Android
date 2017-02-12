@@ -12,4 +12,6 @@
     <color name="granate">#15101b</color>
     <color name="white">#FFFF</color>
     <color name="orange">#fd7b51</color>
+    <color name="archive_green">#347e2b</color>
+    <color name="delete_red">#ff5656</color>
 </resources>

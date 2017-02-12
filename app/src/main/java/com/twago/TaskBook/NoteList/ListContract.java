@@ -26,5 +26,7 @@ public interface ListContract {
         void openActiveTasks();
 
         void openArchive();
+
+        void archiveNote(int id);
     }
 }

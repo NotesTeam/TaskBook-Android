@@ -27,6 +27,8 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
 
     @BindView(R.id.button_close_note)
     ImageButton closeNoteButton;
+    @BindView(R.id.button_set_date)
+    ImageView setDateButton;
     @BindView(R.id.title_edit_note)
     EditText titleNoteEdit;
     @BindView(R.id.text_edit_note)
@@ -105,6 +107,15 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
     @Override
     public EditText getTextNoteEditText() {
         return textNoteEdit;
+    }
+
+    @Override
+    public void blockArchivedNoteViews() {
+        titleNoteEdit.setHint("");
+        textNoteEdit.setHint("");
+        titleNoteEdit.setEnabled(false);
+        textNoteEdit.setEnabled(false);
+        setDateButton.setVisibility(View.INVISIBLE);
     }
 
     @Override

@@ -48,15 +48,6 @@
                 android:text="@string/placeholder" />
         </LinearLayout>
 
-        <CheckBox
-            android:id="@+id/note_list_row_check_note"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:paddingEnd="16dp"
-            android:paddingRight="16dp"
-            android:visibility="invisible" />
-
         <TextView
             android:id="@+id/note_list_row_date_text"
             android:layout_width="wrap_content"
@@ -70,19 +61,18 @@
         android:id="@+id/note_list_row_bottom_right"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#ff5656"
         app:gravity="right"
         app:bring_to_clamp="350dp"
         app:clamp="parent"
         app:sticky="0dp">
 
         <ImageView
+            android:id="@+id/note_list_row_bottom_right_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:background="@drawable/ic_delete_white_36dp" />
+            android:layout_marginLeft="10dp" />
     </RelativeLayout>
 
 </ru.rambler.libs.swipe_layout.SwipeLayout>
