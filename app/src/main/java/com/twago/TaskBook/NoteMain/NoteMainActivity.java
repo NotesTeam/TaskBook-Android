@@ -1,4 +1,4 @@
-package com.twago.TaskBook;
+package com.twago.TaskBook.NoteMain;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,13 +8,15 @@ import android.view.MenuItem;
 import com.twago.TaskBook.NoteList.ListContract;
 import com.twago.TaskBook.NoteList.ListFragment;
 import com.twago.TaskBook.NoteList.ListPresenter;
+import com.twago.TaskBook.R;
 
+import butterknife.OnClick;
 import io.realm.Realm;
 
 public class NoteMainActivity extends AppCompatActivity {
     private static final String TAG = NoteMainActivity.class.getSimpleName();
     private ListFragment noteListFragment;
-    private ListContract.UserActionListener userActionListener;
+    private MainContract.UserActionListener mainUserActionListener;
 
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_notes_list, menu);
@@ -23,7 +25,13 @@ public class NoteMainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        noteListFragment.toggleDrawer();
+        switch (item.getItemId()) {
+            case R.id.menu_pick_date_action:
+                choseDate();
+                break;
+            default:
+                noteListFragment.toggleDrawer();
+        }
         return true;
     }
 
@@ -34,12 +42,13 @@ public class NoteMainActivity extends AppCompatActivity {
         setTitle(R.string.tasks);
         Realm.init(this);
 
-        initMenuButton();
         noteListFragment = ListFragment.newInstance();
+
+        buildMenuButton();
         initSetUp();
     }
 
-    private void initMenuButton() {
+    private void buildMenuButton() {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
@@ -47,13 +56,18 @@ public class NoteMainActivity extends AppCompatActivity {
 
     private void initSetUp() {
         noteListFragment = new ListFragment();
-        userActionListener = new ListPresenter(this, noteListFragment);
+        mainUserActionListener = new MainPresenter(this, new ListPresenter(this, noteListFragment));
         getFragmentManager()
                 .beginTransaction()
                 .add(R.id.fragment_layout, noteListFragment)
                 .commit();
     }
 
-    public void choseDate(MenuItem item) {
+    private void choseDate() {
+        mainUserActionListener.setInfoBarDate();
+    }
+
+    public long sendCurrentListDate() {
+        return mainUserActionListener.getCurrentListDate();
     }
 }

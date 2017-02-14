@@ -14,7 +14,7 @@ import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
-import com.twago.TaskBook.Constants;
+import com.twago.TaskBook.Module.Constants;
 import com.twago.TaskBook.R;
 
 import butterknife.BindView;
@@ -51,14 +51,14 @@ public class ListFragment extends Fragment implements ListContract.View {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_note_list, container, false);
         ButterKnife.bind(this, view);
+        buildDrawer();
         setupRecyclerView();
-        setupDrawer();
         userActionListener.initialization();
 
         return view;
     }
 
-    private void setupDrawer() {
+    private void buildDrawer() {
         drawer = new DrawerBuilder()
                 .withActivity(getActivity())
                 .withTranslucentNavigationBar(false)
@@ -88,11 +88,7 @@ public class ListFragment extends Fragment implements ListContract.View {
                                         createNote.setVisibility(View.INVISIBLE);
                                         return false;
                                     }
-                                }),
-                        new PrimaryDrawerItem()
-                                .withIcon(R.drawable.ic_delete_white_36dp)
-                                .withName(R.string.thrash)
-                                .withSelectedColorRes(R.color.granate)
+                                })
                 )
                 .withSliderBackgroundColorRes(R.color.dark_blue)
                 .withDrawerWidthDp(60)

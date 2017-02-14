@@ -1,12 +1,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.twago.TaskBook.NoteMainActivity">
+    tools:context="com.twago.TaskBook.NoteMain.NoteMainActivity">
 
     <item
-        android:id="@+id/pica_date_action"
+        android:id="@+id/menu_pick_date_action"
         android:icon="@drawable/ic_date_range_white_24dp"
         app:showAsAction="always"
-        android:onClick="choseDate"
         android:title="@string/choose_date" />
 </menu>

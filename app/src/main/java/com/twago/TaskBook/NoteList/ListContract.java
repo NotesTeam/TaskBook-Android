@@ -1,6 +1,6 @@
 package com.twago.TaskBook.NoteList;
 
-import com.twago.TaskBook.Note;
+import com.twago.TaskBook.Module.Note;
 
 public interface ListContract {
     interface View {
@@ -17,9 +17,9 @@ public interface ListContract {
 
         void openNewEditor(int id);
 
-        String getFormatedDate(Note note);
+        void setCurrentDateInInfoBar(long currentDate);
 
-        int getTaskIcon(Note note);
+        String getFormatedDate(Note note);
 
         void deleteNote(int id);
 

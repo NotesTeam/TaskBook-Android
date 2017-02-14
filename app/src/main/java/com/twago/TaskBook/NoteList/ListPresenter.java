@@ -4,8 +4,7 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.FragmentTransaction;
 
-import com.twago.TaskBook.Constants;
-import com.twago.TaskBook.Note;
+import com.twago.TaskBook.Module.Note;
 import com.twago.TaskBook.NoteEditor.EditorFragment;
 import com.twago.TaskBook.R;
 
@@ -20,22 +19,22 @@ import rx.Subscription;
 import rx.functions.Action1;
 
 public class ListPresenter implements ListContract.UserActionListener {
-    private ListContract.View noteListFragmentView;
     private Activity activity;
-    private Realm realm;
+    private ListContract.View noteListFragmentView;
+    private Realm notesDatabase;
     private Subscription subscription;
     private long currentNoteDate = Calendar.getInstance().getTimeInMillis();
 
     public ListPresenter(Activity activity, final ListContract.View noteListFragmentView) {
-        this.noteListFragmentView = noteListFragmentView;
-        this.realm = Realm.getDefaultInstance();
         this.activity = activity;
+        this.noteListFragmentView = noteListFragmentView;
+        this.notesDatabase = Realm.getDefaultInstance();
     }
 
-    private void updateRecyclerView(RealmResults<Note> notes) {
-        ListAdapter recyclerViewAdapter = noteListFragmentView.getRecyclerViewAdapter();
-        recyclerViewAdapter.setData(notes);
-        recyclerViewAdapter.notifyDataSetChanged();
+    @Override
+    public void initialization() {
+        inflateView();
+        openActiveTasks();
     }
 
     private void inflateView() {
@@ -48,11 +47,11 @@ public class ListPresenter implements ListContract.UserActionListener {
     }
 
     private void inflateInfoBar() {
-        setCurrentDate();
+        setCurrentDateInInfoBar(currentNoteDate);
     }
 
     private void setActiveTasksObserver() {
-        subscription = realm.where(Note.class)
+        subscription = notesDatabase.where(Note.class)
                 .equalTo(Note.IS_ARCHIVED, false)
                 .findAllSorted(Note.DATE)
                 .asObservable()
@@ -65,7 +64,7 @@ public class ListPresenter implements ListContract.UserActionListener {
     }
 
     private void setArchivedTasksObserver() {
-        subscription = realm.where(Note.class)
+        subscription = notesDatabase.where(Note.class)
                 .equalTo(Note.IS_ARCHIVED, true)
                 .findAllSorted(Note.DATE)
                 .asObservable()
@@ -77,14 +76,10 @@ public class ListPresenter implements ListContract.UserActionListener {
                 });
     }
 
-    private void setCurrentDate() {
-        noteListFragmentView.setDateInInfoBar(getFormatedDay(), getFormatedMonth());
-    }
-
-    @Override
-    public void initialization() {
-        inflateView();
-        openActiveTasks();
+    private void updateRecyclerView(RealmResults<Note> notes) {
+        ListAdapter recyclerViewAdapter = noteListFragmentView.getRecyclerViewAdapter();
+        recyclerViewAdapter.setData(notes);
+        recyclerViewAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -114,33 +109,8 @@ public class ListPresenter implements ListContract.UserActionListener {
     }
 
     @Override
-    public int getTaskIcon(Note note) {
-        switch (note.getTask()) {
-            case Constants.MAIN_TASK:
-                return R.drawable.ic_star_indigo_500_24dp;
-            case Constants.PART_TASK:
-                return R.drawable.ic_star_half_indigo_500_24dp;
-            case Constants.SKILLS_TASK:
-                return R.drawable.ic_lightbulb_outline_indigo_500_24dp;
-            case Constants.UNIMPORTANT_TASK:
-                return R.drawable.ic_help_outline_indigo_500_24dp;
-        }
-        return 0;
-    }
-
-    @Override
-    public void deleteNote(final int id) {
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                realm.where(Note.class).equalTo(Note.ID, id).findFirst().deleteFromRealm();
-            }
-        });
-    }
-
-    @Override
     public void archiveNote(final int id) {
-        realm.executeTransaction(new Realm.Transaction() {
+        notesDatabase.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 realm.where(Note.class).equalTo(Note.ID, id).findFirst().setArchived(true);
@@ -150,18 +120,37 @@ public class ListPresenter implements ListContract.UserActionListener {
     }
 
     @Override
+    public void deleteNote(final int id) {
+        notesDatabase.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.where(Note.class).equalTo(Note.ID, id).findFirst().deleteFromRealm();
+            }
+        });
+    }
+
+    @Override
+    public void setCurrentDateInInfoBar(long currentDate) {
+        noteListFragmentView.setDateInInfoBar(
+                getFormatedDayForInfoBarDate(currentDate),
+                getFormatedMonthForInfoBarDate(currentDate));
+    }
+
+    private String getFormatedDayForInfoBarDate(long currentInfoBarDate) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd", Locale.getDefault());
+        return simpleDateFormat.format(new Date(currentInfoBarDate));
+    }
+
+    private String getFormatedMonthForInfoBarDate(long currentNoteDate) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMMM", Locale.getDefault());
+        return simpleDateFormat.format(new Date(currentNoteDate)).toUpperCase();
+    }
+
+    // TODO: to delete the function, when InfoBar date function will be implemented
+    @Override
     public String getFormatedDate(Note note) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE dd MMM yyyy", Locale.getDefault());
         return simpleDateFormat.format(new Date(note.getDate()));
     }
 
-    private String getFormatedDay() {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd", Locale.getDefault());
-        return simpleDateFormat.format(new Date(currentNoteDate));
-    }
-
-    private String getFormatedMonth() {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMMM", Locale.getDefault());
-        return simpleDateFormat.format(new Date(currentNoteDate));
-    }
 }

@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.twago.TaskBook.Constants;
-import com.twago.TaskBook.Note;
+import com.twago.TaskBook.Module.Constants;
+import com.twago.TaskBook.Module.Note;
 import com.twago.TaskBook.R;
 
 import butterknife.BindView;
@@ -40,6 +40,13 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         setViewHolderSwipeLayout(holder, note);
         setNoteViewOnClickListener(holder, note);
         setDeleteViewOnClickListener(holder, note);
+    }
+
+    private void inflateViewHolder(ViewHolder holder, int position, Note note) {
+        holder.title.setText(note.getTitle());
+        holder.text.setText(note.getText());
+        holder.noteView.setBackgroundColor(position % 2 == 0 ? Constants.COLOR_WHITE : Constants.COLOR_GRAY);
+        holder.date.setText(userActionListener.getFormatedDate(note));
     }
 
     private void setViewHolderSwipeLayout(final ViewHolder holder, final Note note) {
@@ -79,17 +86,9 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         );
     }
 
-    public void setStyleArchiveButton(ViewHolder holder) {
+    private void setStyleArchiveButton(ViewHolder holder) {
         holder.deleteView.setBackgroundResource(R.color.archive_green);
         holder.deleteIcon.setBackgroundResource(R.drawable.ic_archive_white_36dp);
-    }
-
-    private void inflateViewHolder(ViewHolder holder, int position, Note note) {
-        holder.title.setText(note.getTitle());
-        holder.text.setText(note.getText());
-        holder.noteView.setBackgroundColor(position % 2 == 0 ? Constants.COLOR_WHITE : Constants.COLOR_GRAY);
-        holder.taskIcon.setImageResource(userActionListener.getTaskIcon(note));
-        holder.date.setText(userActionListener.getFormatedDate(note));
     }
 
     private void setNoteViewOnClickListener(final ListAdapter.ViewHolder holder, final Note note) {
@@ -131,8 +130,6 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         TextView title;
         @BindView(R.id.note_list_row_text)
         TextView text;
-        @BindView(R.id.note_list_row_task_icon)
-        ImageView taskIcon;
         @BindView(R.id.note_list_row_date_text)
         TextView date;
         @BindView(R.id.note_list_row_bottom_right_icon)

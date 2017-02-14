@@ -1,7 +1,6 @@
 package com.twago.TaskBook.NoteEditor;
 
-import android.widget.EditText;
-import android.widget.ImageView;
+import com.twago.TaskBook.Module.Note;
 
 public interface EditorContract {
     interface View {
@@ -9,21 +8,20 @@ public interface EditorContract {
 
         String getTitleNote();
 
-        EditText getTitleNoteEditText();
-
-        EditText getTextNoteEditText();
-
         void blockArchivedNoteViews();
 
-        int getNoteId();
+        int getChosenNoteId();
+
+        void setTitleNoteEditText(String title);
+
+        void setTextNoteEditText(String text);
     }
 
     interface UserActionListener {
-        void pickTaskNote(ImageView taskIcon);
 
-        void pickDate(EditorFragment editorFragment);
+        void setCurrentNoteDate();
 
-        void inflateOldData();
+        void inflateChosenNoteData();
 
         void saveNoteToDatabase();
     }

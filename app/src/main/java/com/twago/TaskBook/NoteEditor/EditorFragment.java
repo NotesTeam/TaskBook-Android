@@ -3,7 +3,6 @@ package com.twago.TaskBook.NoteEditor;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import com.twago.TaskBook.NoteMain.NoteMainActivity;
 import com.twago.TaskBook.R;
 
 import butterknife.BindView;
@@ -22,8 +22,8 @@ import butterknife.OnClick;
 public class EditorFragment extends DialogFragment implements EditorContract.View {
     private static final String TAG_ID = "TAG_ID";
     private static final String TAG = EditorFragment.class.getSimpleName();
-    private int noteId;
-    EditorContract.UserActionListener userActionListener;
+    private int chosenNoteId;
+    private EditorContract.UserActionListener userActionListener;
 
     @BindView(R.id.button_close_note)
     ImageButton closeNoteButton;
@@ -33,14 +33,6 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
     EditText titleNoteEdit;
     @BindView(R.id.text_edit_note)
     EditText textNoteEdit;
-    @BindView(R.id.main_task_note_editor)
-    ImageView mainTaskButton;
-    @BindView(R.id.part_task_note_editor)
-    ImageView partTaskButton;
-    @BindView(R.id.skills_task_note_editor)
-    ImageView skillsTaskButton;
-    @BindView(R.id.unimportant_task_note_editor)
-    ImageView unimportantTaskButton;
 
     public static EditorFragment newInstance(int id) {
         Bundle args = new Bundle();
@@ -56,8 +48,7 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
     }
 
     @Override
-    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_note_editor, container, false);
         ButterKnife.bind(this, view);
 
@@ -67,47 +58,22 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
     @Override
     public void onStart() {
         super.onStart();
-        Log.d(TAG, "onStart");
-        noteId = getArguments().getInt(TAG_ID);
-        userActionListener = new EditorPresenter(getActivity(), this);
-        userActionListener.inflateOldData();
-    }
-
-    @OnClick(R.id.button_close_note)
-    public void closeNote() {
-        dismiss();
-    }
-
-    @OnClick({R.id.main_task_note_editor, R.id.part_task_note_editor, R.id.skills_task_note_editor, R.id.unimportant_task_note_editor})
-    public void pickTypeTaskNote(ImageView taskIcon) {
-        userActionListener.pickTaskNote(taskIcon);
+        chosenNoteId = getArguments().getInt(TAG_ID);
+        userActionListener = new EditorPresenter((NoteMainActivity) getActivity(), this);
+        userActionListener.inflateChosenNoteData();
     }
 
     @OnClick(R.id.button_set_date)
     public void pickDate() {
-        userActionListener.pickDate(this);
+        userActionListener.setCurrentNoteDate();
     }
 
-    @Override
-    public void onDismiss(DialogInterface dialog) {
-        super.onDismiss(dialog);
+    @OnClick(R.id.button_close_note)
+    public void closeNote() {
         userActionListener.saveNoteToDatabase();
+        dismiss();
     }
 
-    @Override
-    public int getNoteId() {
-        return noteId;
-    }
-
-    @Override
-    public EditText getTitleNoteEditText() {
-        return titleNoteEdit;
-    }
-
-    @Override
-    public EditText getTextNoteEditText() {
-        return textNoteEdit;
-    }
 
     @Override
     public void blockArchivedNoteViews() {
@@ -116,6 +82,21 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
         titleNoteEdit.setEnabled(false);
         textNoteEdit.setEnabled(false);
         setDateButton.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public int getChosenNoteId() {
+        return chosenNoteId;
+    }
+
+    @Override
+    public void setTitleNoteEditText(String title) {
+        titleNoteEdit.setText(title);
+    }
+
+    @Override
+    public void setTextNoteEditText(String text) {
+        textNoteEdit.setText(text);
     }
 
     @Override

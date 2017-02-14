@@ -1,4 +1,4 @@
-package com.twago.TaskBook;
+package com.twago.TaskBook.Module;
 
 import io.realm.RealmObject;
 import lombok.Getter;
@@ -13,7 +13,6 @@ import lombok.Setter;
 @RequiredArgsConstructor(suppressConstructorProperties = true)
 public class Note extends RealmObject {
     public static final String ID = "id";
-    public static final String TASK = "task";
     public static final String DATE = "date";
     public static final String IS_ARCHIVED = "isArchived";
     @NonNull
@@ -22,8 +21,6 @@ public class Note extends RealmObject {
     private String title;
     @NonNull
     private String text;
-    @NonNull
-    private String task;
     @NonNull
     private long date;
     @NonNull
