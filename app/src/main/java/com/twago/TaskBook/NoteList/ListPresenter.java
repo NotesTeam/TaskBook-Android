@@ -132,25 +132,19 @@ public class ListPresenter implements ListContract.UserActionListener {
     @Override
     public void setCurrentDateInInfoBar(long currentDate) {
         noteListFragmentView.setDateInInfoBar(
-                getFormatedDayForInfoBarDate(currentDate),
-                getFormatedMonthForInfoBarDate(currentDate));
+                getFormattedDayForInfoBarDate(currentDate),
+                getFormattedMonthForInfoBarDate(currentDate));
     }
 
-    private String getFormatedDayForInfoBarDate(long currentInfoBarDate) {
+    private String getFormattedDayForInfoBarDate(long currentInfoBarDate) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd", Locale.getDefault());
         return simpleDateFormat.format(new Date(currentInfoBarDate));
     }
 
-    private String getFormatedMonthForInfoBarDate(long currentNoteDate) {
+    private String getFormattedMonthForInfoBarDate(long currentNoteDate) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMMM", Locale.getDefault());
         return simpleDateFormat.format(new Date(currentNoteDate)).toUpperCase();
     }
 
     // TODO: to delete the function, when InfoBar date function will be implemented
-    @Override
-    public String getFormatedDate(Note note) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE dd MMM yyyy", Locale.getDefault());
-        return simpleDateFormat.format(new Date(note.getDate()));
-    }
-
 }

@@ -19,8 +19,6 @@ public interface ListContract {
 
         void setCurrentDateInInfoBar(long currentDate);
 
-        String getFormatedDate(Note note);
-
         void deleteNote(int id);
 
         void openActiveTasks();
