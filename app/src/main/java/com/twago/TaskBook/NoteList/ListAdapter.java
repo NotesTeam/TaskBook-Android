@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.twago.TaskBook.Module.Constants;
 import com.twago.TaskBook.Module.Note;
 import com.twago.TaskBook.R;
+import com.twago.TaskBook.Utils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,7 +47,7 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         holder.title.setText(note.getTitle());
         holder.text.setText(note.getText());
         holder.noteView.setBackgroundColor(position % 2 == 0 ? Constants.COLOR_WHITE : Constants.COLOR_GRAY);
-        holder.date.setText(userActionListener.getFormatedDate(note));
+        holder.date.setText(Utils.getFormattedDate(note));
     }
 
     private void setViewHolderSwipeLayout(final ViewHolder holder, final Note note) {
