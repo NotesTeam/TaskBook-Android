@@ -6,7 +6,5 @@ interface MainContract {
     }
     interface UserActionListener {
         void setInfoBarDate();
-
-        long getCurrentListDate();
     }
 }

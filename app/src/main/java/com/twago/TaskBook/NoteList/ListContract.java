@@ -1,7 +1,5 @@
 package com.twago.TaskBook.NoteList;
 
-import com.twago.TaskBook.Module.Note;
-
 public interface ListContract {
     interface View {
 
@@ -17,7 +15,7 @@ public interface ListContract {
 
         void openNewEditor(int id);
 
-        void setCurrentDateInInfoBar(long currentDate);
+        void setCurrentDateInInfoBar();
 
         void deleteNote(int id);
 

@@ -5,12 +5,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.twago.TaskBook.NoteList.ListContract;
 import com.twago.TaskBook.NoteList.ListFragment;
 import com.twago.TaskBook.NoteList.ListPresenter;
 import com.twago.TaskBook.R;
 
-import butterknife.OnClick;
 import io.realm.Realm;
 
 public class NoteMainActivity extends AppCompatActivity {
@@ -65,9 +63,5 @@ public class NoteMainActivity extends AppCompatActivity {
 
     private void choseDate() {
         mainUserActionListener.setInfoBarDate();
-    }
-
-    public long sendCurrentListDate() {
-        return mainUserActionListener.getCurrentListDate();
     }
 }

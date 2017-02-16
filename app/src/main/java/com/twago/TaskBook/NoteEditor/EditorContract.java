@@ -1,7 +1,5 @@
 package com.twago.TaskBook.NoteEditor;
 
-import com.twago.TaskBook.Module.Note;
-
 public interface EditorContract {
     interface View {
         String getTextNote();

@@ -3,12 +3,12 @@ package com.twago.TaskBook.NoteMain;
 import android.app.Activity;
 
 import com.twago.TaskBook.NoteList.ListContract;
+import com.twago.TaskBook.Utils;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.util.Calendar;
 
 public class MainPresenter implements MainContract.UserActionListener {
-    private long currentInfoBarDate = Calendar.getInstance().getTimeInMillis();
     private Activity activity;
     private ListContract.UserActionListener noteListUserActionListener;
 
@@ -27,8 +27,7 @@ public class MainPresenter implements MainContract.UserActionListener {
                     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
                         Calendar calendar = Calendar.getInstance();
                         calendar.set(year, monthOfYear, dayOfMonth);
-                        currentInfoBarDate = calendar.getTimeInMillis();
-                        noteListUserActionListener.setCurrentDateInInfoBar(currentInfoBarDate);
+                        Utils.currentDate = calendar.getTimeInMillis();
                     }
                 },
                 calendar.get(Calendar.YEAR),
@@ -36,10 +35,5 @@ public class MainPresenter implements MainContract.UserActionListener {
                 calendar.get(Calendar.DAY_OF_MONTH)
         );
         dpd.show(activity.getFragmentManager(), "Datepickerdialog");
-    }
-
-    @Override
-    public long getCurrentListDate() {
-        return currentInfoBarDate;
     }
 }

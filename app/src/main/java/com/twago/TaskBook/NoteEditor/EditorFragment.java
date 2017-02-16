@@ -20,8 +20,8 @@ import butterknife.OnClick;
 
 
 public class EditorFragment extends DialogFragment implements EditorContract.View {
-    private static final String TAG_ID = "TAG_ID";
     private static final String TAG = EditorFragment.class.getSimpleName();
+    private static final String TAG_ID = "TAG_ID";
     private int chosenNoteId;
     private EditorContract.UserActionListener userActionListener;
 
@@ -70,10 +70,8 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
 
     @OnClick(R.id.button_close_note)
     public void closeNote() {
-        userActionListener.saveNoteToDatabase();
         dismiss();
     }
-
 
     @Override
     public void blockArchivedNoteViews() {
@@ -107,6 +105,12 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
     @Override
     public String getTextNote() {
         return textNoteEdit.getText().toString();
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        userActionListener.saveNoteToDatabase();
     }
 }
 

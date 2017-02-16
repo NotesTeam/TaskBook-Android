@@ -3,27 +3,33 @@ package com.twago.TaskBook.NoteList;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.FragmentTransaction;
+import android.util.Log;
 
 import com.twago.TaskBook.Module.Note;
 import com.twago.TaskBook.NoteEditor.EditorFragment;
 import com.twago.TaskBook.R;
+import com.twago.TaskBook.Utils;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import rx.Observable;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Action1;
 
 public class ListPresenter implements ListContract.UserActionListener {
+    private final String TAG = this.getClass().getSimpleName();
     private Activity activity;
     private ListContract.View noteListFragmentView;
     private Realm notesDatabase;
+    Observable<Long> timeObservable;
     private Subscription subscription;
-    private long currentNoteDate = Calendar.getInstance().getTimeInMillis();
 
     public ListPresenter(Activity activity, final ListContract.View noteListFragmentView) {
         this.activity = activity;
@@ -47,7 +53,7 @@ public class ListPresenter implements ListContract.UserActionListener {
     }
 
     private void inflateInfoBar() {
-        setCurrentDateInInfoBar(currentNoteDate);
+        setTimeObserver();
     }
 
     private void setActiveTasksObserver() {
@@ -129,22 +135,32 @@ public class ListPresenter implements ListContract.UserActionListener {
         });
     }
 
+    private void setTimeObserver() {
+        Observable.create(new Observable.OnSubscribe<Long>() {
+            @Override
+            public void call(Subscriber<? super Long> subscriber) {
+                subscriber.onNext(Utils.currentDate);
+            }
+        }).subscribe(new Action1<Long>() {
+            @Override
+            public void call(Long aLong) {
+                setCurrentDateInInfoBar();
+            }
+        });
+    }
+
     @Override
-    public void setCurrentDateInInfoBar(long currentDate) {
-        noteListFragmentView.setDateInInfoBar(
-                getFormattedDayForInfoBarDate(currentDate),
-                getFormattedMonthForInfoBarDate(currentDate));
+    public void setCurrentDateInInfoBar() {
+        noteListFragmentView.setDateInInfoBar(getFormattedDayForInfoBarDate(), getFormattedMonthForInfoBarDate());
     }
 
-    private String getFormattedDayForInfoBarDate(long currentInfoBarDate) {
+    private String getFormattedDayForInfoBarDate() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd", Locale.getDefault());
-        return simpleDateFormat.format(new Date(currentInfoBarDate));
+        return simpleDateFormat.format(new Date(Utils.currentDate));
     }
 
-    private String getFormattedMonthForInfoBarDate(long currentNoteDate) {
+    private String getFormattedMonthForInfoBarDate() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMMM", Locale.getDefault());
-        return simpleDateFormat.format(new Date(currentNoteDate)).toUpperCase();
+        return simpleDateFormat.format(new Date(Utils.currentDate)).toUpperCase();
     }
-
-    // TODO: to delete the function, when InfoBar date function will be implemented
 }

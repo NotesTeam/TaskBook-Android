@@ -63,36 +63,44 @@ public class ListFragment extends Fragment implements ListContract.View {
                 .withActivity(getActivity())
                 .withTranslucentNavigationBar(false)
                 .addDrawerItems(
-                        new PrimaryDrawerItem()
-                                .withIcon(R.drawable.ic_date_range_white_36dp)
-                                .withName(R.string.tasks)
-                                .withSelectedColorRes(R.color.granate)
-                                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                                    @Override
-                                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                                        userActionListener.openActiveTasks();
-                                        getActivity().setTitle(R.string.tasks);
-                                        createNote.setVisibility(View.VISIBLE);
-                                        return false;
-                                    }
-                                }),
-                        new PrimaryDrawerItem()
-                                .withIcon(R.drawable.ic_archive_white_36dp)
-                                .withName(R.string.archive)
-                                .withSelectedColorRes(R.color.granate)
-                                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                                    @Override
-                                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                                        userActionListener.openArchive();
-                                        getActivity().setTitle(R.string.archive);
-                                        createNote.setVisibility(View.INVISIBLE);
-                                        return false;
-                                    }
-                                })
+                        buildActiveTasksDrawerItem(),
+                        buildArchiveDrawerItem()
                 )
                 .withSliderBackgroundColorRes(R.color.dark_blue)
                 .withDrawerWidthDp(60)
                 .build();
+    }
+
+    private PrimaryDrawerItem buildActiveTasksDrawerItem() {
+        return new PrimaryDrawerItem()
+                .withIcon(R.drawable.ic_date_range_white_36dp)
+                .withName(R.string.tasks)
+                .withSelectedColorRes(R.color.granate)
+                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                        userActionListener.openActiveTasks();
+                        getActivity().setTitle(R.string.tasks);
+                        createNote.setVisibility(View.VISIBLE);
+                        return false;
+                    }
+                });
+    }
+
+    private PrimaryDrawerItem buildArchiveDrawerItem() {
+        return new PrimaryDrawerItem()
+                .withIcon(R.drawable.ic_archive_white_36dp)
+                .withName(R.string.archive)
+                .withSelectedColorRes(R.color.granate)
+                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                        userActionListener.openArchive();
+                        getActivity().setTitle(R.string.archive);
+                        createNote.setVisibility(View.INVISIBLE);
+                        return false;
+                    }
+                });
     }
 
     public void toggleDrawer() {
