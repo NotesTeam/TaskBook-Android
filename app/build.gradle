@@ -42,9 +42,6 @@ dependencies {
     compile 'io.reactivex:rxjava:1.1.6'
     compile 'com.wdullaer:materialdatetimepicker:3.1.0'
     compile 'ru.rambler.android:swipe-layout:1.0.14'
-    compile('com.mikepenz:materialdrawer:5.8.1@aar') {
-        transitive = true
-    }
     testCompile 'junit:junit:4.12'
     provided "org.projectlombok:lombok:1.12.6"
 }
