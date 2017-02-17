@@ -1,5 +1,9 @@
 package com.twago.TaskBook.NoteList;
 
+import com.twago.TaskBook.Module.Note;
+
+import io.realm.RealmResults;
+
 public interface ListContract {
     interface View {
 
@@ -13,15 +17,13 @@ public interface ListContract {
     interface UserActionListener {
         void initialization();
 
+        void updateRecyclerView(RealmResults<Note> notes);
+
         void openNewEditor(int id);
 
         void setCurrentDateInInfoBar();
 
         void deleteNote(int id);
-
-        void openActiveTasks();
-
-        void openArchive();
 
         void archiveNote(int id);
     }

@@ -54,14 +54,4 @@
             android:layout_height="match_parent" />
     </LinearLayout>
 
-    <ImageButton
-        android:id="@+id/button_create_note"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="25dp"
-        android:layout_marginRight="25dp"
-        android:background="@drawable/oval"
-        android:src="@drawable/ic_add_black_36dp"/>
 </RelativeLayout>

@@ -3,7 +3,6 @@ package com.twago.TaskBook.NoteList;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.FragmentTransaction;
-import android.util.Log;
 
 import com.twago.TaskBook.Module.Note;
 import com.twago.TaskBook.NoteEditor.EditorFragment;
@@ -11,8 +10,6 @@ import com.twago.TaskBook.R;
 import com.twago.TaskBook.Utils;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -27,20 +24,17 @@ public class ListPresenter implements ListContract.UserActionListener {
     private final String TAG = this.getClass().getSimpleName();
     private Activity activity;
     private ListContract.View noteListFragmentView;
-    private Realm notesDatabase;
-    Observable<Long> timeObservable;
-    private Subscription subscription;
+    private Realm realm;
 
     public ListPresenter(Activity activity, final ListContract.View noteListFragmentView) {
         this.activity = activity;
         this.noteListFragmentView = noteListFragmentView;
-        this.notesDatabase = Realm.getDefaultInstance();
+        this.realm = Realm.getDefaultInstance();
     }
 
     @Override
     public void initialization() {
         inflateView();
-        openActiveTasks();
     }
 
     private void inflateView() {
@@ -56,33 +50,8 @@ public class ListPresenter implements ListContract.UserActionListener {
         setTimeObserver();
     }
 
-    private void setActiveTasksObserver() {
-        subscription = notesDatabase.where(Note.class)
-                .equalTo(Note.IS_ARCHIVED, false)
-                .findAllSorted(Note.DATE)
-                .asObservable()
-                .subscribe(new Action1<RealmResults<Note>>() {
-                    @Override
-                    public void call(RealmResults<Note> notes) {
-                        updateRecyclerView(notes);
-                    }
-                });
-    }
-
-    private void setArchivedTasksObserver() {
-        subscription = notesDatabase.where(Note.class)
-                .equalTo(Note.IS_ARCHIVED, true)
-                .findAllSorted(Note.DATE)
-                .asObservable()
-                .subscribe(new Action1<RealmResults<Note>>() {
-                    @Override
-                    public void call(RealmResults<Note> notes) {
-                        updateRecyclerView(notes);
-                    }
-                });
-    }
-
-    private void updateRecyclerView(RealmResults<Note> notes) {
+    @Override
+    public void updateRecyclerView(RealmResults<Note> notes) {
         ListAdapter recyclerViewAdapter = noteListFragmentView.getRecyclerViewAdapter();
         recyclerViewAdapter.setData(notes);
         recyclerViewAdapter.notifyDataSetChanged();
@@ -98,25 +67,8 @@ public class ListPresenter implements ListContract.UserActionListener {
     }
 
     @Override
-    public void openActiveTasks() {
-        unsubscribeCurrentObserver();
-        setActiveTasksObserver();
-    }
-
-    @Override
-    public void openArchive() {
-        unsubscribeCurrentObserver();
-        setArchivedTasksObserver();
-    }
-
-    private void unsubscribeCurrentObserver() {
-        if (subscription != null && !subscription.isUnsubscribed())
-            subscription.unsubscribe();
-    }
-
-    @Override
     public void archiveNote(final int id) {
-        notesDatabase.executeTransaction(new Realm.Transaction() {
+        realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 realm.where(Note.class).equalTo(Note.ID, id).findFirst().setArchived(true);
@@ -127,7 +79,7 @@ public class ListPresenter implements ListContract.UserActionListener {
 
     @Override
     public void deleteNote(final int id) {
-        notesDatabase.executeTransaction(new Realm.Transaction() {
+        realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 realm.where(Note.class).equalTo(Note.ID, id).findFirst().deleteFromRealm();

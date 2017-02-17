@@ -2,19 +2,30 @@ package com.twago.TaskBook.NoteMain;
 
 import android.app.Activity;
 
+import com.twago.TaskBook.Module.Note;
 import com.twago.TaskBook.NoteList.ListContract;
+import com.twago.TaskBook.NoteList.ListFragment;
+import com.twago.TaskBook.NoteList.ListPresenter;
 import com.twago.TaskBook.Utils;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.util.Calendar;
 
+import io.realm.Realm;
+import io.realm.RealmResults;
+import rx.Subscription;
+import rx.functions.Action1;
+
 public class MainPresenter implements MainContract.UserActionListener {
     private Activity activity;
-    private ListContract.UserActionListener noteListUserActionListener;
+    private Subscription subscription;
+    private Realm realm;
+    private ListContract.UserActionListener listPresenter;
 
-    public MainPresenter(Activity activity, ListContract.UserActionListener noteListUserActionListener) {
+    public MainPresenter(Activity activity, ListContract.UserActionListener listPresenter, Realm realm) {
         this.activity = activity;
-        this.noteListUserActionListener = noteListUserActionListener;
+        this.listPresenter = listPresenter;
+        this.realm = realm;
     }
 
     @Override
@@ -35,5 +46,48 @@ public class MainPresenter implements MainContract.UserActionListener {
                 calendar.get(Calendar.DAY_OF_MONTH)
         );
         dpd.show(activity.getFragmentManager(), "Datepickerdialog");
+    }
+
+    private void setActiveTasksObserver() {
+        subscription = realm.where(Note.class)
+                .equalTo(Note.IS_ARCHIVED, false)
+                .findAllSorted(Note.DATE)
+                .asObservable()
+                .subscribe(new Action1<RealmResults<Note>>() {
+                    @Override
+                    public void call(RealmResults<Note> notes) {
+                        listPresenter.updateRecyclerView(notes);
+                    }
+                });
+    }
+
+    private void setArchivedTasksObserver() {
+        subscription = realm.where(Note.class)
+                .equalTo(Note.IS_ARCHIVED, true)
+                .findAllSorted(Note.DATE)
+                .asObservable()
+                .subscribe(new Action1<RealmResults<Note>>() {
+                    @Override
+                    public void call(RealmResults<Note> notes) {
+                        listPresenter.updateRecyclerView(notes);
+                    }
+                });
+    }
+
+    private void unsubscribeCurrentObserver() {
+        if (subscription != null && !subscription.isUnsubscribed())
+            subscription.unsubscribe();
+    }
+
+    @Override
+    public void setupSubscriberActiveTasks() {
+        unsubscribeCurrentObserver();
+        setActiveTasksObserver();
+    }
+
+    @Override
+    public void setupSubscriberArchive() {
+        unsubscribeCurrentObserver();
+        setArchivedTasksObserver();
     }
 }

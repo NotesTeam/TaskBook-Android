@@ -48,16 +48,20 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         holder.text.setText(note.getText());
         holder.noteView.setBackgroundColor(position % 2 == 0 ? Constants.COLOR_WHITE : Constants.COLOR_GRAY);
         holder.date.setText(Utils.getFormattedDate(note));
+        setSwipeViewsStyle(holder, note);
+    }
+
+    private void setSwipeViewsStyle(ViewHolder holder, Note note) {
+        if (note.isArchived())
+            setStyleDeleteButton(holder);
+        else
+            setStyleArchiveButton(holder);
     }
 
     private void setViewHolderSwipeLayout(final ViewHolder holder, final Note note) {
         holder.swipeLayout.setOnSwipeListener(new SwipeLayout.OnSwipeListener() {
             @Override
             public void onBeginSwipe(SwipeLayout swipeLayout, boolean moveToRight) {
-                if (note.isArchived())
-                    setStyleDeleteButton(holder);
-                else
-                    setStyleArchiveButton(holder);
             }
 
             @Override
@@ -83,8 +87,7 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
     private void setStyleDeleteButton(ViewHolder holder) {
         holder.deleteView.setBackgroundResource(R.color.delete_red);
-        holder.deleteIcon.setBackgroundResource(R.drawable.ic_delete_white_36dp
-        );
+        holder.deleteIcon.setBackgroundResource(R.drawable.ic_delete_white_36dp);
     }
 
     private void setStyleArchiveButton(ViewHolder holder) {
@@ -116,9 +119,8 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return noteList.size();
+        return noteList == null ? 0 :noteList.size();
     }
-
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.note_list_row_bottom_center)

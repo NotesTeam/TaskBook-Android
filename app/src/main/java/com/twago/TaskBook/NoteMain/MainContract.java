@@ -6,5 +6,9 @@ interface MainContract {
     }
     interface UserActionListener {
         void setInfoBarDate();
+
+        void setupSubscriberActiveTasks();
+
+        void setupSubscriberArchive();
     }
 }
