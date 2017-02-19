@@ -34,20 +34,30 @@
 
         <LinearLayout
             android:id="@+id/drawer_view"
-            android:layout_width="70dp"
+            android:layout_width="50dp"
             android:layout_height="match_parent"
-            android:layout_gravity="start">
+            android:layout_gravity="start"
+            android:paddingTop="50dp">
 
             <LinearLayout
                 android:id="@+id/drawer_content"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:id="@+id/image"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@mipmap/ic_launcher" />
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:background="@color/dark_blue"
+                android:gravity="center_horizontal">
+                <ImageButton
+                    android:id="@+id/show_active_tasks_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_date_range_white_24dp"
+                    android:layout_marginTop="20dp"/>
+                <ImageButton
+                    android:id="@+id/show_archive_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_archive_white_24dp"
+                    android:layout_marginTop="30dp"/>
 
             </LinearLayout>
 

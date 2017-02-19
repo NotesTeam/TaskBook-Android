@@ -22,15 +22,20 @@ import io.realm.Realm;
 
 public class NoteMainActivity extends AppCompatActivity {
     private static final String TAG = NoteMainActivity.class.getSimpleName();
+    public static final int NAVIGATION_DRAWER_OPEN = R.string.navigation_drawer_open;
+    public static final int NAVIGATION_DRAWER_CLOSE = R.string.navigation_drawer_close;
     private ListFragment noteListFragment;
     private MainContract.UserActionListener mainUserActionListener;
     ActionBarDrawerToggle toggle;
 
+    @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
+    @BindView(R.id.drawer_view)
     View drawerView;
+    @BindView(R.id.drawer_content)
     View drawerContent;
-    View mainContent;
-
+    @BindView(R.id.main_view)
+    View mainView;
     @BindView(R.id.button_create_note)
     FloatingActionButton createNoteButton;
     @BindView(R.id.toolbar)
@@ -44,40 +49,34 @@ public class NoteMainActivity extends AppCompatActivity {
         setTitle(R.string.tasks);
         Realm.init(this);
         ButterKnife.bind(this);
+
+        buildActivity();
+        buildListFragment();
+    }
+
+    private void buildActivity() {
         setSupportActionBar(toolbar);
+        buildDrawerLayout();
+    }
 
-        noteListFragment = ListFragment.newInstance();
-        getFragmentManager()
-                .beginTransaction()
-                .add(R.id.main_view, noteListFragment)
-                .commit();
-
-
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawerView = findViewById(R.id.drawer_view);
-        drawerContent = findViewById(R.id.drawer_content);
-        mainContent = findViewById(R.id.main_view);
-
-        drawerLayout.setScrimColor(Color.TRANSPARENT);
-
-
-        toggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.navigation_drawer_open,R.string.navigation_drawer_close);
+    private void buildDrawerLayout() {
+        toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, NAVIGATION_DRAWER_OPEN, NAVIGATION_DRAWER_CLOSE);
         drawerLayout.addDrawerListener(toggle);
         drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 drawerContent.setX(drawerView.getWidth() * (1 - slideOffset));
-                mainContent.setX(drawerView.getWidth() * slideOffset);
+                mainView.setX(drawerView.getWidth() * slideOffset);
             }
 
             @Override
             public void onDrawerOpened(View drawerView) {
-
+                createNoteButton.hide();
             }
 
             @Override
             public void onDrawerClosed(View drawerView) {
-
+                createNoteButton.show();
             }
 
             @Override
@@ -85,18 +84,16 @@ public class NoteMainActivity extends AppCompatActivity {
 
             }
         });
-
+        drawerLayout.setScrimColor(Color.TRANSPARENT);
         toggle.syncState();
-
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        initSetUp();
-        buildMenuButton();
-        buildDrawer();
-        mainUserActionListener.setupSubscriberActiveTasks();
+    private void buildListFragment() {
+        noteListFragment = ListFragment.newInstance();
+        getFragmentManager()
+                .beginTransaction()
+                .add(R.id.main_view, noteListFragment)
+                .commit();
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -106,14 +103,16 @@ public class NoteMainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_pick_date_action:
-                choseDate();
-                break;
-            default:
-                toggleDrawer();
-        }
+        if (item.getItemId() == R.id.menu_pick_date_action)
+            choseDate();
         return true;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        initSetUp();
+        mainUserActionListener.setupSubscriberActiveTasks();
     }
 
     @OnClick(R.id.button_create_note)
@@ -121,53 +120,27 @@ public class NoteMainActivity extends AppCompatActivity {
         noteListFragment.getPresenter().openNewEditor(Constants.NEW_NOTE_ID);
     }
 
-    private void buildDrawer() {
-
+    @OnClick(R.id.show_active_tasks_button)
+    public void showActiveTasksButton() {
+        mainUserActionListener.setupSubscriberActiveTasks();
+        setTitle(R.string.tasks);
+        createNoteButton.setVisibility(View.VISIBLE);
+        toggleDrawer();
     }
 
-//    private PrimaryDrawerItem buildActiveTasksDrawerItem() {
-//        return new PrimaryDrawerItem()
-//                .withIcon(R.drawable.ic_date_range_white_36dp)
-//                .withName(R.string.tasks)
-//                .withSelectedColorRes(R.color.granate)
-//                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-//                    @Override
-//                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-//                        mainUserActionListener.setupSubscriberActiveTasks();
-//                        setTitle(R.string.tasks);
-//                        createNoteButton.setVisibility(View.VISIBLE);
-//                        return false;
-//                    }
-//                });
-//    }
-//
-//    private PrimaryDrawerItem buildArchiveDrawerItem() {
-//        return new PrimaryDrawerItem()
-//                .withIcon(R.drawable.ic_archive_white_36dp)
-//                .withName(R.string.archive)
-//                .withSelectedColorRes(R.color.granate)
-//                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-//                    @Override
-//                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-//                        mainUserActionListener.setupSubscriberArchive();
-//                        setTitle(R.string.archive);
-//                        createNoteButton.setVisibility(View.INVISIBLE);
-//                        return false;
-//                    }
-//                });
-//    }
-
-    public void toggleDrawer() {
-//        if (drawer.isDrawerOpen())
-//            drawer.closeDrawer();
-//        else
-//            drawer.openDrawer();
+    @OnClick(R.id.show_archive_button)
+    public void showArchiveButton() {
+        mainUserActionListener.setupSubscriberArchive();
+        setTitle(R.string.archive);
+        createNoteButton.setVisibility(View.INVISIBLE);
+        toggleDrawer();
     }
 
-    private void buildMenuButton() {
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
+    private void toggleDrawer() {
+        if (drawerLayout.isDrawerOpen(drawerView))
+            drawerLayout.closeDrawer(drawerView);
+        else
+            drawerLayout.openDrawer(drawerView);
     }
 
     private void initSetUp() {
