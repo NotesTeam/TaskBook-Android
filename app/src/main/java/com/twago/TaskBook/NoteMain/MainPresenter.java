@@ -1,11 +1,10 @@
 package com.twago.TaskBook.NoteMain;
 
 import android.app.Activity;
+import android.widget.Button;
 
 import com.twago.TaskBook.Module.Note;
 import com.twago.TaskBook.NoteList.ListContract;
-import com.twago.TaskBook.NoteList.ListFragment;
-import com.twago.TaskBook.NoteList.ListPresenter;
 import com.twago.TaskBook.Utils;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
@@ -29,23 +28,15 @@ public class MainPresenter implements MainContract.UserActionListener {
     }
 
     @Override
-    public void setInfoBarDate() {
-        Calendar calendar = Calendar.getInstance();
+    public void setupSubscriberActiveTasks() {
+        unsubscribeCurrentObserver();
+        setActiveTasksObserver();
+    }
 
-        DatePickerDialog dpd = DatePickerDialog.newInstance(
-                new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-                        Calendar calendar = Calendar.getInstance();
-                        calendar.set(year, monthOfYear, dayOfMonth);
-                        Utils.currentDate = calendar.getTimeInMillis();
-                    }
-                },
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
-        );
-        dpd.show(activity.getFragmentManager(), "Datepickerdialog");
+    @Override
+    public void setupSubscriberArchive() {
+        unsubscribeCurrentObserver();
+        setArchivedTasksObserver();
     }
 
     private void setActiveTasksObserver() {
@@ -64,6 +55,7 @@ public class MainPresenter implements MainContract.UserActionListener {
     private void setArchivedTasksObserver() {
         subscription = realm.where(Note.class)
                 .equalTo(Note.IS_ARCHIVED, true)
+                .equalTo(Note.DATE,Utils.getCurrentDayMonthYearDate())
                 .findAllSorted(Note.DATE)
                 .asObservable()
                 .subscribe(new Action1<RealmResults<Note>>() {
@@ -80,14 +72,25 @@ public class MainPresenter implements MainContract.UserActionListener {
     }
 
     @Override
-    public void setupSubscriberActiveTasks() {
-        unsubscribeCurrentObserver();
-        setActiveTasksObserver();
-    }
+    public void setInfoBarDate() {
+        Calendar calendar = Calendar.getInstance();
 
-    @Override
-    public void setupSubscriberArchive() {
-        unsubscribeCurrentObserver();
-        setArchivedTasksObserver();
+        calendar.setTimeInMillis(Utils.currentDate);
+
+        DatePickerDialog dpd = DatePickerDialog.newInstance(
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.set(year, monthOfYear, dayOfMonth);
+                        Utils.currentDate = calendar.getTimeInMillis();
+                        listPresenter.setCurrentDateInInfoBar();
+                    }
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+        );
+        dpd.show(activity.getFragmentManager(), "Datepickerdialog");
     }
 }

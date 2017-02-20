@@ -47,7 +47,7 @@ public class ListPresenter implements ListContract.UserActionListener {
     }
 
     private void inflateInfoBar() {
-        setTimeObserver();
+        setCurrentDateInInfoBar();
     }
 
     @Override
@@ -83,20 +83,6 @@ public class ListPresenter implements ListContract.UserActionListener {
             @Override
             public void execute(Realm realm) {
                 realm.where(Note.class).equalTo(Note.ID, id).findFirst().deleteFromRealm();
-            }
-        });
-    }
-
-    private void setTimeObserver() {
-        Observable.create(new Observable.OnSubscribe<Long>() {
-            @Override
-            public void call(Subscriber<? super Long> subscriber) {
-                subscriber.onNext(Utils.currentDate);
-            }
-        }).subscribe(new Action1<Long>() {
-            @Override
-            public void call(Long aLong) {
-                setCurrentDateInInfoBar();
             }
         });
     }

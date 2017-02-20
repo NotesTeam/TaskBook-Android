@@ -54,48 +54,14 @@ public class NoteMainActivity extends AppCompatActivity {
         buildListFragment();
     }
 
-    private void buildActivity() {
-        setSupportActionBar(toolbar);
-        buildDrawerLayout();
+    @Override
+    public void onStart() {
+        super.onStart();
+        initMainPresenter();
+        mainUserActionListener.setupSubscriberActiveTasks();
     }
 
-    private void buildDrawerLayout() {
-        toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, NAVIGATION_DRAWER_OPEN, NAVIGATION_DRAWER_CLOSE);
-        drawerLayout.addDrawerListener(toggle);
-        drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
-            @Override
-            public void onDrawerSlide(View drawerView, float slideOffset) {
-                drawerContent.setX(drawerView.getWidth() * (1 - slideOffset));
-                mainView.setX(drawerView.getWidth() * slideOffset);
-            }
-
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                createNoteButton.hide();
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                createNoteButton.show();
-            }
-
-            @Override
-            public void onDrawerStateChanged(int newState) {
-
-            }
-        });
-        drawerLayout.setScrimColor(Color.TRANSPARENT);
-        toggle.syncState();
-    }
-
-    private void buildListFragment() {
-        noteListFragment = ListFragment.newInstance();
-        getFragmentManager()
-                .beginTransaction()
-                .add(R.id.main_view, noteListFragment)
-                .commit();
-    }
-
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_notes_list, menu);
         return true;
@@ -106,13 +72,6 @@ public class NoteMainActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.menu_pick_date_action)
             choseDate();
         return true;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        initSetUp();
-        mainUserActionListener.setupSubscriberActiveTasks();
     }
 
     @OnClick(R.id.button_create_note)
@@ -136,6 +95,46 @@ public class NoteMainActivity extends AppCompatActivity {
         toggleDrawer();
     }
 
+    private void buildActivity() {
+        setSupportActionBar(toolbar);
+        buildDrawerLayout();
+    }
+
+    private void buildDrawerLayout() {
+        toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, NAVIGATION_DRAWER_OPEN, NAVIGATION_DRAWER_CLOSE);
+        drawerLayout.addDrawerListener(toggle);
+        drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                drawerContent.setX(drawerView.getWidth() * (1 - slideOffset));
+                mainView.setX(drawerView.getWidth() * slideOffset);
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+            }
+        });
+        drawerLayout.setScrimColor(Color.TRANSPARENT);
+        toggle.syncState();
+    }
+
+    private void buildListFragment() {
+        noteListFragment = ListFragment.newInstance();
+        getFragmentManager()
+                .beginTransaction()
+                .add(R.id.main_view, noteListFragment)
+                .commit();
+    }
+
     private void toggleDrawer() {
         if (drawerLayout.isDrawerOpen(drawerView))
             drawerLayout.closeDrawer(drawerView);
@@ -143,7 +142,7 @@ public class NoteMainActivity extends AppCompatActivity {
             drawerLayout.openDrawer(drawerView);
     }
 
-    private void initSetUp() {
+    private void initMainPresenter() {
         mainUserActionListener = new MainPresenter(this, noteListFragment.getPresenter(), Realm.getDefaultInstance());
     }
 

@@ -58,7 +58,7 @@ class EditorPresenter implements EditorContract.UserActionListener {
     private void createNewNote(Realm realm) {
         if (!isNoteEmpty()) {
             Note note = new Note(generateNewId(realm), noteEditFragmentView.getTitleNote(),
-                    noteEditFragmentView.getTextNote(), Utils.currentDate, false);
+                    noteEditFragmentView.getTextNote(), Utils.getCurrentDayMonthYearDate(), false);
             realm.copyToRealm(note);
         }
     }

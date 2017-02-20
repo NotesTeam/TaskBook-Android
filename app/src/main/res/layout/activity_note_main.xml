@@ -34,31 +34,32 @@
 
         <LinearLayout
             android:id="@+id/drawer_view"
-            android:layout_width="50dp"
+            android:layout_width="@dimen/drawer_view_width"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            android:paddingTop="50dp">
+            android:paddingTop="@dimen/toolbar_height">
 
             <LinearLayout
                 android:id="@+id/drawer_content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
                 android:background="@color/dark_blue"
-                android:gravity="center_horizontal">
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
                 <ImageButton
                     android:id="@+id/show_active_tasks_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/ic_date_range_white_24dp"
-                    android:layout_marginTop="20dp"/>
+                    android:layout_marginTop="30dp"
+                    android:background="@drawable/ic_date_range_white_24dp" />
+
                 <ImageButton
                     android:id="@+id/show_archive_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/ic_archive_white_24dp"
-                    android:layout_marginTop="30dp"/>
-
+                    android:layout_marginTop="30dp"
+                    android:background="@drawable/ic_archive_white_24dp" />
             </LinearLayout>
 
         </LinearLayout>
@@ -72,7 +73,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right|bottom"
         android:layout_margin="@dimen/fab_margin"
-        android:background="@drawable/oval"
+        app:backgroundTint="@color/orange"
         app:elevation="25dp"
         app:fabSize="normal"
         app:srcCompat="@drawable/ic_add_black_36dp" />
