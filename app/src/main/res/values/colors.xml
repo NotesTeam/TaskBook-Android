@@ -9,6 +9,10 @@
     <color name="granate">#15101b</color>
     <color name="white">#FFFF</color>
     <color name="orange">#fd7b51</color>
-    <color name="archive_green">#347e2b</color>
-    <color name="delete_red">#ff5656</color>
+    <color name="archive_green">#e68fcd37</color>
+    <color name="delete_red">#e6f45540</color>
+    <color name="transparent_light_gray">#e6e5e3e6</color>
+    <color name="transparent_light_blue">#e6ccdfe6</color>
+    <color name="transparent_ochra">#e6ebdba1</color>
+    <color name="transparent_light_pink">#e6ebb8c5</color>
 </resources>

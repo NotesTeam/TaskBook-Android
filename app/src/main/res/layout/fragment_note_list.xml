@@ -16,7 +16,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="130dp"
             android:background="@color/orange">
 
             <RelativeLayout
@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_marginRight="10dp"
-                android:layout_marginTop="10dp">
+                android:layout_centerVertical="true">
 
                 <TextView
                     android:id="@+id/note_list_day_text"
@@ -33,7 +33,9 @@
                     android:layout_height="wrap_content"
                     android:text="23"
                     android:textColor="@color/white"
-                    android:textSize="80sp" />
+                    android:textSize="80sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="-15dp"/>
 
                 <TextView
                     android:id="@+id/note_list_month_text"
@@ -41,9 +43,10 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/note_list_day_text"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="-10dp"
+                    android:layout_marginTop="-15dp"
                     android:text="NOVEMBER"
                     android:textColor="@color/white"
+                    android:textStyle="bold"
                     android:textSize="15sp" />
             </RelativeLayout>
         </RelativeLayout>

@@ -4,10 +4,13 @@
     android:id="@+id/note_list_row_swipe_layout"
     android:layout_width="match_parent"
     android:layout_height="72dp"
-    android:layout_marginTop="10dp"
+    android:layout_marginTop="20dp"
     android:gravity="center_vertical"
     app:left_swipe_enabled="true"
-    app:right_swipe_enabled="true">
+    app:right_swipe_enabled="true"
+    android:layout_marginStart="15dp"
+    android:layout_marginEnd="15dp"
+    android:background="@color/transparent_light_pink">
 
     <RelativeLayout
         android:id="@+id/note_list_row_bottom_center"
@@ -19,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp" />
+            android:layout_marginStart="16dp"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -35,14 +38,17 @@
                 android:id="@+id/note_list_row_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="3dp"
                 android:text="@string/placeholder"
                 android:textColor="@android:color/black"
-                android:textSize="16sp" />
+                android:textStyle="bold"
+                android:textSize="16sp"/>
 
             <TextView
                 android:id="@+id/note_list_row_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:text="@string/placeholder" />

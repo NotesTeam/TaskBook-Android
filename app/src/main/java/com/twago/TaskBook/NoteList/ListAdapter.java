@@ -46,7 +46,6 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     private void inflateViewHolder(ViewHolder holder, int position, Note note) {
         holder.title.setText(note.getTitle());
         holder.text.setText(note.getText());
-        holder.noteView.setBackgroundColor(position % 2 == 0 ? Constants.COLOR_WHITE : Constants.COLOR_GRAY);
         holder.date.setText(Utils.getFormattedDate(note));
         setSwipeViewsStyle(holder, note);
     }
