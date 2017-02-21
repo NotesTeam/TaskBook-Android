@@ -15,7 +15,8 @@ public interface ListContract {
     }
 
     interface UserActionListener {
-        void initialization();
+
+        void inflateListFragment();
 
         void updateRecyclerView(RealmResults<Note> notes);
 

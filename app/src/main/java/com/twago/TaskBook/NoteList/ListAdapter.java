@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.twago.TaskBook.Module.Constants;
 import com.twago.TaskBook.Module.Note;
 import com.twago.TaskBook.R;
 import com.twago.TaskBook.Utils;
@@ -37,27 +36,37 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         Log.d(TAG, "onBindViewHolder");
         final Note note = noteList.get(position);
-        inflateViewHolder(holder, position, note);
-        setViewHolderSwipeLayout(holder, note);
-        setNoteViewOnClickListener(holder, note);
-        setDeleteViewOnClickListener(holder, note);
+
+        inflateCenterNoteView(holder, note);
+        inflateRightSwipeView(holder, note);
+        setSwipeLayoutListener(holder, note);
+        setCenterNoteViewOnClickListener(holder, note);
     }
 
-    private void inflateViewHolder(ViewHolder holder, int position, Note note) {
+    private void inflateCenterNoteView(ViewHolder holder, Note note) {
         holder.title.setText(note.getTitle());
         holder.text.setText(note.getText());
         holder.date.setText(Utils.getFormattedDate(note));
-        setSwipeViewsStyle(holder, note);
     }
 
-    private void setSwipeViewsStyle(ViewHolder holder, Note note) {
+    private void inflateRightSwipeView(ViewHolder holder, Note note) {
         if (note.isArchived())
-            setStyleDeleteButton(holder);
+            setSwipeViewDeleteStyle(holder);
         else
-            setStyleArchiveButton(holder);
+            setSwipeViewArchiveStyle(holder);
     }
 
-    private void setViewHolderSwipeLayout(final ViewHolder holder, final Note note) {
+    private void setSwipeViewDeleteStyle(ViewHolder holder) {
+        holder.rightSwipeView.setBackgroundResource(R.color.delete_red);
+        holder.deleteIcon.setBackgroundResource(R.drawable.ic_delete_white_36dp);
+    }
+
+    private void setSwipeViewArchiveStyle(ViewHolder holder) {
+        holder.rightSwipeView.setBackgroundResource(R.color.archive_green);
+        holder.deleteIcon.setBackgroundResource(R.drawable.ic_archive_white_36dp);
+    }
+
+    private void setSwipeLayoutListener(final ViewHolder holder, final Note note) {
         holder.swipeLayout.setOnSwipeListener(new SwipeLayout.OnSwipeListener() {
             @Override
             public void onBeginSwipe(SwipeLayout swipeLayout, boolean moveToRight) {
@@ -75,39 +84,18 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
             }
 
             @Override
-            public void onLeftStickyEdge(SwipeLayout swipeLayout, boolean moveToRight) {
-            }
+            public void onLeftStickyEdge(SwipeLayout swipeLayout, boolean moveToRight) {}
 
             @Override
-            public void onRightStickyEdge(SwipeLayout swipeLayout, boolean moveToRight) {
-            }
+            public void onRightStickyEdge(SwipeLayout swipeLayout, boolean moveToRight) {}
         });
     }
 
-    private void setStyleDeleteButton(ViewHolder holder) {
-        holder.deleteView.setBackgroundResource(R.color.delete_red);
-        holder.deleteIcon.setBackgroundResource(R.drawable.ic_delete_white_36dp);
-    }
-
-    private void setStyleArchiveButton(ViewHolder holder) {
-        holder.deleteView.setBackgroundResource(R.color.archive_green);
-        holder.deleteIcon.setBackgroundResource(R.drawable.ic_archive_white_36dp);
-    }
-
-    private void setNoteViewOnClickListener(final ListAdapter.ViewHolder holder, final Note note) {
-        holder.noteView.setOnClickListener(new View.OnClickListener() {
+    private void setCenterNoteViewOnClickListener(final ListAdapter.ViewHolder holder, final Note note) {
+        holder.centerNoteView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 userActionListener.openNewEditor(note.getId());
-            }
-        });
-    }
-
-    private void setDeleteViewOnClickListener(ViewHolder holder, final Note note) {
-        holder.deleteView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                userActionListener.deleteNote(note.getId());
             }
         });
     }
@@ -122,10 +110,10 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.note_list_row_bottom_center)
-        View noteView;
-        @BindView(R.id.note_list_row_bottom_right)
-        View deleteView;
+        @BindView(R.id.note_list_row_bottom_note_center)
+        View centerNoteView;
+        @BindView(R.id.note_list_row_bottom_swipe_right)
+        View rightSwipeView;
         @BindView(R.id.note_list_row_swipe_layout)
         SwipeLayout swipeLayout;
         @BindView(R.id.note_list_row_title)

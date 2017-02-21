@@ -6,9 +6,7 @@ public interface EditorContract {
 
         String getTitleNote();
 
-        void blockArchivedNoteViews();
-
-        int getChosenNoteId();
+        int getEditedNoteId();
 
         void setTitleNoteEditText(String title);
 
@@ -19,7 +17,7 @@ public interface EditorContract {
 
         void setCurrentNoteDate();
 
-        void inflateChosenNoteData();
+        void inflateExistNoteData();
 
         void saveNoteToDatabase();
     }

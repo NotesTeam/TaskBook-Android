@@ -4,16 +4,16 @@
     android:id="@+id/note_list_row_swipe_layout"
     android:layout_width="match_parent"
     android:layout_height="72dp"
+    android:layout_marginEnd="15dp"
+    android:layout_marginStart="15dp"
     android:layout_marginTop="20dp"
+    android:background="@color/transparent_light_pink"
     android:gravity="center_vertical"
     app:left_swipe_enabled="true"
-    app:right_swipe_enabled="true"
-    android:layout_marginStart="15dp"
-    android:layout_marginEnd="15dp"
-    android:background="@color/transparent_light_pink">
+    app:right_swipe_enabled="true">
 
     <RelativeLayout
-        android:id="@+id/note_list_row_bottom_center"
+        android:id="@+id/note_list_row_bottom_note_center"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"/>
+            android:layout_marginStart="16dp" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -41,8 +41,8 @@
                 android:layout_marginBottom="3dp"
                 android:text="@string/placeholder"
                 android:textColor="@android:color/black"
-                android:textStyle="bold"
-                android:textSize="16sp"/>
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/note_list_row_text"
@@ -64,12 +64,12 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/note_list_row_bottom_right"
+        android:id="@+id/note_list_row_bottom_swipe_right"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:gravity="right"
-        app:bring_to_clamp="350dp"
+        app:bring_to_clamp="200dp"
         app:clamp="parent"
+        app:gravity="right"
         app:sticky="0dp">
 
         <ImageView

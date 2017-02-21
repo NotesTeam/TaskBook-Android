@@ -58,7 +58,11 @@ public class NoteMainActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         initMainPresenter();
-        mainUserActionListener.setupSubscriberActiveTasks();
+        showActiveTasks();
+    }
+
+    private void initMainPresenter() {
+        mainUserActionListener = new MainPresenter(this, noteListFragment.getPresenter(), Realm.getDefaultInstance());
     }
 
     @Override
@@ -74,25 +78,8 @@ public class NoteMainActivity extends AppCompatActivity {
         return true;
     }
 
-    @OnClick(R.id.button_create_note)
-    public void onCreateNote() {
-        noteListFragment.getPresenter().openNewEditor(Constants.NEW_NOTE_ID);
-    }
-
-    @OnClick(R.id.show_active_tasks_button)
-    public void showActiveTasksButton() {
-        mainUserActionListener.setupSubscriberActiveTasks();
-        setTitle(R.string.tasks);
-        createNoteButton.setVisibility(View.VISIBLE);
-        toggleDrawer();
-    }
-
-    @OnClick(R.id.show_archive_button)
-    public void showArchiveButton() {
-        mainUserActionListener.setupSubscriberArchive();
-        setTitle(R.string.archive);
-        createNoteButton.setVisibility(View.INVISIBLE);
-        toggleDrawer();
+    private void choseDate() {
+        mainUserActionListener.setInfoBarDate();
     }
 
     private void buildActivity() {
@@ -135,18 +122,29 @@ public class NoteMainActivity extends AppCompatActivity {
                 .commit();
     }
 
-    private void toggleDrawer() {
+    @OnClick(R.id.button_create_note)
+    public void onCreateNote() {
+        noteListFragment.getPresenter().openNewEditor(Constants.NEW_NOTE_ID);
+    }
+
+    @OnClick(R.id.show_active_tasks_button)
+    public void showActiveTasks() {
+        mainUserActionListener.setupSubscriberActiveTasks();
+        setTitle(R.string.tasks);
+        createNoteButton.setVisibility(View.VISIBLE);
+        closeDrawer();
+    }
+
+    @OnClick(R.id.show_archive_button)
+    public void showArchiveButton() {
+        mainUserActionListener.setupSubscriberArchive();
+        setTitle(R.string.archive);
+        createNoteButton.setVisibility(View.INVISIBLE);
+        closeDrawer();
+    }
+
+    private void closeDrawer() {
         if (drawerLayout.isDrawerOpen(drawerView))
             drawerLayout.closeDrawer(drawerView);
-        else
-            drawerLayout.openDrawer(drawerView);
-    }
-
-    private void initMainPresenter() {
-        mainUserActionListener = new MainPresenter(this, noteListFragment.getPresenter(), Realm.getDefaultInstance());
-    }
-
-    private void choseDate() {
-        mainUserActionListener.setInfoBarDate();
     }
 }

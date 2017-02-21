@@ -13,27 +13,25 @@ import io.realm.RealmResults;
 
 class EditorPresenter implements EditorContract.UserActionListener {
     private static final String TAG = EditorPresenter.class.getSimpleName();
-    private int chosenNoteId;
+    private int existNoteId;
     private NoteMainActivity activity;
     private EditorContract.View noteEditFragmentView;
 
     EditorPresenter(NoteMainActivity activity, EditorContract.View noteEditFragmentView) {
         this.activity = activity;
         this.noteEditFragmentView = noteEditFragmentView;
-        this.chosenNoteId = noteEditFragmentView.getChosenNoteId();
+        this.existNoteId = noteEditFragmentView.getEditedNoteId();
     }
 
     @Override
-    public void inflateChosenNoteData() {
+    public void inflateExistNoteData() {
         if (!isNoteNew()) {
-            Note chosenNote = getNoteWithId(chosenNoteId);
-            inflateNoteData(chosenNote);
-            if (chosenNote.isArchived())
-                noteEditFragmentView.blockArchivedNoteViews();
+            Note existNote = getNoteWithId(existNoteId);
+            inflateExistNoteData(existNote);
         }
     }
 
-    private void inflateNoteData(Note note) {
+    private void inflateExistNoteData(Note note) {
         if (note != null) {
             noteEditFragmentView.setTitleNoteEditText(note.getTitle());
             noteEditFragmentView.setTextNoteEditText(note.getText());
@@ -50,7 +48,7 @@ class EditorPresenter implements EditorContract.UserActionListener {
                 if (isNoteNew())
                     createNewNote(realm);
                 else
-                    updateNote();
+                    updateExistNote();
             }
         });
     }
@@ -69,8 +67,8 @@ class EditorPresenter implements EditorContract.UserActionListener {
         return results.max(Note.ID).intValue() + 1;
     }
 
-    private void updateNote() {
-        Note chosenNote = getNoteWithId(chosenNoteId);
+    private void updateExistNote() {
+        Note chosenNote = getNoteWithId(existNoteId);
         chosenNote.setTitle(noteEditFragmentView.getTitleNote());
         chosenNote.setText(noteEditFragmentView.getTextNote());
         chosenNote.setDate(Utils.currentDate);
@@ -78,11 +76,11 @@ class EditorPresenter implements EditorContract.UserActionListener {
 
 
     private Note getNoteWithId(int noteId) {
-        return Realm.getDefaultInstance().where(Note.class).equalTo(Note.ID,noteId).findFirst();
+        return Realm.getDefaultInstance().where(Note.class).equalTo(Note.ID, noteId).findFirst();
     }
 
     private boolean isNoteNew() {
-        return chosenNoteId == Constants.NEW_NOTE_ID;
+        return existNoteId == Constants.NEW_NOTE_ID;
     }
 
     private boolean isNoteEmpty() {
@@ -94,7 +92,7 @@ class EditorPresenter implements EditorContract.UserActionListener {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(Utils.currentDate);
 
-        Note chosenNote = getNoteWithId(chosenNoteId);
+        Note chosenNote = getNoteWithId(existNoteId);
         if (chosenNote != null)
             calendar.setTimeInMillis(chosenNote.getDate());
 
@@ -105,6 +103,7 @@ class EditorPresenter implements EditorContract.UserActionListener {
                         Calendar calendar = Calendar.getInstance();
                         calendar.set(year, monthOfYear, dayOfMonth);
                         Utils.currentDate = calendar.getTimeInMillis();
+                        //TODO: Date on ListFragment's InfoBar should be changed here
                     }
                 },
                 calendar.get(Calendar.YEAR),

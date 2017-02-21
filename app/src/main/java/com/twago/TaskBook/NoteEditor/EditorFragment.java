@@ -22,7 +22,7 @@ import butterknife.OnClick;
 public class EditorFragment extends DialogFragment implements EditorContract.View {
     private static final String TAG = EditorFragment.class.getSimpleName();
     private static final String TAG_ID = "TAG_ID";
-    private int chosenNoteId;
+    private int editedNoteId;
     private EditorContract.UserActionListener userActionListener;
 
     @BindView(R.id.button_close_note)
@@ -58,9 +58,9 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
     @Override
     public void onStart() {
         super.onStart();
-        chosenNoteId = getArguments().getInt(TAG_ID);
+        editedNoteId = getArguments().getInt(TAG_ID);
         userActionListener = new EditorPresenter((NoteMainActivity) getActivity(), this);
-        userActionListener.inflateChosenNoteData();
+        userActionListener.inflateExistNoteData();
     }
 
     @OnClick(R.id.button_set_date)
@@ -74,17 +74,8 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
     }
 
     @Override
-    public void blockArchivedNoteViews() {
-        titleNoteEdit.setHint("");
-        textNoteEdit.setHint("");
-        titleNoteEdit.setEnabled(false);
-        textNoteEdit.setEnabled(false);
-        setDateButton.setVisibility(View.INVISIBLE);
-    }
-
-    @Override
-    public int getChosenNoteId() {
-        return chosenNoteId;
+    public int getEditedNoteId() {
+        return editedNoteId;
     }
 
     @Override

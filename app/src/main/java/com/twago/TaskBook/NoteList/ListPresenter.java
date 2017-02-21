@@ -15,10 +15,6 @@ import java.util.Locale;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
-import rx.Observable;
-import rx.Subscriber;
-import rx.Subscription;
-import rx.functions.Action1;
 
 public class ListPresenter implements ListContract.UserActionListener {
     private final String TAG = this.getClass().getSimpleName();
@@ -33,11 +29,7 @@ public class ListPresenter implements ListContract.UserActionListener {
     }
 
     @Override
-    public void initialization() {
-        inflateView();
-    }
-
-    private void inflateView() {
+    public void inflateListFragment() {
         inflateRecyclerView();
         inflateInfoBar();
     }
@@ -48,6 +40,11 @@ public class ListPresenter implements ListContract.UserActionListener {
 
     private void inflateInfoBar() {
         setCurrentDateInInfoBar();
+    }
+
+    @Override
+    public void setCurrentDateInInfoBar() {
+        noteListFragmentView.setDateInInfoBar(getFormattedDayForInfoBarDate(), getFormattedMonthForInfoBarDate());
     }
 
     @Override
@@ -85,11 +82,6 @@ public class ListPresenter implements ListContract.UserActionListener {
                 realm.where(Note.class).equalTo(Note.ID, id).findFirst().deleteFromRealm();
             }
         });
-    }
-
-    @Override
-    public void setCurrentDateInInfoBar() {
-        noteListFragmentView.setDateInInfoBar(getFormattedDayForInfoBarDate(), getFormattedMonthForInfoBarDate());
     }
 
     private String getFormattedDayForInfoBarDate() {

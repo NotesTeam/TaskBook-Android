@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,9 +21,9 @@ public class ListFragment extends Fragment implements ListContract.View {
     public static final String TAG = ListFragment.class.getSimpleName();
     @BindView(R.id.note_list_recycler_view)
     RecyclerView recyclerView;
-    @BindView(R.id.note_list_day_text)
+    @BindView(R.id.note_list_infobar_day_text)
     TextView dayTextView;
-    @BindView(R.id.note_list_month_text)
+    @BindView(R.id.note_list_infobar_month_text)
     TextView monthTextView;
 
 
@@ -35,7 +34,6 @@ public class ListFragment extends Fragment implements ListContract.View {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate");
         userActionListener = new ListPresenter(getActivity(), this);
     }
 
@@ -44,7 +42,7 @@ public class ListFragment extends Fragment implements ListContract.View {
         View view = inflater.inflate(R.layout.fragment_note_list, container, false);
         ButterKnife.bind(this, view);
         setupRecyclerView();
-        userActionListener.initialization();
+        userActionListener.inflateListFragment();
 
         return view;
     }
@@ -53,13 +51,13 @@ public class ListFragment extends Fragment implements ListContract.View {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
+    public ListContract.UserActionListener getPresenter() {
+        return userActionListener;
+    }
+
     @Override
     public ListAdapter getRecyclerViewAdapter() {
         return (ListAdapter) recyclerView.getAdapter();
-    }
-
-    public ListContract.UserActionListener getPresenter() {
-        return userActionListener;
     }
 
     @Override
