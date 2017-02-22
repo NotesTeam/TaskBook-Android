@@ -129,7 +129,7 @@ public class NoteMainActivity extends AppCompatActivity {
 
     @OnClick(R.id.show_active_tasks_button)
     public void showActiveTasks() {
-        mainUserActionListener.setupSubscriberActiveTasks();
+        //mainUserActionListener.setupSubscriberActiveTasks();
         setTitle(R.string.tasks);
         createNoteButton.setVisibility(View.VISIBLE);
         closeDrawer();
@@ -137,7 +137,7 @@ public class NoteMainActivity extends AppCompatActivity {
 
     @OnClick(R.id.show_archive_button)
     public void showArchiveButton() {
-        mainUserActionListener.setupSubscriberArchive();
+        //mainUserActionListener.setupSubscriberArchive();
         setTitle(R.string.archive);
         createNoteButton.setVisibility(View.INVISIBLE);
         closeDrawer();

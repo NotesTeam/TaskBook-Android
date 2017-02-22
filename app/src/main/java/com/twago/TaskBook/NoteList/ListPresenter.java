@@ -7,11 +7,9 @@ import android.app.FragmentTransaction;
 import com.twago.TaskBook.Module.Note;
 import com.twago.TaskBook.NoteEditor.EditorFragment;
 import com.twago.TaskBook.R;
-import com.twago.TaskBook.Utils;
+import com.twago.TaskBook.TaskBook;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import java.util.Calendar;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -21,6 +19,7 @@ public class ListPresenter implements ListContract.UserActionListener {
     private Activity activity;
     private ListContract.View noteListFragmentView;
     private Realm realm;
+    private Calendar calendar = Calendar.getInstance();
 
     public ListPresenter(Activity activity, final ListContract.View noteListFragmentView) {
         this.activity = activity;
@@ -30,11 +29,38 @@ public class ListPresenter implements ListContract.UserActionListener {
 
     @Override
     public void inflateListFragment() {
-        inflateRecyclerView();
+        setAdapter();
         inflateInfoBar();
+        showNotesForDate(calendar);
     }
 
-    private void inflateRecyclerView() {
+    private void showNotesForDate(Calendar calendar){
+        long dayBegin = getDayBegin(calendar);
+        long dayEnd = getDayEnd(calendar);
+        RealmResults<Note> realmResults = realm.where(Note.class)
+                .greaterThanOrEqualTo(Note.DATE,dayBegin)
+                .lessThanOrEqualTo(Note.DATE,dayEnd)
+                .findAll();
+        updateRecyclerView(realmResults);
+    }
+
+    private long getDayBegin(Calendar calendar) {
+        calendar.set(calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH),
+                0,0,0);
+        return calendar.getTimeInMillis();
+    }
+
+    private long getDayEnd(Calendar calendar) {
+        calendar.set(calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH),
+                23,59,59);
+        return calendar.getTimeInMillis();
+    }
+
+    private void setAdapter() {
         noteListFragmentView.setAdapterOnRecyclerView(new ListAdapter(this));
     }
 
@@ -44,7 +70,9 @@ public class ListPresenter implements ListContract.UserActionListener {
 
     @Override
     public void setCurrentDateInInfoBar() {
-        noteListFragmentView.setDateInInfoBar(getFormattedDayForInfoBarDate(), getFormattedMonthForInfoBarDate());
+        noteListFragmentView.setDateInInfoBar(
+                TaskBook.getInstance().getFormattedDayForInfoBarDate(),
+                TaskBook.getInstance().getFormattedMonthForInfoBarDate());
     }
 
     @Override
@@ -82,15 +110,5 @@ public class ListPresenter implements ListContract.UserActionListener {
                 realm.where(Note.class).equalTo(Note.ID, id).findFirst().deleteFromRealm();
             }
         });
-    }
-
-    private String getFormattedDayForInfoBarDate() {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd", Locale.getDefault());
-        return simpleDateFormat.format(new Date(Utils.currentDate));
-    }
-
-    private String getFormattedMonthForInfoBarDate() {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMMM", Locale.getDefault());
-        return simpleDateFormat.format(new Date(Utils.currentDate)).toUpperCase();
     }
 }

@@ -15,9 +15,9 @@
     <string name="cancel">CANCEL</string>
     <string name="color_button">COLOR</string>
     <string name="placeholder">placeholder</string>
-    <string name="date">DATE</string>
+    <string name="timeStamp">DATE</string>
     <string name="search">Search</string>
-    <string name="choose_date">Choose date</string>
+    <string name="choose_date">Choose timeStamp</string>
     <string name="tasks">Tasks</string>
     <string name="archive">Archive</string>
     <string name="thrash">Thrash</string>

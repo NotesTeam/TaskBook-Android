@@ -3,7 +3,7 @@ package com.twago.TaskBook.NoteEditor;
 import com.twago.TaskBook.Module.Constants;
 import com.twago.TaskBook.Module.Note;
 import com.twago.TaskBook.NoteMain.NoteMainActivity;
-import com.twago.TaskBook.Utils;
+import com.twago.TaskBook.TaskBook;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.util.Calendar;
@@ -16,7 +16,6 @@ class EditorPresenter implements EditorContract.UserActionListener {
     private int existNoteId;
     private NoteMainActivity activity;
     private EditorContract.View noteEditFragmentView;
-
     EditorPresenter(NoteMainActivity activity, EditorContract.View noteEditFragmentView) {
         this.activity = activity;
         this.noteEditFragmentView = noteEditFragmentView;
@@ -35,7 +34,7 @@ class EditorPresenter implements EditorContract.UserActionListener {
         if (note != null) {
             noteEditFragmentView.setTitleNoteEditText(note.getTitle());
             noteEditFragmentView.setTextNoteEditText(note.getText());
-            Utils.currentDate = note.getDate();
+            TaskBook.getInstance().setTimeStamp(note.getDate());
         }
     }
 
@@ -56,7 +55,7 @@ class EditorPresenter implements EditorContract.UserActionListener {
     private void createNewNote(Realm realm) {
         if (!isNoteEmpty()) {
             Note note = new Note(generateNewId(realm), noteEditFragmentView.getTitleNote(),
-                    noteEditFragmentView.getTextNote(), Utils.getCurrentDayMonthYearDate(), false);
+                    noteEditFragmentView.getTextNote(), TaskBook.getInstance().getTimeStamp(), false);
             realm.copyToRealm(note);
         }
     }
@@ -71,7 +70,7 @@ class EditorPresenter implements EditorContract.UserActionListener {
         Note chosenNote = getNoteWithId(existNoteId);
         chosenNote.setTitle(noteEditFragmentView.getTitleNote());
         chosenNote.setText(noteEditFragmentView.getTextNote());
-        chosenNote.setDate(Utils.currentDate);
+        chosenNote.setDate(TaskBook.getInstance().getTimeStamp());
     }
 
 
@@ -90,7 +89,7 @@ class EditorPresenter implements EditorContract.UserActionListener {
     @Override
     public void setCurrentNoteDate() {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(Utils.currentDate);
+        calendar.setTimeInMillis(TaskBook.getInstance().getTimeStamp());
 
         Note chosenNote = getNoteWithId(existNoteId);
         if (chosenNote != null)
@@ -102,8 +101,7 @@ class EditorPresenter implements EditorContract.UserActionListener {
                     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
                         Calendar calendar = Calendar.getInstance();
                         calendar.set(year, monthOfYear, dayOfMonth);
-                        Utils.currentDate = calendar.getTimeInMillis();
-                        //TODO: Date on ListFragment's InfoBar should be changed here
+                        TaskBook.getInstance().setTimeStamp(calendar.getTimeInMillis());
                     }
                 },
                 calendar.get(Calendar.YEAR),

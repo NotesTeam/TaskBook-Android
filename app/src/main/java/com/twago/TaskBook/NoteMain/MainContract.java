@@ -1,14 +1,15 @@
 package com.twago.TaskBook.NoteMain;
 
 interface MainContract {
-    interface View{
+    interface View {
 
     }
+
     interface UserActionListener {
         void setInfoBarDate();
 
-        void setupSubscriberActiveTasks();
+        // void setupSubscriberActiveTasks();
 
-        void setupSubscriberArchive();
+        // void setupSubscriberArchive();
     }
 }

@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.twago.TaskBook.Module.Note;
 import com.twago.TaskBook.R;
-import com.twago.TaskBook.Utils;
+import com.twago.TaskBook.TaskBook;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,7 +46,7 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     private void inflateCenterNoteView(ViewHolder holder, Note note) {
         holder.title.setText(note.getTitle());
         holder.text.setText(note.getText());
-        holder.date.setText(Utils.getFormattedDate(note));
+        holder.date.setText(TaskBook.getInstance().getFormattedDate(note));
     }
 
     private void inflateRightSwipeView(ViewHolder holder, Note note) {
