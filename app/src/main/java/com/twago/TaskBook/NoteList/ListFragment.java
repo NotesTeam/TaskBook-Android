@@ -98,5 +98,6 @@ public class ListFragment extends Fragment implements ListContract.View {
         Note note = Realm.getDefaultInstance().where(Note.class).equalTo(Note.ID, id).findFirst();
         getRecyclerViewAdapter().addElement(note);
         getRecyclerViewAdapter().notifyItemInserted(0);
+        recyclerView.scrollToPosition(0);
     }
 }
