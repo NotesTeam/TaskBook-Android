@@ -32,7 +32,7 @@ public class TaskBook extends Application {
         return simpleDateFormat.format(new Date(TaskBook.getInstance().getTimeStamp())).toUpperCase();
     }
 
-    public String getFormattedDate(Note note) {
+    public static String getFormattedDate(Note note) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE dd MMM yyyy", Locale.getDefault());
         return simpleDateFormat.format(new Date(note.getDate()));
     }

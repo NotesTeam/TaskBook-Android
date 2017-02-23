@@ -11,6 +11,8 @@ public interface EditorContract {
         void setTitleNoteEditText(String title);
 
         void setTextNoteEditText(String text);
+
+        void notifyItemAdded(int id);
     }
 
     interface UserActionListener {

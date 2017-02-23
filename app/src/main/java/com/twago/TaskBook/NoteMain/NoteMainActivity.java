@@ -1,5 +1,7 @@
 package com.twago.TaskBook.NoteMain;
 
+import android.app.DialogFragment;
+import android.app.FragmentTransaction;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -12,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.twago.TaskBook.Module.Constants;
+import com.twago.TaskBook.NoteEditor.EditorFragment;
 import com.twago.TaskBook.NoteList.ListFragment;
 import com.twago.TaskBook.R;
 
@@ -20,7 +23,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.realm.Realm;
 
-public class NoteMainActivity extends AppCompatActivity {
+public class NoteMainActivity extends AppCompatActivity implements MainInterface {
     private static final String TAG = NoteMainActivity.class.getSimpleName();
     public static final int NAVIGATION_DRAWER_OPEN = R.string.navigation_drawer_open;
     public static final int NAVIGATION_DRAWER_CLOSE = R.string.navigation_drawer_close;
@@ -147,4 +150,21 @@ public class NoteMainActivity extends AppCompatActivity {
         if (drawerLayout.isDrawerOpen(drawerView))
             drawerLayout.closeDrawer(drawerView);
     }
+
+    @Override
+    public void openNewEditor(int id) {
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        DialogFragment newFragment = EditorFragment.newInstance(id);
+        newFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.FullScreenDialog);
+        newFragment.show(fragmentTransaction, "");
+    }
+
+
+    @Override
+    public void notifyItemAdded(int id) {
+        noteListFragment.notifyItemAdded(id);
+    }
+
 }
+

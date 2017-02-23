@@ -1,6 +1,8 @@
 package com.twago.TaskBook.NoteEditor;
 
+import android.app.Activity;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -11,6 +13,9 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import com.twago.TaskBook.NoteList.ListContract;
+import com.twago.TaskBook.NoteList.ListPresenter;
+import com.twago.TaskBook.NoteMain.MainInterface;
 import com.twago.TaskBook.NoteMain.NoteMainActivity;
 import com.twago.TaskBook.R;
 
@@ -35,6 +40,7 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
     EditText titleNoteEdit;
     @BindView(R.id.text_edit_note)
     EditText textNoteEdit;
+    private MainInterface mainContract;
 
     public static EditorFragment newInstance(int id) {
         Bundle args = new Bundle();
@@ -45,8 +51,16 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
     }
 
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if(context instanceof Activity)
+            mainContract = (MainInterface) context;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mainContract = (MainInterface) activity;
     }
 
     @Override
@@ -88,6 +102,11 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
     @Override
     public void setTextNoteEditText(String text) {
         textNoteEdit.setText(text);
+    }
+
+    @Override
+    public void notifyItemAdded(int id) {
+        mainContract.notifyItemAdded(id);
     }
 
     @Override

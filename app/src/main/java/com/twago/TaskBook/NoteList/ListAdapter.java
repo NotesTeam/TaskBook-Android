@@ -9,18 +9,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.twago.TaskBook.Module.Note;
+import com.twago.TaskBook.NoteMain.MainContract;
 import com.twago.TaskBook.R;
 import com.twago.TaskBook.TaskBook;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 import ru.rambler.libs.swipe_layout.SwipeLayout;
 
 class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     private static final String TAG = ListAdapter.class.getSimpleName();
     private ListContract.UserActionListener userActionListener;
-    private RealmResults<Note> noteList;
+    private RealmList<Note> noteList;
 
     ListAdapter(ListContract.UserActionListener userActionListener) {
         this.userActionListener = userActionListener;
@@ -100,7 +102,11 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         });
     }
 
-    public void setData(RealmResults<Note> notes) {
+    public void addElement(Note note){
+        noteList.add(0,note);
+    }
+
+    public void setData(RealmList<Note> notes) {
         this.noteList = notes;
     }
 

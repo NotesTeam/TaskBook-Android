@@ -12,6 +12,7 @@ import com.twago.TaskBook.TaskBook;
 import java.util.Calendar;
 
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 
 public class ListPresenter implements ListContract.UserActionListener {
@@ -41,7 +42,9 @@ public class ListPresenter implements ListContract.UserActionListener {
                 .greaterThanOrEqualTo(Note.DATE,dayBegin)
                 .lessThanOrEqualTo(Note.DATE,dayEnd)
                 .findAll();
-        updateRecyclerView(realmResults);
+        RealmList<Note> notes = new RealmList<>();
+        notes.addAll(realmResults);
+        updateRecyclerView(notes);
     }
 
     private long getDayBegin(Calendar calendar) {
@@ -76,19 +79,10 @@ public class ListPresenter implements ListContract.UserActionListener {
     }
 
     @Override
-    public void updateRecyclerView(RealmResults<Note> notes) {
+    public void updateRecyclerView(RealmList<Note> notes) {
         ListAdapter recyclerViewAdapter = noteListFragmentView.getRecyclerViewAdapter();
         recyclerViewAdapter.setData(notes);
         recyclerViewAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void openNewEditor(int id) {
-        FragmentTransaction fragmentTransaction = activity.getFragmentManager().beginTransaction();
-        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        DialogFragment newFragment = EditorFragment.newInstance(id);
-        newFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.FullScreenDialog);
-        newFragment.show(fragmentTransaction, "");
     }
 
     @Override
@@ -100,6 +94,11 @@ public class ListPresenter implements ListContract.UserActionListener {
             }
         });
 
+    }
+
+    @Override
+    public void openNewEditor(int id) {
+        noteListFragmentView.openNewEditor(id);
     }
 
     @Override

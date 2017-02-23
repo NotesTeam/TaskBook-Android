@@ -1,6 +1,8 @@
 package com.twago.TaskBook.NoteList;
 
+import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,10 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.twago.TaskBook.Module.Note;
+import com.twago.TaskBook.NoteMain.MainInterface;
 import com.twago.TaskBook.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.Realm;
 
 public class ListFragment extends Fragment implements ListContract.View {
 
@@ -25,7 +30,20 @@ public class ListFragment extends Fragment implements ListContract.View {
     TextView dayTextView;
     @BindView(R.id.note_list_infobar_month_text)
     TextView monthTextView;
+    private MainInterface mainInterface;
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if(context instanceof Activity)
+            mainInterface = (MainInterface) context;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mainInterface = (MainInterface) activity;
+    }
 
     public static ListFragment newInstance() {
         return new ListFragment();
@@ -69,5 +87,16 @@ public class ListFragment extends Fragment implements ListContract.View {
     public void setDateInInfoBar(String dayText, String monthText) {
         dayTextView.setText(dayText);
         monthTextView.setText(monthText);
+    }
+
+    @Override
+    public void openNewEditor(int id) {
+        mainInterface.openNewEditor(id);
+    }
+
+    public void notifyItemAdded(int id) {
+        Note note = Realm.getDefaultInstance().where(Note.class).equalTo(Note.ID, id).findFirst();
+        getRecyclerViewAdapter().addElement(note);
+        getRecyclerViewAdapter().notifyItemInserted(0);
     }
 }

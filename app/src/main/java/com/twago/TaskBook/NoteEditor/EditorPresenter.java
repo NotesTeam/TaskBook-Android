@@ -2,6 +2,7 @@ package com.twago.TaskBook.NoteEditor;
 
 import com.twago.TaskBook.Module.Constants;
 import com.twago.TaskBook.Module.Note;
+import com.twago.TaskBook.NoteList.ListContract;
 import com.twago.TaskBook.NoteMain.NoteMainActivity;
 import com.twago.TaskBook.TaskBook;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
@@ -44,17 +45,20 @@ class EditorPresenter implements EditorContract.UserActionListener {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                if (isNoteNew())
-                    createNewNote(realm);
+                if (isNoteNew()) {
+                    int newNoteId = generateNewId(realm);
+                    createNewNote(realm, newNoteId);
+                    noteEditFragmentView.notifyItemAdded(newNoteId);
+                }
                 else
                     updateExistNote();
             }
         });
     }
 
-    private void createNewNote(Realm realm) {
+    private void createNewNote(Realm realm, int newNoteId) {
         if (!isNoteEmpty()) {
-            Note note = new Note(generateNewId(realm), noteEditFragmentView.getTitleNote(),
+            Note note = new Note(newNoteId, noteEditFragmentView.getTitleNote(),
                     noteEditFragmentView.getTextNote(), TaskBook.getInstance().getTimeStamp(), false);
             realm.copyToRealm(note);
         }
