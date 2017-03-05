@@ -86,6 +86,16 @@ public class ListPresenter implements ListContract.UserActionListener {
     }
 
     @Override
+    public void openNewEditor(int id) {
+        noteListFragmentView.openNewEditor(id);
+    }
+
+    @Override
+    public int getNotesSize() {
+        return realm.where(Note.class).findAll().size();
+    }
+
+    @Override
     public void archiveNote(final int id) {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
@@ -94,11 +104,6 @@ public class ListPresenter implements ListContract.UserActionListener {
             }
         });
 
-    }
-
-    @Override
-    public void openNewEditor(int id) {
-        noteListFragmentView.openNewEditor(id);
     }
 
     @Override

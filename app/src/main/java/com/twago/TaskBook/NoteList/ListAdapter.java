@@ -77,10 +77,13 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
             @Override
             public void onSwipeClampReached(SwipeLayout swipeLayout, boolean moveToRight) {
                 if (!moveToRight) {
-                    if (note.isArchived())
-                        userActionListener.deleteNote(note.getId());
-                    else
-                        userActionListener.archiveNote(note.getId());
+//                    if (note.isArchived())
+//                        userActionListener.deleteNote(note.getId());
+//                    else
+//                        userActionListener.archiveNote(note.getId());
+                    userActionListener.deleteNote(note.getId());
+                    notifyItemRemoved(holder.getOldPosition());
+                    notifyItemRangeChanged(holder.getOldPosition(),userActionListener.getNotesSize());
                     swipeLayout.reset();
                 }
             }
