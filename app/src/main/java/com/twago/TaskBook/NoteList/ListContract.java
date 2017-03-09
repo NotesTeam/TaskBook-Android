@@ -2,6 +2,8 @@ package com.twago.TaskBook.NoteList;
 
 import com.twago.TaskBook.Module.Note;
 
+import java.util.Calendar;
+
 import io.realm.RealmList;
 import io.realm.RealmResults;
 
@@ -22,6 +24,8 @@ public interface ListContract {
         void inflateListFragment();
 
         void updateRecyclerView(RealmList<Note> notes);
+
+        void showNoteListForDate(boolean isArchived, Calendar calendar);
 
         void setCurrentDateInInfoBar();
 

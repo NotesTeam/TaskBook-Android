@@ -6,7 +6,6 @@ import android.app.FragmentTransaction;
 
 import com.twago.TaskBook.NoteEditor.EditorFragment;
 import com.twago.TaskBook.NoteList.ListContract;
-import com.twago.TaskBook.R;
 import com.twago.TaskBook.TaskBook;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 

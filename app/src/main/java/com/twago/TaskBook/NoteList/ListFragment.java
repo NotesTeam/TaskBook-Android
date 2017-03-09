@@ -20,17 +20,17 @@ import butterknife.ButterKnife;
 import io.realm.Realm;
 
 public class ListFragment extends Fragment implements ListContract.View {
-
-    ListContract.UserActionListener userActionListener;
-
     public static final String TAG = ListFragment.class.getSimpleName();
-    @BindView(R.id.note_list_recycler_view)
-    RecyclerView recyclerView;
-    @BindView(R.id.note_list_infobar_day_text)
-    TextView dayTextView;
-    @BindView(R.id.note_list_infobar_month_text)
-    TextView monthTextView;
+
+    private ListContract.UserActionListener userActionListener;
     private MainInterface mainInterface;
+
+    @BindView(R.id.note_list_recycler_view)
+    RecyclerView noteListRecyclerView;
+    @BindView(R.id.note_list_infobar_day_text)
+    TextView dayInfoBarTextView;
+    @BindView(R.id.note_list_infobar_month_text)
+    TextView monthInfoBarTextView;
 
     @Override
     public void onAttach(Context context) {
@@ -66,7 +66,7 @@ public class ListFragment extends Fragment implements ListContract.View {
     }
 
     private void setupRecyclerView() {
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        noteListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
     public ListContract.UserActionListener getPresenter() {
@@ -75,18 +75,18 @@ public class ListFragment extends Fragment implements ListContract.View {
 
     @Override
     public ListAdapter getRecyclerViewAdapter() {
-        return (ListAdapter) recyclerView.getAdapter();
+        return (ListAdapter) noteListRecyclerView.getAdapter();
     }
 
     @Override
     public void setAdapterOnRecyclerView(ListAdapter listAdapter) {
-        recyclerView.setAdapter(listAdapter);
+        noteListRecyclerView.setAdapter(listAdapter);
     }
 
     @Override
     public void setDateInInfoBar(String dayText, String monthText) {
-        dayTextView.setText(dayText);
-        monthTextView.setText(monthText);
+        dayInfoBarTextView.setText(dayText);
+        monthInfoBarTextView.setText(monthText);
     }
 
     @Override
@@ -98,6 +98,10 @@ public class ListFragment extends Fragment implements ListContract.View {
         Note note = Realm.getDefaultInstance().where(Note.class).equalTo(Note.ID, id).findFirst();
         getRecyclerViewAdapter().addElement(note);
         getRecyclerViewAdapter().notifyItemInserted(0);
-        recyclerView.scrollToPosition(0);
+        noteListRecyclerView.scrollToPosition(0);
+    }
+
+    public void notifyItemDeleted(int id) {
+
     }
 }

@@ -17,6 +17,9 @@ import com.twago.TaskBook.Module.Constants;
 import com.twago.TaskBook.NoteEditor.EditorFragment;
 import com.twago.TaskBook.NoteList.ListFragment;
 import com.twago.TaskBook.R;
+import com.twago.TaskBook.TaskBook;
+
+import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,9 +30,10 @@ public class NoteMainActivity extends AppCompatActivity implements MainInterface
     private static final String TAG = NoteMainActivity.class.getSimpleName();
     public static final int NAVIGATION_DRAWER_OPEN = R.string.navigation_drawer_open;
     public static final int NAVIGATION_DRAWER_CLOSE = R.string.navigation_drawer_close;
+
     private ListFragment noteListFragment;
     private MainContract.UserActionListener mainUserActionListener;
-    ActionBarDrawerToggle toggle;
+    private ActionBarDrawerToggle toggle;
 
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
@@ -58,36 +62,27 @@ public class NoteMainActivity extends AppCompatActivity implements MainInterface
     }
 
     @Override
-    public void onStart() {
+    protected void onStart() {
         super.onStart();
         initMainPresenter();
-        showActiveTasks();
-    }
-
-    private void initMainPresenter() {
-        mainUserActionListener = new MainPresenter(this, noteListFragment.getPresenter(), Realm.getDefaultInstance());
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_notes_list, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_pick_date_action)
-            choseDate();
-        return true;
-    }
-
-    private void choseDate() {
-        mainUserActionListener.setInfoBarDate();
+        showActiveTaskList();
     }
 
     private void buildActivity() {
         setSupportActionBar(toolbar);
         buildDrawerLayout();
+    }
+
+    private void buildListFragment() {
+        noteListFragment = ListFragment.newInstance();
+        getFragmentManager()
+                .beginTransaction()
+                .add(R.id.main_view, noteListFragment)
+                .commit();
+    }
+
+    private void initMainPresenter() {
+        mainUserActionListener = new MainPresenter(this, noteListFragment.getPresenter(), Realm.getDefaultInstance());
     }
 
     private void buildDrawerLayout() {
@@ -117,13 +112,15 @@ public class NoteMainActivity extends AppCompatActivity implements MainInterface
         toggle.syncState();
     }
 
-    private void buildListFragment() {
-        noteListFragment = ListFragment.newInstance();
-        getFragmentManager()
-                .beginTransaction()
-                .add(R.id.main_view, noteListFragment)
-                .commit();
+    private void choseDate() {
+        mainUserActionListener.setInfoBarDate();
     }
+
+    private void closeDrawer() {
+        if (drawerLayout.isDrawerOpen(drawerView))
+            drawerLayout.closeDrawer(drawerView);
+    }
+
 
     @OnClick(R.id.button_create_note)
     public void onCreateNote() {
@@ -131,24 +128,37 @@ public class NoteMainActivity extends AppCompatActivity implements MainInterface
     }
 
     @OnClick(R.id.show_active_tasks_button)
-    public void showActiveTasks() {
-        //mainUserActionListener.setupSubscriberActiveTasks();
+    public void showActiveTaskList() {
         setTitle(R.string.tasks);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(TaskBook.getInstance().getTimeStamp());
+        noteListFragment.getPresenter().showNoteListForDate(false, calendar);
         createNoteButton.setVisibility(View.VISIBLE);
         closeDrawer();
     }
 
     @OnClick(R.id.show_archive_button)
-    public void showArchiveButton() {
-        //mainUserActionListener.setupSubscriberArchive();
+    public void showArchiveList() {
         setTitle(R.string.archive);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(TaskBook.getInstance().getTimeStamp());
+        noteListFragment.getPresenter().showNoteListForDate(true, calendar);
         createNoteButton.setVisibility(View.INVISIBLE);
         closeDrawer();
     }
 
-    private void closeDrawer() {
-        if (drawerLayout.isDrawerOpen(drawerView))
-            drawerLayout.closeDrawer(drawerView);
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_notes_list, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_pick_date_action)
+            choseDate();
+        return true;
     }
 
     @Override
@@ -164,6 +174,11 @@ public class NoteMainActivity extends AppCompatActivity implements MainInterface
     @Override
     public void notifyItemAdded(int id) {
         noteListFragment.notifyItemAdded(id);
+    }
+
+    @Override
+    public void notifyItemDeleted(int id) {
+        noteListFragment.notifyItemDeleted(id);
     }
 
 }

@@ -15,6 +15,7 @@ import com.twago.TaskBook.TaskBook;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 import ru.rambler.libs.swipe_layout.SwipeLayout;
@@ -71,19 +72,18 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     private void setSwipeLayoutListener(final ViewHolder holder, final Note note) {
         holder.swipeLayout.setOnSwipeListener(new SwipeLayout.OnSwipeListener() {
             @Override
-            public void onBeginSwipe(SwipeLayout swipeLayout, boolean moveToRight) {
-            }
+            public void onBeginSwipe(SwipeLayout swipeLayout, boolean moveToRight) {}
 
             @Override
             public void onSwipeClampReached(SwipeLayout swipeLayout, boolean moveToRight) {
                 if (!moveToRight) {
-//                    if (note.isArchived())
-//                        userActionListener.deleteNote(note.getId());
-//                    else
-//                        userActionListener.archiveNote(note.getId());
-                    userActionListener.deleteNote(note.getId());
-                    notifyItemRemoved(holder.getOldPosition());
-                    notifyItemRangeChanged(holder.getOldPosition(),userActionListener.getNotesSize());
+                    if (note.isArchived())
+                        userActionListener.deleteNote(note.getId());
+                    else
+                        userActionListener.archiveNote(note.getId());
+
+                    noteList.remove(holder.getAdapterPosition());
+                    notifyItemRemoved(holder.getAdapterPosition());
                     swipeLayout.reset();
                 }
             }

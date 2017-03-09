@@ -1,12 +1,8 @@
 package com.twago.TaskBook.NoteList;
 
 import android.app.Activity;
-import android.app.DialogFragment;
-import android.app.FragmentTransaction;
 
 import com.twago.TaskBook.Module.Note;
-import com.twago.TaskBook.NoteEditor.EditorFragment;
-import com.twago.TaskBook.R;
 import com.twago.TaskBook.TaskBook;
 
 import java.util.Calendar;
@@ -17,6 +13,7 @@ import io.realm.RealmResults;
 
 public class ListPresenter implements ListContract.UserActionListener {
     private final String TAG = this.getClass().getSimpleName();
+
     private Activity activity;
     private ListContract.View noteListFragmentView;
     private Realm realm;
@@ -32,19 +29,25 @@ public class ListPresenter implements ListContract.UserActionListener {
     public void inflateListFragment() {
         setAdapter();
         inflateInfoBar();
-        showNotesForDate(calendar);
+        showNoteListForDate(false, calendar);
     }
 
-    private void showNotesForDate(Calendar calendar){
+    @Override
+    public void showNoteListForDate(boolean isArchived, Calendar calendar){
+        updateRecyclerView(getNoteList(isArchived, calendar));
+    }
+
+    private RealmList<Note> getNoteList(boolean isArchived, Calendar calendar) {
         long dayBegin = getDayBegin(calendar);
         long dayEnd = getDayEnd(calendar);
         RealmResults<Note> realmResults = realm.where(Note.class)
                 .greaterThanOrEqualTo(Note.DATE,dayBegin)
                 .lessThanOrEqualTo(Note.DATE,dayEnd)
+                .equalTo(Note.IS_ARCHIVED, isArchived)
                 .findAll();
         RealmList<Note> notes = new RealmList<>();
         notes.addAll(realmResults);
-        updateRecyclerView(notes);
+        return notes;
     }
 
     private long getDayBegin(Calendar calendar) {
@@ -103,7 +106,6 @@ public class ListPresenter implements ListContract.UserActionListener {
                 realm.where(Note.class).equalTo(Note.ID, id).findFirst().setArchived(true);
             }
         });
-
     }
 
     @Override
