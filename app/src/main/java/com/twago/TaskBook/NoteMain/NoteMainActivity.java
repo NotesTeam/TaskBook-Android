@@ -30,6 +30,7 @@ public class NoteMainActivity extends AppCompatActivity implements MainInterface
     private static final String TAG = NoteMainActivity.class.getSimpleName();
     public static final int NAVIGATION_DRAWER_OPEN = R.string.navigation_drawer_open;
     public static final int NAVIGATION_DRAWER_CLOSE = R.string.navigation_drawer_close;
+    private boolean isArchiveOpen;
 
     private ListFragment noteListFragment;
     private MainContract.UserActionListener mainUserActionListener;
@@ -112,8 +113,8 @@ public class NoteMainActivity extends AppCompatActivity implements MainInterface
         toggle.syncState();
     }
 
-    private void choseDate() {
-        mainUserActionListener.setInfoBarDate();
+    private void choseDate(boolean isArchiveOpen) {
+        mainUserActionListener.setInfoBarDate(isArchiveOpen);
     }
 
     private void closeDrawer() {
@@ -134,6 +135,7 @@ public class NoteMainActivity extends AppCompatActivity implements MainInterface
         calendar.setTimeInMillis(TaskBook.getInstance().getTimeStamp());
         noteListFragment.getPresenter().showNoteListForDate(false, calendar);
         createNoteButton.setVisibility(View.VISIBLE);
+        isArchiveOpen = false;
         closeDrawer();
     }
 
@@ -144,6 +146,7 @@ public class NoteMainActivity extends AppCompatActivity implements MainInterface
         calendar.setTimeInMillis(TaskBook.getInstance().getTimeStamp());
         noteListFragment.getPresenter().showNoteListForDate(true, calendar);
         createNoteButton.setVisibility(View.INVISIBLE);
+        isArchiveOpen = true;
         closeDrawer();
     }
 
@@ -157,19 +160,19 @@ public class NoteMainActivity extends AppCompatActivity implements MainInterface
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_pick_date_action)
-            choseDate();
+            choseDate(isArchiveOpen);
         return true;
     }
 
     @Override
     public void openNewEditor(int id) {
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        DialogFragment newFragment = EditorFragment.newInstance(id);
-        newFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.FullScreenDialog);
-        newFragment.show(fragmentTransaction, "");
+        mainUserActionListener.openNewEditor(id, getFragmentManager());
     }
 
+    @Override
+    public void showNoteListForDate(boolean isArchived, Calendar calendar) {
+        noteListFragment.getPresenter().showNoteListForDate(isArchived, calendar);
+    }
 
     @Override
     public void notifyItemAdded(int id) {
@@ -177,8 +180,8 @@ public class NoteMainActivity extends AppCompatActivity implements MainInterface
     }
 
     @Override
-    public void notifyItemDeleted(int id) {
-        noteListFragment.notifyItemDeleted(id);
+    public void setInfoBarDate() {
+        noteListFragment.getPresenter().setCurrentDateInInfoBar();
     }
 
 }

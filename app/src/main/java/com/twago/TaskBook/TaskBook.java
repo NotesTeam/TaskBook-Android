@@ -8,10 +8,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-/**
- * Created by twago on 22.02.17.
- */
-
 public class TaskBook extends Application {
     private static TaskBook instance = null;
     private long timeStamp = new Date().getTime();

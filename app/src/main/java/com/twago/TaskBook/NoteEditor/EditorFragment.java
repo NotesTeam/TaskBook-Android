@@ -5,7 +5,6 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,13 +12,9 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
-import com.twago.TaskBook.NoteList.ListContract;
-import com.twago.TaskBook.NoteList.ListPresenter;
 import com.twago.TaskBook.NoteMain.MainInterface;
 import com.twago.TaskBook.NoteMain.NoteMainActivity;
 import com.twago.TaskBook.R;
-
-import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,6 +25,7 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
     private static final String TAG = EditorFragment.class.getSimpleName();
     private static final String TAG_ID = "TAG_ID";
     private int editedNoteId;
+    private MainInterface mainInterface;
     private EditorContract.UserActionListener userActionListener;
 
     @BindView(R.id.button_close_note)
@@ -40,7 +36,6 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
     EditText titleNoteEdit;
     @BindView(R.id.text_edit_note)
     EditText textNoteEdit;
-    private MainInterface mainContract;
 
     public static EditorFragment newInstance(int id) {
         Bundle args = new Bundle();
@@ -54,13 +49,13 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
     public void onAttach(Context context) {
         super.onAttach(context);
         if(context instanceof Activity)
-            mainContract = (MainInterface) context;
+            mainInterface = (MainInterface) context;
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mainContract = (MainInterface) activity;
+        mainInterface = (MainInterface) activity;
     }
 
     @Override
@@ -75,8 +70,12 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
     public void onStart() {
         super.onStart();
         editedNoteId = getArguments().getInt(TAG_ID);
-        userActionListener = new EditorPresenter((NoteMainActivity) getActivity(), this);
+        initEditorPresenter();
         userActionListener.inflateExistNoteData();
+    }
+
+    private void initEditorPresenter() {
+        userActionListener = new EditorPresenter((NoteMainActivity) getActivity(), mainInterface, this);
     }
 
     @OnClick(R.id.button_set_date)
@@ -106,7 +105,7 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
 
     @Override
     public void notifyItemAdded(int id) {
-        mainContract.notifyItemAdded(id);
+        mainInterface.notifyItemAdded(id);
     }
 
     @Override

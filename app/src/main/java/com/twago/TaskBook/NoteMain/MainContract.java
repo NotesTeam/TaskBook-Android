@@ -1,5 +1,7 @@
 package com.twago.TaskBook.NoteMain;
 
+import android.app.FragmentManager;
+
 public interface MainContract {
     interface View {
 
@@ -7,6 +9,8 @@ public interface MainContract {
 
     interface UserActionListener {
 
-        void setInfoBarDate();
+        void setInfoBarDate(boolean isArchiveOpen);
+
+        void openNewEditor(int id, FragmentManager fragmentManager);
     }
 }

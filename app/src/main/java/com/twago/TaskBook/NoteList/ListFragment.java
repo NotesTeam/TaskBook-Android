@@ -52,7 +52,7 @@ public class ListFragment extends Fragment implements ListContract.View {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        userActionListener = new ListPresenter(getActivity(), this);
+        userActionListener = new ListPresenter(getActivity(), mainInterface, this);
     }
 
     @Override
@@ -73,14 +73,8 @@ public class ListFragment extends Fragment implements ListContract.View {
         return userActionListener;
     }
 
-    @Override
-    public ListAdapter getRecyclerViewAdapter() {
-        return (ListAdapter) noteListRecyclerView.getAdapter();
-    }
-
-    @Override
-    public void setAdapterOnRecyclerView(ListAdapter listAdapter) {
-        noteListRecyclerView.setAdapter(listAdapter);
+    public void notifyItemAdded(int id) {
+        userActionListener.notifyItemAdded(id);
     }
 
     @Override
@@ -94,14 +88,18 @@ public class ListFragment extends Fragment implements ListContract.View {
         mainInterface.openNewEditor(id);
     }
 
-    public void notifyItemAdded(int id) {
-        Note note = Realm.getDefaultInstance().where(Note.class).equalTo(Note.ID, id).findFirst();
-        getRecyclerViewAdapter().addElement(note);
-        getRecyclerViewAdapter().notifyItemInserted(0);
-        noteListRecyclerView.scrollToPosition(0);
+    @Override
+    public RecyclerView getRecyclerView() {
+        return noteListRecyclerView;
     }
 
-    public void notifyItemDeleted(int id) {
+    @Override
+    public ListAdapter getRecyclerViewAdapter() {
+        return (ListAdapter) noteListRecyclerView.getAdapter();
+    }
 
+    @Override
+    public void setRecyclerViewAdapter(ListAdapter listAdapter) {
+        noteListRecyclerView.setAdapter(listAdapter);
     }
 }

@@ -1,5 +1,7 @@
 package com.twago.TaskBook.NoteList;
 
+import android.support.v7.widget.RecyclerView;
+
 import com.twago.TaskBook.Module.Note;
 
 import java.util.Calendar;
@@ -12,11 +14,13 @@ public interface ListContract {
 
         ListAdapter getRecyclerViewAdapter();
 
-        void setAdapterOnRecyclerView(ListAdapter listAdapter);
+        void setRecyclerViewAdapter(ListAdapter listAdapter);
 
         void setDateInInfoBar(String dayText, String monthText);
 
         void openNewEditor(int id);
+
+        RecyclerView getRecyclerView();
     }
 
     interface UserActionListener {
@@ -36,5 +40,7 @@ public interface ListContract {
         void openNewEditor(int id);
 
         int getNotesSize();
+
+        void notifyItemAdded(int id);
     }
 }

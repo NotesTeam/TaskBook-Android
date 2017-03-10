@@ -3,6 +3,8 @@ package com.twago.TaskBook.NoteEditor;
 import com.twago.TaskBook.Module.Constants;
 import com.twago.TaskBook.Module.Note;
 import com.twago.TaskBook.NoteList.ListContract;
+import com.twago.TaskBook.NoteMain.MainContract;
+import com.twago.TaskBook.NoteMain.MainInterface;
 import com.twago.TaskBook.NoteMain.NoteMainActivity;
 import com.twago.TaskBook.TaskBook;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
@@ -16,9 +18,14 @@ class EditorPresenter implements EditorContract.UserActionListener {
     private static final String TAG = EditorPresenter.class.getSimpleName();
     private int existNoteId;
     private NoteMainActivity activity;
+    private MainInterface mainInterface;
     private EditorContract.View noteEditFragmentView;
-    EditorPresenter(NoteMainActivity activity, EditorContract.View noteEditFragmentView) {
+
+    private Calendar calendar = Calendar.getInstance();
+
+    EditorPresenter(NoteMainActivity activity, MainInterface mainInterface, EditorContract.View noteEditFragmentView) {
         this.activity = activity;
+        this.mainInterface = mainInterface;
         this.noteEditFragmentView = noteEditFragmentView;
         this.existNoteId = noteEditFragmentView.getEditedNoteId();
     }
@@ -48,7 +55,6 @@ class EditorPresenter implements EditorContract.UserActionListener {
                 if (isNoteNew()) {
                     int newNoteId = generateNewId(realm);
                     createNewNote(realm, newNoteId);
-                    noteEditFragmentView.notifyItemAdded(newNoteId);
                 }
                 else
                     updateExistNote();
@@ -56,11 +62,18 @@ class EditorPresenter implements EditorContract.UserActionListener {
         });
     }
 
+    private void setNoteListByCurrentDate() {
+        mainInterface.setInfoBarDate();
+        mainInterface.showNoteListForDate(isArchiveOpened(), calendar);
+    }
+
     private void createNewNote(Realm realm, int newNoteId) {
         if (!isNoteEmpty()) {
             Note note = new Note(newNoteId, noteEditFragmentView.getTitleNote(),
                     noteEditFragmentView.getTextNote(), TaskBook.getInstance().getTimeStamp(), false);
             realm.copyToRealm(note);
+            setNoteListByCurrentDate();
+            noteEditFragmentView.notifyItemAdded(newNoteId);
         }
     }
 
@@ -75,6 +88,7 @@ class EditorPresenter implements EditorContract.UserActionListener {
         chosenNote.setTitle(noteEditFragmentView.getTitleNote());
         chosenNote.setText(noteEditFragmentView.getTextNote());
         chosenNote.setDate(TaskBook.getInstance().getTimeStamp());
+        setNoteListByCurrentDate();
     }
 
 
@@ -90,12 +104,15 @@ class EditorPresenter implements EditorContract.UserActionListener {
         return noteEditFragmentView.getTitleNote().equals("") && noteEditFragmentView.getTextNote().equals("");
     }
 
+    private boolean isArchiveOpened(){
+        return existNoteId != Constants.NEW_NOTE_ID;
+    }
+
     @Override
     public void setCurrentNoteDate() {
-        Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(TaskBook.getInstance().getTimeStamp());
 
-        Note chosenNote = getNoteWithId(existNoteId);
+        final Note chosenNote = getNoteWithId(existNoteId);
         if (chosenNote != null)
             calendar.setTimeInMillis(chosenNote.getDate());
 

@@ -3,6 +3,7 @@ package com.twago.TaskBook.NoteList;
 import android.app.Activity;
 
 import com.twago.TaskBook.Module.Note;
+import com.twago.TaskBook.NoteMain.MainInterface;
 import com.twago.TaskBook.TaskBook;
 
 import java.util.Calendar;
@@ -15,12 +16,14 @@ public class ListPresenter implements ListContract.UserActionListener {
     private final String TAG = this.getClass().getSimpleName();
 
     private Activity activity;
+    private MainInterface mainInterface;
     private ListContract.View noteListFragmentView;
     private Realm realm;
     private Calendar calendar = Calendar.getInstance();
 
-    public ListPresenter(Activity activity, final ListContract.View noteListFragmentView) {
+    public ListPresenter(Activity activity, MainInterface mainInterface, final ListContract.View noteListFragmentView) {
         this.activity = activity;
+        this.mainInterface = mainInterface;
         this.noteListFragmentView = noteListFragmentView;
         this.realm = Realm.getDefaultInstance();
     }
@@ -67,7 +70,7 @@ public class ListPresenter implements ListContract.UserActionListener {
     }
 
     private void setAdapter() {
-        noteListFragmentView.setAdapterOnRecyclerView(new ListAdapter(this));
+        noteListFragmentView.setRecyclerViewAdapter(new ListAdapter(this));
     }
 
     private void inflateInfoBar() {
@@ -96,6 +99,14 @@ public class ListPresenter implements ListContract.UserActionListener {
     @Override
     public int getNotesSize() {
         return realm.where(Note.class).findAll().size();
+    }
+
+    @Override
+    public void notifyItemAdded(int id) {
+        Note note = Realm.getDefaultInstance().where(Note.class).equalTo(Note.ID, id).findFirst();
+        noteListFragmentView.getRecyclerViewAdapter().addElement(note);
+        noteListFragmentView.getRecyclerViewAdapter().notifyItemInserted(0);
+        noteListFragmentView.getRecyclerView().scrollToPosition(0);
     }
 
     @Override
