@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.twago.TaskBook.Module.Constants;
+import com.twago.TaskBook.NoteEditor.EditorContract;
 import com.twago.TaskBook.NoteEditor.EditorFragment;
 import com.twago.TaskBook.NoteList.ListFragment;
 import com.twago.TaskBook.R;
@@ -32,8 +33,9 @@ public class NoteMainActivity extends AppCompatActivity implements MainInterface
     public static final int NAVIGATION_DRAWER_CLOSE = R.string.navigation_drawer_close;
     private boolean isArchiveOpen;
 
-    private ListFragment noteListFragment;
     private MainContract.UserActionListener mainUserActionListener;
+    private ListFragment noteListFragment;
+    private EditorContract.View editorFragmentView;
     private ActionBarDrawerToggle toggle;
 
     @BindView(R.id.drawer_layout)
@@ -170,6 +172,11 @@ public class NoteMainActivity extends AppCompatActivity implements MainInterface
     }
 
     @Override
+    public void setEditorFragmentView(EditorContract.View editorFragmentView) {
+        this.editorFragmentView = editorFragmentView;
+    }
+
+    @Override
     public void showNoteListForDate(boolean isArchived, Calendar calendar) {
         noteListFragment.getPresenter().showNoteListForDate(isArchived, calendar);
     }
@@ -182,6 +189,11 @@ public class NoteMainActivity extends AppCompatActivity implements MainInterface
     @Override
     public void setInfoBarDate() {
         noteListFragment.getPresenter().setCurrentDateInInfoBar();
+    }
+
+    @Override
+    public void updateNoteColor(int currentColorRes) {
+        editorFragmentView.updateNoteColor(currentColorRes);
     }
 
 }

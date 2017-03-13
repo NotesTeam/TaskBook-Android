@@ -34,12 +34,12 @@ dependencies {
         exclude module: 'design'
     })
     compile 'com.jakewharton:butterknife:8.4.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
-    compile 'com.android.support:appcompat-v7:25.1.1'
-    compile 'com.android.support:design:25.1.1'
-    compile 'com.android.support:support-v4:25.1.1'
+    compile 'com.android.support:appcompat-v7:25.2.0'
+    compile 'com.android.support:design:25.2.0'
+    compile 'com.android.support:support-v4:25.2.0'
     compile 'com.wdullaer:materialdatetimepicker:3.1.0'
     compile 'ru.rambler.android:swipe-layout:1.0.14'
     testCompile 'junit:junit:4.12'
-    provided "org.projectlombok:lombok:1.12.6"
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
+    provided 'org.projectlombok:lombok:1.12.6'
 }

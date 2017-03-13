@@ -1,5 +1,8 @@
 package com.twago.TaskBook.NoteMain;
 
+import com.twago.TaskBook.NoteEditor.EditorContract;
+import com.twago.TaskBook.NoteEditor.EditorFragment;
+
 import java.util.Calendar;
 
 /**
@@ -15,4 +18,8 @@ public interface MainInterface {
     void notifyItemAdded(int id);
 
     void setInfoBarDate();
+
+    void updateNoteColor(int currentColorRes);
+
+    void setEditorFragmentView(EditorContract.View editorFragmentView);
 }

@@ -5,12 +5,14 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.twago.TaskBook.NoteMain.MainInterface;
 import com.twago.TaskBook.NoteMain.NoteMainActivity;
@@ -28,6 +30,8 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
     private MainInterface mainInterface;
     private EditorContract.UserActionListener userActionListener;
 
+    @BindView(R.id.edit_note_background)
+    LinearLayout backgroundLayout;
     @BindView(R.id.button_close_note)
     ImageButton closeNoteButton;
     @BindView(R.id.button_set_date)
@@ -71,6 +75,9 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
         super.onStart();
         editedNoteId = getArguments().getInt(TAG_ID);
         initEditorPresenter();
+        setEditorBackgroundColor(R.color.transparent_light_gray);
+
+        mainInterface.setEditorFragmentView(this);
         userActionListener.inflateExistNoteData();
     }
 
@@ -81,6 +88,11 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
     @OnClick(R.id.button_set_date)
     public void pickDate() {
         userActionListener.setCurrentNoteDate();
+    }
+
+    @OnClick(R.id.button_set_color)
+    public void setColor() {
+        userActionListener.openColorFragment(getFragmentManager());
     }
 
     @OnClick(R.id.button_close_note)
@@ -109,6 +121,16 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
     }
 
     @Override
+    public void updateNoteColor(int currentColorRes) {
+        userActionListener.updateNoteColor(currentColorRes);
+    }
+
+    @Override
+    public void setEditorBackgroundColor(int currentColorRes) {
+        backgroundLayout.setBackgroundResource(currentColorRes);
+    }
+
+    @Override
     public String getTitleNote() {
         return titleNoteEdit.getText().toString();
     }
@@ -122,6 +144,7 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
         userActionListener.saveNoteToDatabase();
+        mainInterface.setEditorFragmentView(null);
     }
 }
 

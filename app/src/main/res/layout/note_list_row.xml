@@ -7,7 +7,6 @@
     android:layout_marginEnd="15dp"
     android:layout_marginStart="15dp"
     android:layout_marginTop="20dp"
-    android:background="@color/transparent_light_pink"
     android:gravity="center_vertical"
     app:left_swipe_enabled="true"
     app:right_swipe_enabled="true">
@@ -15,7 +14,8 @@
     <RelativeLayout
         android:id="@+id/note_list_row_bottom_note_center"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/transparent_light_gray">
 
         <ImageView
             android:id="@+id/note_list_row_task_icon"
@@ -53,13 +53,6 @@
                 android:maxLines="2"
                 android:text="@string/placeholder" />
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/note_list_row_date_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true" />
 
     </RelativeLayout>
 

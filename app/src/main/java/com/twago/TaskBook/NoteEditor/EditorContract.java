@@ -1,5 +1,7 @@
 package com.twago.TaskBook.NoteEditor;
 
+import android.app.FragmentManager;
+
 public interface EditorContract {
     interface View {
         String getTextNote();
@@ -13,6 +15,10 @@ public interface EditorContract {
         void setTextNoteEditText(String text);
 
         void notifyItemAdded(int id);
+
+        void updateNoteColor(int currentColorRes);
+
+        void setEditorBackgroundColor(int currentColorRes);
     }
 
     interface UserActionListener {
@@ -22,5 +28,9 @@ public interface EditorContract {
         void inflateExistNoteData();
 
         void saveNoteToDatabase();
+
+        void updateNoteColor(int currentColorRes);
+
+        void openColorFragment(FragmentManager fragmentManager);
     }
 }

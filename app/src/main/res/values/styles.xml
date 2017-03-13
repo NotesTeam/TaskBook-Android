@@ -18,6 +18,12 @@
         <item name="android:windowIsFloating">false</item>
     </style>
 
+    <style name="SmallScreenDialog">
+        <item name="android:actionMenuTextColor">@color/granate</item>
+        <item name="android:windowNoTitle">false</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />

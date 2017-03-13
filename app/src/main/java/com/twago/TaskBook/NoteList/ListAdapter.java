@@ -47,9 +47,9 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     }
 
     private void inflateCenterNoteView(ViewHolder holder, Note note) {
+        holder.centerNoteView.setBackgroundResource(note.getColorRes());
         holder.title.setText(note.getTitle());
         holder.text.setText(note.getText());
-        holder.date.setText(TaskBook.getInstance().getFormattedDate(note));
     }
 
     private void inflateRightSwipeView(ViewHolder holder, Note note) {
@@ -129,8 +129,6 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         TextView title;
         @BindView(R.id.note_list_row_text)
         TextView text;
-        @BindView(R.id.note_list_row_date_text)
-        TextView date;
         @BindView(R.id.note_list_row_bottom_right_icon)
         ImageView deleteIcon;
 

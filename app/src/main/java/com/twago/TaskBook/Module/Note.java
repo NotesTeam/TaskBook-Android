@@ -24,5 +24,7 @@ public class Note extends RealmObject {
     @NonNull
     private long date;
     @NonNull
+    private int colorRes;
+    @NonNull
     private boolean isArchived;
 }
