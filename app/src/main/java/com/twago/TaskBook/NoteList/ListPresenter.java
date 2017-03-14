@@ -35,24 +35,6 @@ public class ListPresenter implements ListContract.UserActionListener {
         showNoteListForDate(false, calendar);
     }
 
-    @Override
-    public void showNoteListForDate(boolean isArchived, Calendar calendar){
-        updateRecyclerView(getNoteList(isArchived, calendar));
-    }
-
-    private RealmList<Note> getNoteList(boolean isArchived, Calendar calendar) {
-        long dayBegin = getDayBegin(calendar);
-        long dayEnd = getDayEnd(calendar);
-        RealmResults<Note> realmResults = realm.where(Note.class)
-                .greaterThanOrEqualTo(Note.DATE,dayBegin)
-                .lessThanOrEqualTo(Note.DATE,dayEnd)
-                .equalTo(Note.IS_ARCHIVED, isArchived)
-                .findAll();
-        RealmList<Note> notes = new RealmList<>();
-        notes.addAll(realmResults);
-        return notes;
-    }
-
     private long getDayBegin(Calendar calendar) {
         calendar.set(calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
@@ -85,6 +67,24 @@ public class ListPresenter implements ListContract.UserActionListener {
     }
 
     @Override
+    public void showNoteListForDate(boolean isArchived, Calendar calendar){
+        updateRecyclerView(getNoteList(isArchived, calendar));
+    }
+
+    private RealmList<Note> getNoteList(boolean isArchived, Calendar calendar) {
+        long dayBegin = getDayBegin(calendar);
+        long dayEnd = getDayEnd(calendar);
+        RealmResults<Note> realmResults = realm.where(Note.class)
+                .greaterThanOrEqualTo(Note.DATE,dayBegin)
+                .lessThanOrEqualTo(Note.DATE,dayEnd)
+                .equalTo(Note.IS_ARCHIVED, isArchived)
+                .findAll();
+        RealmList<Note> notes = new RealmList<>();
+        notes.addAll(realmResults);
+        return notes;
+    }
+
+    @Override
     public void updateRecyclerView(RealmList<Note> notes) {
         ListAdapter recyclerViewAdapter = noteListFragmentView.getRecyclerViewAdapter();
         recyclerViewAdapter.setData(notes);
@@ -96,18 +96,6 @@ public class ListPresenter implements ListContract.UserActionListener {
         noteListFragmentView.openNewEditor(id);
     }
 
-    @Override
-    public int getNotesSize() {
-        return realm.where(Note.class).findAll().size();
-    }
-
-    @Override
-    public void notifyItemAdded(int id) {
-        Note note = Realm.getDefaultInstance().where(Note.class).equalTo(Note.ID, id).findFirst();
-        noteListFragmentView.getRecyclerViewAdapter().addElement(note);
-        noteListFragmentView.getRecyclerViewAdapter().notifyItemInserted(0);
-        noteListFragmentView.getRecyclerView().scrollToPosition(0);
-    }
 
     @Override
     public void archiveNote(final int id) {

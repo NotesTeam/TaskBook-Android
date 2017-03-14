@@ -38,9 +38,5 @@ public interface ListContract {
         void archiveNote(int id);
 
         void openNewEditor(int id);
-
-        int getNotesSize();
-
-        void notifyItemAdded(int id);
     }
 }

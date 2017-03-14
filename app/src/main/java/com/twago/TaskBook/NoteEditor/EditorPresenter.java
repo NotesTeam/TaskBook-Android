@@ -3,6 +3,7 @@ package com.twago.TaskBook.NoteEditor;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.util.Log;
 
 import com.twago.TaskBook.ColorEditorFragment;
 import com.twago.TaskBook.Module.Constants;
@@ -26,7 +27,7 @@ class EditorPresenter implements EditorContract.UserActionListener {
     private MainInterface mainInterface;
     private EditorContract.View noteEditFragmentView;
 
-    private Calendar calendar = Calendar.getInstance();
+    private Calendar calendar;
 
     EditorPresenter(NoteMainActivity activity, MainInterface mainInterface, EditorContract.View noteEditFragmentView) {
         this.activity = activity;
@@ -34,6 +35,7 @@ class EditorPresenter implements EditorContract.UserActionListener {
         this.noteEditFragmentView = noteEditFragmentView;
         this.existNoteId = noteEditFragmentView.getEditedNoteId();
         this.currentColorRes = R.color.transparent_light_gray;
+        this.calendar = TaskBook.getInstance().getCalendar();
     }
 
     @Override
@@ -50,7 +52,6 @@ class EditorPresenter implements EditorContract.UserActionListener {
             noteEditFragmentView.setTitleNoteEditText(note.getTitle());
             noteEditFragmentView.setTextNoteEditText(note.getText());
             noteEditFragmentView.setEditorBackgroundColor(currentColorRes);
-            TaskBook.getInstance().setTimeStamp(note.getDate());
         }
     }
 
@@ -63,9 +64,10 @@ class EditorPresenter implements EditorContract.UserActionListener {
                 if (isNoteNew()) {
                     int newNoteId = generateNewId(realm);
                     createNewNote(realm, newNoteId);
-                }
-                else
+                } else {
                     updateExistNote();
+                    mainInterface.notifyDataSetChanged();
+                }
             }
         });
     }
@@ -81,29 +83,8 @@ class EditorPresenter implements EditorContract.UserActionListener {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         DialogFragment newFragment = ColorEditorFragment.newInstance(currentColorRes);
-        newFragment.setStyle(DialogFragment.STYLE_NO_TITLE,R.style.SmallScreenDialog);
+        newFragment.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.SmallScreenDialog);
         newFragment.show(fragmentTransaction, "");
-    }
-
-    private void setNoteListByCurrentDate() {
-        mainInterface.setInfoBarDate();
-        mainInterface.showNoteListForDate(isArchiveOpened(), calendar);
-    }
-
-    private void createNewNote(Realm realm, int newNoteId) {
-        if (!isNoteEmpty()) {
-            Note note = new Note(newNoteId, noteEditFragmentView.getTitleNote(),
-                    noteEditFragmentView.getTextNote(), TaskBook.getInstance().getTimeStamp(), currentColorRes, false);
-            realm.copyToRealm(note);
-            setNoteListByCurrentDate();
-            noteEditFragmentView.notifyItemAdded(newNoteId);
-        }
-    }
-
-    private int generateNewId(Realm realm) {
-        RealmResults<Note> results = realm.where(Note.class).findAll();
-        if (results.isEmpty()) return 0;
-        return results.max(Note.ID).intValue() + 1;
     }
 
     private void updateExistNote() {
@@ -112,6 +93,34 @@ class EditorPresenter implements EditorContract.UserActionListener {
         chosenNote.setText(noteEditFragmentView.getTextNote());
         chosenNote.setDate(TaskBook.getInstance().getTimeStamp());
         chosenNote.setColorRes(currentColorRes);
+    }
+
+    private void createNewNote(Realm realm, int newNoteId) {
+        if (!isNoteEmpty()) {
+            Note note = new Note(newNoteId, noteEditFragmentView.getTitleNote(),
+                    noteEditFragmentView.getTextNote(), TaskBook.getInstance().getTimeStamp(), currentColorRes, false);
+            realm.copyToRealm(note);
+            noteEditFragmentView.notifyItemAdded(newNoteId);
+        } else {
+            resetChangedTime();
+            updateRecyclerViewByDate();
+        }
+    }
+
+    @Override
+    public void updateRecyclerViewByDate() {
+        mainInterface.setInfoBarDate();
+        mainInterface.showNoteListForDate(isArchiveOpened(), TaskBook.getInstance().getCalendar());
+    }
+
+    private void resetChangedTime() {
+        TaskBook.getInstance().setTimeStamp(calendar.getTimeInMillis());
+    }
+
+    private int generateNewId(Realm realm) {
+        RealmResults<Note> results = realm.where(Note.class).findAll();
+        if (results.isEmpty()) return 0;
+        return results.max(Note.ID).intValue() + 1;
     }
 
 
@@ -127,18 +136,12 @@ class EditorPresenter implements EditorContract.UserActionListener {
         return noteEditFragmentView.getTitleNote().equals("") && noteEditFragmentView.getTextNote().equals("");
     }
 
-    private boolean isArchiveOpened(){
+    private boolean isArchiveOpened() {
         return existNoteId != Constants.NEW_NOTE_ID;
     }
 
     @Override
     public void setCurrentNoteDate() {
-        calendar.setTimeInMillis(TaskBook.getInstance().getTimeStamp());
-
-        final Note chosenNote = getNoteWithId(existNoteId);
-        if (chosenNote != null)
-            calendar.setTimeInMillis(chosenNote.getDate());
-
         DatePickerDialog dpd = DatePickerDialog.newInstance(
                 new DatePickerDialog.OnDateSetListener() {
                     @Override
@@ -146,11 +149,12 @@ class EditorPresenter implements EditorContract.UserActionListener {
                         Calendar calendar = Calendar.getInstance();
                         calendar.set(year, monthOfYear, dayOfMonth);
                         TaskBook.getInstance().setTimeStamp(calendar.getTimeInMillis());
+                        updateRecyclerViewByDate();
                     }
                 },
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
+                TaskBook.getInstance().getCalendar().get(Calendar.YEAR),
+                TaskBook.getInstance().getCalendar().get(Calendar.MONTH),
+                TaskBook.getInstance().getCalendar().get(Calendar.DAY_OF_MONTH)
         );
         dpd.show(activity.getFragmentManager(), "Datepickerdialog");
     }

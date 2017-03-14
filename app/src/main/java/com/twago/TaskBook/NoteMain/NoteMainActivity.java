@@ -1,7 +1,5 @@
 package com.twago.TaskBook.NoteMain;
 
-import android.app.DialogFragment;
-import android.app.FragmentTransaction;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -15,7 +13,6 @@ import android.view.View;
 
 import com.twago.TaskBook.Module.Constants;
 import com.twago.TaskBook.NoteEditor.EditorContract;
-import com.twago.TaskBook.NoteEditor.EditorFragment;
 import com.twago.TaskBook.NoteList.ListFragment;
 import com.twago.TaskBook.R;
 import com.twago.TaskBook.TaskBook;
@@ -177,13 +174,18 @@ public class NoteMainActivity extends AppCompatActivity implements MainInterface
     }
 
     @Override
-    public void showNoteListForDate(boolean isArchived, Calendar calendar) {
-        noteListFragment.getPresenter().showNoteListForDate(isArchived, calendar);
+    public void notifyDataSetChanged() {
+        noteListFragment.notifyDataSetChanged();
     }
 
     @Override
     public void notifyItemAdded(int id) {
         noteListFragment.notifyItemAdded(id);
+    }
+
+    @Override
+    public void showNoteListForDate(boolean isArchived, Calendar calendar) {
+        noteListFragment.getPresenter().showNoteListForDate(isArchived, calendar);
     }
 
     @Override

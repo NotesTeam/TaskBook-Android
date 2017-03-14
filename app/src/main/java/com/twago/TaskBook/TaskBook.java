@@ -5,6 +5,7 @@ import android.app.Application;
 import com.twago.TaskBook.Module.Note;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -39,6 +40,12 @@ public class TaskBook extends Application {
 
     public void setTimeStamp(long timeStamp) {
         this.timeStamp = timeStamp;
+    }
+
+    public Calendar getCalendar(){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(getTimeStamp());
+        return calendar;
     }
 
     public static TaskBook getInstance() {

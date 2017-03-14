@@ -32,5 +32,7 @@ public interface EditorContract {
         void updateNoteColor(int currentColorRes);
 
         void openColorFragment(FragmentManager fragmentManager);
+
+        void updateRecyclerViewByDate();
     }
 }

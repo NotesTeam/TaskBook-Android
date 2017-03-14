@@ -22,4 +22,6 @@ public interface MainInterface {
     void updateNoteColor(int currentColorRes);
 
     void setEditorFragmentView(EditorContract.View editorFragmentView);
+
+    void notifyDataSetChanged();
 }

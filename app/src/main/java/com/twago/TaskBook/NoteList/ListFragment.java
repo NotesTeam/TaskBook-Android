@@ -69,14 +69,6 @@ public class ListFragment extends Fragment implements ListContract.View {
         noteListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
-    public ListContract.UserActionListener getPresenter() {
-        return userActionListener;
-    }
-
-    public void notifyItemAdded(int id) {
-        userActionListener.notifyItemAdded(id);
-    }
-
     @Override
     public void setDateInInfoBar(String dayText, String monthText) {
         dayInfoBarTextView.setText(dayText);
@@ -87,6 +79,18 @@ public class ListFragment extends Fragment implements ListContract.View {
     public void openNewEditor(int id) {
         mainInterface.openNewEditor(id);
     }
+
+    public void notifyItemAdded(int id) {
+        Note note = Realm.getDefaultInstance().where(Note.class).equalTo(Note.ID, id).findFirst();
+        getRecyclerViewAdapter().addElement(note);
+        getRecyclerViewAdapter().notifyItemInserted(0);
+        getRecyclerView().scrollToPosition(0);
+    }
+
+    public void notifyDataSetChanged() {
+        getRecyclerViewAdapter().notifyDataSetChanged();
+    }
+
 
     @Override
     public RecyclerView getRecyclerView() {
@@ -101,5 +105,9 @@ public class ListFragment extends Fragment implements ListContract.View {
     @Override
     public void setRecyclerViewAdapter(ListAdapter listAdapter) {
         noteListRecyclerView.setAdapter(listAdapter);
+    }
+
+    public ListContract.UserActionListener getPresenter() {
+        return userActionListener;
     }
 }
