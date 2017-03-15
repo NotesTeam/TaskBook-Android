@@ -112,7 +112,8 @@ public class NoteMainActivity extends AppCompatActivity implements MainInterface
         toggle.syncState();
     }
 
-    private void choseDate(boolean isArchiveOpen) {
+    @Override
+    public void choseDate() {
         mainUserActionListener.setInfoBarDate(isArchiveOpen);
     }
 
@@ -159,7 +160,7 @@ public class NoteMainActivity extends AppCompatActivity implements MainInterface
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_pick_date_action)
-            choseDate(isArchiveOpen);
+            choseDate();
         return true;
     }
 

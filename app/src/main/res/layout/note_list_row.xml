@@ -66,7 +66,7 @@
         app:sticky="0dp">
 
         <ImageView
-            android:id="@+id/note_list_row_bottom_right_icon"
+            android:id="@+id/note_list_row_right_swipe_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"

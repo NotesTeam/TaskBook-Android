@@ -5,7 +5,6 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -87,7 +86,7 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
 
     @OnClick(R.id.button_set_date)
     public void pickDate() {
-        userActionListener.setCurrentNoteDate();
+        mainInterface.choseDate();
     }
 
     @OnClick(R.id.button_set_color)

@@ -23,8 +23,6 @@ public interface EditorContract {
 
     interface UserActionListener {
 
-        void setCurrentNoteDate();
-
         void inflateExistNoteData();
 
         void saveNoteToDatabase();
@@ -32,7 +30,5 @@ public interface EditorContract {
         void updateNoteColor(int currentColorRes);
 
         void openColorFragment(FragmentManager fragmentManager);
-
-        void updateRecyclerViewByDate();
     }
 }

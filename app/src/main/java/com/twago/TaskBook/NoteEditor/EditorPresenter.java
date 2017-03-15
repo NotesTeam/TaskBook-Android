@@ -27,15 +27,12 @@ class EditorPresenter implements EditorContract.UserActionListener {
     private MainInterface mainInterface;
     private EditorContract.View noteEditFragmentView;
 
-    private Calendar calendar;
-
     EditorPresenter(NoteMainActivity activity, MainInterface mainInterface, EditorContract.View noteEditFragmentView) {
         this.activity = activity;
         this.mainInterface = mainInterface;
         this.noteEditFragmentView = noteEditFragmentView;
         this.existNoteId = noteEditFragmentView.getEditedNoteId();
         this.currentColorRes = R.color.transparent_light_gray;
-        this.calendar = TaskBook.getInstance().getCalendar();
     }
 
     @Override
@@ -101,20 +98,7 @@ class EditorPresenter implements EditorContract.UserActionListener {
                     noteEditFragmentView.getTextNote(), TaskBook.getInstance().getTimeStamp(), currentColorRes, false);
             realm.copyToRealm(note);
             noteEditFragmentView.notifyItemAdded(newNoteId);
-        } else {
-            resetChangedTime();
-            updateRecyclerViewByDate();
         }
-    }
-
-    @Override
-    public void updateRecyclerViewByDate() {
-        mainInterface.setInfoBarDate();
-        mainInterface.showNoteListForDate(isArchiveOpened(), TaskBook.getInstance().getCalendar());
-    }
-
-    private void resetChangedTime() {
-        TaskBook.getInstance().setTimeStamp(calendar.getTimeInMillis());
     }
 
     private int generateNewId(Realm realm) {
@@ -134,28 +118,5 @@ class EditorPresenter implements EditorContract.UserActionListener {
 
     private boolean isNoteEmpty() {
         return noteEditFragmentView.getTitleNote().equals("") && noteEditFragmentView.getTextNote().equals("");
-    }
-
-    private boolean isArchiveOpened() {
-        return existNoteId != Constants.NEW_NOTE_ID;
-    }
-
-    @Override
-    public void setCurrentNoteDate() {
-        DatePickerDialog dpd = DatePickerDialog.newInstance(
-                new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-                        Calendar calendar = Calendar.getInstance();
-                        calendar.set(year, monthOfYear, dayOfMonth);
-                        TaskBook.getInstance().setTimeStamp(calendar.getTimeInMillis());
-                        updateRecyclerViewByDate();
-                    }
-                },
-                TaskBook.getInstance().getCalendar().get(Calendar.YEAR),
-                TaskBook.getInstance().getCalendar().get(Calendar.MONTH),
-                TaskBook.getInstance().getCalendar().get(Calendar.DAY_OF_MONTH)
-        );
-        dpd.show(activity.getFragmentManager(), "Datepickerdialog");
     }
 }

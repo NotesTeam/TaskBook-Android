@@ -129,7 +129,7 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         TextView title;
         @BindView(R.id.note_list_row_text)
         TextView text;
-        @BindView(R.id.note_list_row_bottom_right_icon)
+        @BindView(R.id.note_list_row_right_swipe_icon)
         ImageView deleteIcon;
 
         ViewHolder(View itemView) {

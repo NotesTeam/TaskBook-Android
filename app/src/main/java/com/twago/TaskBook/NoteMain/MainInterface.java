@@ -11,6 +11,8 @@ import java.util.Calendar;
 
 public interface MainInterface {
 
+    void choseDate();
+
     void openNewEditor(int id);
 
     void showNoteListForDate(boolean isArchived, Calendar calendar);
