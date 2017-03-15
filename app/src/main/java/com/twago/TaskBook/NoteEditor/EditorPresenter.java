@@ -8,7 +8,6 @@ import com.twago.TaskBook.ColorEditorFragment;
 import com.twago.TaskBook.Module.Constants;
 import com.twago.TaskBook.Module.Note;
 import com.twago.TaskBook.NoteMain.MainInterface;
-import com.twago.TaskBook.NoteMain.NoteMainActivity;
 import com.twago.TaskBook.R;
 import com.twago.TaskBook.TaskBook;
 
@@ -19,12 +18,10 @@ class EditorPresenter implements EditorContract.UserActionListener {
     private static final String TAG = EditorPresenter.class.getSimpleName();
     private int existNoteId;
     private int currentColorRes;
-    private NoteMainActivity activity;
     private MainInterface mainInterface;
     private EditorContract.View noteEditFragmentView;
 
-    EditorPresenter(NoteMainActivity activity, MainInterface mainInterface, EditorContract.View noteEditFragmentView) {
-        this.activity = activity;
+    EditorPresenter(MainInterface mainInterface, EditorContract.View noteEditFragmentView) {
         this.mainInterface = mainInterface;
         this.noteEditFragmentView = noteEditFragmentView;
         this.existNoteId = noteEditFragmentView.getEditedNoteId();
@@ -113,5 +110,6 @@ class EditorPresenter implements EditorContract.UserActionListener {
         chosenNote.setText(noteEditFragmentView.getTextNote());
         chosenNote.setDate(TaskBook.getInstance().getTimeStamp());
         chosenNote.setColorRes(currentColorRes);
+
     }
 }

@@ -51,7 +51,7 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if(context instanceof Activity)
+        if (context instanceof Activity)
             mainInterface = (MainInterface) context;
     }
 
@@ -72,8 +72,8 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
     @Override
     public void onStart() {
         super.onStart();
-        userActionListener = new EditorPresenter((NoteMainActivity) getActivity(), mainInterface, this);
         editedNoteId = getArguments().getInt(TAG_ID);
+        userActionListener = new EditorPresenter(mainInterface, this);
         mainInterface.setEditorFragmentView(this);
         userActionListener.inflateExistNoteData();
         setEditorBackgroundColor(R.color.transparent_light_gray);

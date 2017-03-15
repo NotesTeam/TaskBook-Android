@@ -15,6 +15,8 @@ import com.twago.TaskBook.Module.Note;
 import com.twago.TaskBook.NoteMain.MainInterface;
 import com.twago.TaskBook.R;
 
+import java.util.Calendar;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
@@ -91,10 +93,6 @@ public class ListFragment extends Fragment implements ListContract.View {
         noteListRecyclerView.setAdapter(listAdapter);
     }
 
-    public ListContract.UserActionListener getPresenter() {
-        return userActionListener;
-    }
-
     public void notifyDataSetChanged() {
         getRecyclerViewAdapter().notifyDataSetChanged();
     }
@@ -104,6 +102,14 @@ public class ListFragment extends Fragment implements ListContract.View {
         getRecyclerViewAdapter().addElement(note);
         getRecyclerViewAdapter().notifyItemInserted(0);
         getRecyclerView().scrollToPosition(0);
+    }
+
+    public void setCurrentDateInInfoBar() {
+        userActionListener.setCurrentDateInInfoBar();
+    }
+
+    public void updateRecyclerView(boolean isArchived, Calendar calendar) {
+        userActionListener.updateRecyclerView(isArchived,calendar);
     }
 
     private void setupRecyclerView() {

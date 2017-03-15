@@ -24,7 +24,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.realm.Realm;
 
-public class NoteMainActivity extends AppCompatActivity implements MainInterface {
+public class NoteMainActivity extends AppCompatActivity implements MainInterface, MainContract.View {
     private static final String TAG = NoteMainActivity.class.getSimpleName();
     public static final int NAVIGATION_DRAWER_OPEN = R.string.navigation_drawer_open;
     public static final int NAVIGATION_DRAWER_CLOSE = R.string.navigation_drawer_close;
@@ -97,7 +97,12 @@ public class NoteMainActivity extends AppCompatActivity implements MainInterface
 
     @Override
     public void pickDate() {
-        mainUserActionListener.setInfoBarDate(isArchiveOpen);
+        mainUserActionListener.setInfoBarDate(isArchiveOpen, getFragmentManager());
+    }
+
+    @Override
+    public void setCurrentDateInInfoBar() {
+        noteListFragment.setCurrentDateInInfoBar();
     }
 
     @Override
@@ -110,9 +115,14 @@ public class NoteMainActivity extends AppCompatActivity implements MainInterface
         editorFragmentView.updateNoteColor(currentColorRes);
     }
 
+    @Override
+    public void updateRecyclerView(boolean isArchiveOpen, Calendar calendar) {
+        noteListFragment.updateRecyclerView(isArchiveOpen,calendar);
+    }
+
     @OnClick(R.id.button_create_note)
     public void onCreateNote() {
-        noteListFragment.getPresenter().openNewEditor(Constants.NEW_NOTE_ID);
+        noteListFragment.openNewEditor(Constants.NEW_NOTE_ID);
     }
 
     @OnClick(R.id.show_active_tasks_button)
@@ -120,7 +130,7 @@ public class NoteMainActivity extends AppCompatActivity implements MainInterface
         setTitle(R.string.tasks);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(TaskBook.getInstance().getTimeStamp());
-        noteListFragment.getPresenter().updateRecyclerView(false, calendar);
+        noteListFragment.updateRecyclerView(false, calendar);
         createNoteButton.setVisibility(View.VISIBLE);
         isArchiveOpen = false;
         closeDrawer();
@@ -131,7 +141,7 @@ public class NoteMainActivity extends AppCompatActivity implements MainInterface
         setTitle(R.string.archive);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(TaskBook.getInstance().getTimeStamp());
-        noteListFragment.getPresenter().updateRecyclerView(true, calendar);
+        noteListFragment.updateRecyclerView(true, calendar);
         createNoteButton.setVisibility(View.INVISIBLE);
         isArchiveOpen = true;
         closeDrawer();
@@ -183,8 +193,7 @@ public class NoteMainActivity extends AppCompatActivity implements MainInterface
     }
 
     private void initMainPresenter() {
-        mainUserActionListener = new MainPresenter(this, noteListFragment.getPresenter(), Realm.getDefaultInstance());
+        mainUserActionListener = new MainPresenter(this);
     }
-
 }
 

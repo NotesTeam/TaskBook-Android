@@ -9,7 +9,7 @@ import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 
-public class ListPresenter implements ListContract.UserActionListener {
+class ListPresenter implements ListContract.UserActionListener {
     private final String TAG = this.getClass().getSimpleName();
     private ListContract.View noteListFragmentView;
     private Realm realm;

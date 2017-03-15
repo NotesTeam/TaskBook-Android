@@ -8,7 +8,7 @@ import java.util.Calendar;
 
 import io.realm.RealmList;
 
-public interface ListContract {
+interface ListContract {
     interface View {
 
         RecyclerView getRecyclerView();
@@ -20,6 +20,7 @@ public interface ListContract {
         void setDateInInfoBar(String dayText, String monthText);
 
         void setRecyclerViewAdapter(ListAdapter listAdapter);
+
     }
 
     interface UserActionListener {
