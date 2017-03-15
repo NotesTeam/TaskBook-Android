@@ -4,35 +4,31 @@ import android.app.FragmentManager;
 
 public interface EditorContract {
     interface View {
+        int getEditedNoteId();
+
         String getTextNote();
 
         String getTitleNote();
 
-        int getEditedNoteId();
+        void notifyItemAdded(int id);
 
-        void setTitleNoteEditText(String title);
+        void setEditorBackgroundColor(int currentColorRes);
 
         void setTextNoteEditText(String text);
 
-        void notifyItemAdded(int id);
+        void setTitleNoteEditText(String title);
 
         void updateNoteColor(int currentColorRes);
-
-        void setEditorBackgroundColor(int currentColorRes);
     }
 
     interface UserActionListener {
 
-        void setCurrentNoteDate();
-
         void inflateExistNoteData();
+
+        void openColorFragment(FragmentManager fragmentManager);
 
         void saveNoteToDatabase();
 
         void updateNoteColor(int currentColorRes);
-
-        void openColorFragment(FragmentManager fragmentManager);
-
-        void updateRecyclerViewByDate();
     }
 }

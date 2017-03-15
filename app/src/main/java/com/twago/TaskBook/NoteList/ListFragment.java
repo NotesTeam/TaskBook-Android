@@ -15,6 +15,8 @@ import com.twago.TaskBook.Module.Note;
 import com.twago.TaskBook.NoteMain.MainInterface;
 import com.twago.TaskBook.R;
 
+import java.util.Calendar;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
@@ -52,7 +54,7 @@ public class ListFragment extends Fragment implements ListContract.View {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        userActionListener = new ListPresenter(getActivity(), mainInterface, this);
+        userActionListener = new ListPresenter(this);
     }
 
     @Override
@@ -65,33 +67,6 @@ public class ListFragment extends Fragment implements ListContract.View {
         return view;
     }
 
-    private void setupRecyclerView() {
-        noteListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-    }
-
-    @Override
-    public void setDateInInfoBar(String dayText, String monthText) {
-        dayInfoBarTextView.setText(dayText);
-        monthInfoBarTextView.setText(monthText);
-    }
-
-    @Override
-    public void openNewEditor(int id) {
-        mainInterface.openNewEditor(id);
-    }
-
-    public void notifyItemAdded(int id) {
-        Note note = Realm.getDefaultInstance().where(Note.class).equalTo(Note.ID, id).findFirst();
-        getRecyclerViewAdapter().addElement(note);
-        getRecyclerViewAdapter().notifyItemInserted(0);
-        getRecyclerView().scrollToPosition(0);
-    }
-
-    public void notifyDataSetChanged() {
-        getRecyclerViewAdapter().notifyDataSetChanged();
-    }
-
-
     @Override
     public RecyclerView getRecyclerView() {
         return noteListRecyclerView;
@@ -103,11 +78,41 @@ public class ListFragment extends Fragment implements ListContract.View {
     }
 
     @Override
+    public void openNewEditor(int id) {
+        mainInterface.openNewEditor(id);
+    }
+
+    @Override
+    public void setDateInInfoBar(String dayText, String monthText) {
+        dayInfoBarTextView.setText(dayText);
+        monthInfoBarTextView.setText(monthText);
+    }
+
+    @Override
     public void setRecyclerViewAdapter(ListAdapter listAdapter) {
         noteListRecyclerView.setAdapter(listAdapter);
     }
 
-    public ListContract.UserActionListener getPresenter() {
-        return userActionListener;
+    public void notifyDataSetChanged() {
+        getRecyclerViewAdapter().notifyDataSetChanged();
+    }
+
+    public void notifyItemAdded(int id) {
+        Note note = Realm.getDefaultInstance().where(Note.class).equalTo(Note.ID, id).findFirst();
+        getRecyclerViewAdapter().addElement(note);
+        getRecyclerViewAdapter().notifyItemInserted(0);
+        getRecyclerView().scrollToPosition(0);
+    }
+
+    public void setCurrentDateInInfoBar() {
+        userActionListener.setCurrentDateInInfoBar();
+    }
+
+    public void updateRecyclerView(boolean isArchived, Calendar calendar) {
+        userActionListener.updateRecyclerView(isArchived,calendar);
+    }
+
+    private void setupRecyclerView() {
+        noteListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 }

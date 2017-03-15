@@ -82,19 +82,15 @@ public class ColorEditorFragment extends DialogFragment {
     public void setCurrentColorRes(View view){
         switch (view.getId()){
             case R.id.button_color_gray :
-                Log.wtf("WTF","gray");
                 currentColorRes = R.color.transparent_light_gray;
                 break;
             case R.id.button_color_blue :
-                Log.wtf("WTF","gray");
                 currentColorRes = R.color.transparent_light_blue;
                 break;
             case R.id.button_color_pink :
-                Log.wtf("WTF","gray");
                 currentColorRes = R.color.transparent_light_pink;
                 break;
             case R.id.button_color_ochra :
-                Log.wtf("WTF","gray");
                 currentColorRes = R.color.transparent_ochra;
                 break;
         }

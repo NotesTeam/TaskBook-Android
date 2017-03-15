@@ -5,7 +5,6 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,7 +51,7 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if(context instanceof Activity)
+        if (context instanceof Activity)
             mainInterface = (MainInterface) context;
     }
 
@@ -74,30 +73,17 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
     public void onStart() {
         super.onStart();
         editedNoteId = getArguments().getInt(TAG_ID);
-        initEditorPresenter();
-        setEditorBackgroundColor(R.color.transparent_light_gray);
-
+        userActionListener = new EditorPresenter(mainInterface, this);
         mainInterface.setEditorFragmentView(this);
         userActionListener.inflateExistNoteData();
+        setEditorBackgroundColor(R.color.transparent_light_gray);
     }
 
-    private void initEditorPresenter() {
-        userActionListener = new EditorPresenter((NoteMainActivity) getActivity(), mainInterface, this);
-    }
-
-    @OnClick(R.id.button_set_date)
-    public void pickDate() {
-        userActionListener.setCurrentNoteDate();
-    }
-
-    @OnClick(R.id.button_set_color)
-    public void setColor() {
-        userActionListener.openColorFragment(getFragmentManager());
-    }
-
-    @OnClick(R.id.button_close_note)
-    public void closeNote() {
-        dismiss();
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        userActionListener.saveNoteToDatabase();
+        mainInterface.setEditorFragmentView(null);
     }
 
     @Override
@@ -106,28 +92,8 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
     }
 
     @Override
-    public void setTitleNoteEditText(String title) {
-        titleNoteEdit.setText(title);
-    }
-
-    @Override
-    public void setTextNoteEditText(String text) {
-        textNoteEdit.setText(text);
-    }
-
-    @Override
-    public void notifyItemAdded(int id) {
-        mainInterface.notifyItemAdded(id);
-    }
-
-    @Override
-    public void updateNoteColor(int currentColorRes) {
-        userActionListener.updateNoteColor(currentColorRes);
-    }
-
-    @Override
-    public void setEditorBackgroundColor(int currentColorRes) {
-        backgroundLayout.setBackgroundResource(currentColorRes);
+    public String getTextNote() {
+        return textNoteEdit.getText().toString();
     }
 
     @Override
@@ -136,15 +102,43 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
     }
 
     @Override
-    public String getTextNote() {
-        return textNoteEdit.getText().toString();
+    public void notifyItemAdded(int id) {
+        mainInterface.notifyItemAdded(id);
     }
 
     @Override
-    public void onDismiss(DialogInterface dialog) {
-        super.onDismiss(dialog);
-        userActionListener.saveNoteToDatabase();
-        mainInterface.setEditorFragmentView(null);
+    public void setEditorBackgroundColor(int currentColorRes) {
+        backgroundLayout.setBackgroundResource(currentColorRes);
+    }
+
+    @Override
+    public void setTextNoteEditText(String text) {
+        textNoteEdit.setText(text);
+    }
+
+    @Override
+    public void setTitleNoteEditText(String title) {
+        titleNoteEdit.setText(title);
+    }
+
+    @Override
+    public void updateNoteColor(int currentColorRes) {
+        userActionListener.updateNoteColor(currentColorRes);
+    }
+
+    @OnClick(R.id.button_close_note)
+    public void closeNote() {
+        dismiss();
+    }
+
+    @OnClick(R.id.button_set_date)
+    public void pickDate() {
+        mainInterface.pickDate();
+    }
+
+    @OnClick(R.id.button_set_color)
+    public void setColor() {
+        userActionListener.openColorFragment(getFragmentManager());
     }
 }
 

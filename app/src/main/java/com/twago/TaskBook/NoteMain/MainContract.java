@@ -2,15 +2,19 @@ package com.twago.TaskBook.NoteMain;
 
 import android.app.FragmentManager;
 
-public interface MainContract {
-    interface View {
+import java.util.Calendar;
 
+interface MainContract {
+    interface View {
+        void setCurrentDateInInfoBar();
+
+        void updateRecyclerView(boolean isArchiveOpen, Calendar calendar);
     }
 
     interface UserActionListener {
 
-        void setInfoBarDate(boolean isArchiveOpen);
-
         void openNewEditor(int id, FragmentManager fragmentManager);
+
+        void setInfoBarDate(boolean isArchiveOpen, FragmentManager fragmentManager);
     }
 }
