@@ -30,21 +30,20 @@ public class NoteMainActivity extends AppCompatActivity implements MainInterface
     public static final int NAVIGATION_DRAWER_CLOSE = R.string.navigation_drawer_close;
     private boolean isArchiveOpen;
 
+    private EditorContract.View editorFragmentView;
     private MainContract.UserActionListener mainUserActionListener;
     private ListFragment noteListFragment;
-    private EditorContract.View editorFragmentView;
-    private ActionBarDrawerToggle toggle;
 
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
-    @BindView(R.id.drawer_view)
-    View drawerView;
-    @BindView(R.id.drawer_content)
-    View drawerContent;
-    @BindView(R.id.main_view)
-    View mainView;
     @BindView(R.id.button_create_note)
     FloatingActionButton createNoteButton;
+    @BindView(R.id.drawer_content)
+    View drawerContent;
+    @BindView(R.id.drawer_view)
+    View drawerView;
+    @BindView(R.id.main_view)
+    View mainView;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
@@ -68,25 +67,83 @@ public class NoteMainActivity extends AppCompatActivity implements MainInterface
         showActiveTaskList();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_notes_list, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_pick_date_action)
+            pickDate();
+        return true;
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        noteListFragment.notifyDataSetChanged();
+    }
+
+    @Override
+    public void notifyItemAdded(int id) {
+        noteListFragment.notifyItemAdded(id);
+    }
+
+    @Override
+    public void openNewEditor(int id) {
+        mainUserActionListener.openNewEditor(id, getFragmentManager());
+    }
+
+    @Override
+    public void pickDate() {
+        mainUserActionListener.setInfoBarDate(isArchiveOpen);
+    }
+
+    @Override
+    public void setEditorFragmentView(EditorContract.View editorFragmentView) {
+        this.editorFragmentView = editorFragmentView;
+    }
+
+    @Override
+    public void updateNoteColor(int currentColorRes) {
+        editorFragmentView.updateNoteColor(currentColorRes);
+    }
+
+    @OnClick(R.id.button_create_note)
+    public void onCreateNote() {
+        noteListFragment.getPresenter().openNewEditor(Constants.NEW_NOTE_ID);
+    }
+
+    @OnClick(R.id.show_active_tasks_button)
+    public void showActiveTaskList() {
+        setTitle(R.string.tasks);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(TaskBook.getInstance().getTimeStamp());
+        noteListFragment.getPresenter().updateRecyclerView(false, calendar);
+        createNoteButton.setVisibility(View.VISIBLE);
+        isArchiveOpen = false;
+        closeDrawer();
+    }
+
+    @OnClick(R.id.show_archive_button)
+    public void showArchiveList() {
+        setTitle(R.string.archive);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(TaskBook.getInstance().getTimeStamp());
+        noteListFragment.getPresenter().updateRecyclerView(true, calendar);
+        createNoteButton.setVisibility(View.INVISIBLE);
+        isArchiveOpen = true;
+        closeDrawer();
+    }
+
     private void buildActivity() {
         setSupportActionBar(toolbar);
         buildDrawerLayout();
     }
 
-    private void buildListFragment() {
-        noteListFragment = ListFragment.newInstance();
-        getFragmentManager()
-                .beginTransaction()
-                .add(R.id.main_view, noteListFragment)
-                .commit();
-    }
-
-    private void initMainPresenter() {
-        mainUserActionListener = new MainPresenter(this, noteListFragment.getPresenter(), Realm.getDefaultInstance());
-    }
-
     private void buildDrawerLayout() {
-        toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, NAVIGATION_DRAWER_OPEN, NAVIGATION_DRAWER_CLOSE);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, NAVIGATION_DRAWER_OPEN, NAVIGATION_DRAWER_CLOSE);
         drawerLayout.addDrawerListener(toggle);
         drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
@@ -112,9 +169,12 @@ public class NoteMainActivity extends AppCompatActivity implements MainInterface
         toggle.syncState();
     }
 
-    @Override
-    public void choseDate() {
-        mainUserActionListener.setInfoBarDate(isArchiveOpen);
+    private void buildListFragment() {
+        noteListFragment = ListFragment.newInstance();
+        getFragmentManager()
+                .beginTransaction()
+                .add(R.id.main_view, noteListFragment)
+                .commit();
     }
 
     private void closeDrawer() {
@@ -122,81 +182,8 @@ public class NoteMainActivity extends AppCompatActivity implements MainInterface
             drawerLayout.closeDrawer(drawerView);
     }
 
-
-    @OnClick(R.id.button_create_note)
-    public void onCreateNote() {
-        noteListFragment.getPresenter().openNewEditor(Constants.NEW_NOTE_ID);
-    }
-
-    @OnClick(R.id.show_active_tasks_button)
-    public void showActiveTaskList() {
-        setTitle(R.string.tasks);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(TaskBook.getInstance().getTimeStamp());
-        noteListFragment.getPresenter().showNoteListForDate(false, calendar);
-        createNoteButton.setVisibility(View.VISIBLE);
-        isArchiveOpen = false;
-        closeDrawer();
-    }
-
-    @OnClick(R.id.show_archive_button)
-    public void showArchiveList() {
-        setTitle(R.string.archive);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(TaskBook.getInstance().getTimeStamp());
-        noteListFragment.getPresenter().showNoteListForDate(true, calendar);
-        createNoteButton.setVisibility(View.INVISIBLE);
-        isArchiveOpen = true;
-        closeDrawer();
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_notes_list, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_pick_date_action)
-            choseDate();
-        return true;
-    }
-
-    @Override
-    public void openNewEditor(int id) {
-        mainUserActionListener.openNewEditor(id, getFragmentManager());
-    }
-
-    @Override
-    public void setEditorFragmentView(EditorContract.View editorFragmentView) {
-        this.editorFragmentView = editorFragmentView;
-    }
-
-    @Override
-    public void notifyDataSetChanged() {
-        noteListFragment.notifyDataSetChanged();
-    }
-
-    @Override
-    public void notifyItemAdded(int id) {
-        noteListFragment.notifyItemAdded(id);
-    }
-
-    @Override
-    public void showNoteListForDate(boolean isArchived, Calendar calendar) {
-        noteListFragment.getPresenter().showNoteListForDate(isArchived, calendar);
-    }
-
-    @Override
-    public void setInfoBarDate() {
-        noteListFragment.getPresenter().setCurrentDateInInfoBar();
-    }
-
-    @Override
-    public void updateNoteColor(int currentColorRes) {
-        editorFragmentView.updateNoteColor(currentColorRes);
+    private void initMainPresenter() {
+        mainUserActionListener = new MainPresenter(this, noteListFragment.getPresenter(), Realm.getDefaultInstance());
     }
 
 }

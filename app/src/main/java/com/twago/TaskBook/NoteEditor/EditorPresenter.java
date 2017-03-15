@@ -3,7 +3,6 @@ package com.twago.TaskBook.NoteEditor;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.util.Log;
 
 import com.twago.TaskBook.ColorEditorFragment;
 import com.twago.TaskBook.Module.Constants;
@@ -12,9 +11,6 @@ import com.twago.TaskBook.NoteMain.MainInterface;
 import com.twago.TaskBook.NoteMain.NoteMainActivity;
 import com.twago.TaskBook.R;
 import com.twago.TaskBook.TaskBook;
-import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
-
-import java.util.Calendar;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -43,13 +39,13 @@ class EditorPresenter implements EditorContract.UserActionListener {
         }
     }
 
-    private void inflateExistNoteData(Note note) {
-        if (note != null) {
-            currentColorRes = note.getColorRes();
-            noteEditFragmentView.setTitleNoteEditText(note.getTitle());
-            noteEditFragmentView.setTextNoteEditText(note.getText());
-            noteEditFragmentView.setEditorBackgroundColor(currentColorRes);
-        }
+    @Override
+    public void openColorFragment(FragmentManager fragmentManager) {
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        DialogFragment newFragment = ColorEditorFragment.newInstance(currentColorRes);
+        newFragment.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.SmallScreenDialog);
+        newFragment.show(fragmentTransaction, "");
     }
 
     @Override
@@ -75,21 +71,16 @@ class EditorPresenter implements EditorContract.UserActionListener {
         noteEditFragmentView.setEditorBackgroundColor(currentColorRes);
     }
 
-    @Override
-    public void openColorFragment(FragmentManager fragmentManager) {
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        DialogFragment newFragment = ColorEditorFragment.newInstance(currentColorRes);
-        newFragment.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.SmallScreenDialog);
-        newFragment.show(fragmentTransaction, "");
+    private Note getNoteWithId(int noteId) {
+        return Realm.getDefaultInstance().where(Note.class).equalTo(Note.ID, noteId).findFirst();
     }
 
-    private void updateExistNote() {
-        Note chosenNote = getNoteWithId(existNoteId);
-        chosenNote.setTitle(noteEditFragmentView.getTitleNote());
-        chosenNote.setText(noteEditFragmentView.getTextNote());
-        chosenNote.setDate(TaskBook.getInstance().getTimeStamp());
-        chosenNote.setColorRes(currentColorRes);
+    private boolean isNoteEmpty() {
+        return noteEditFragmentView.getTitleNote().equals("") && noteEditFragmentView.getTextNote().equals("");
+    }
+
+    private boolean isNoteNew() {
+        return existNoteId == Constants.NEW_NOTE_ID;
     }
 
     private void createNewNote(Realm realm, int newNoteId) {
@@ -107,16 +98,20 @@ class EditorPresenter implements EditorContract.UserActionListener {
         return results.max(Note.ID).intValue() + 1;
     }
 
-
-    private Note getNoteWithId(int noteId) {
-        return Realm.getDefaultInstance().where(Note.class).equalTo(Note.ID, noteId).findFirst();
+    private void inflateExistNoteData(Note note) {
+        if (note != null) {
+            currentColorRes = note.getColorRes();
+            noteEditFragmentView.setTitleNoteEditText(note.getTitle());
+            noteEditFragmentView.setTextNoteEditText(note.getText());
+            noteEditFragmentView.setEditorBackgroundColor(currentColorRes);
+        }
     }
 
-    private boolean isNoteNew() {
-        return existNoteId == Constants.NEW_NOTE_ID;
-    }
-
-    private boolean isNoteEmpty() {
-        return noteEditFragmentView.getTitleNote().equals("") && noteEditFragmentView.getTextNote().equals("");
+    private void updateExistNote() {
+        Note chosenNote = getNoteWithId(existNoteId);
+        chosenNote.setTitle(noteEditFragmentView.getTitleNote());
+        chosenNote.setText(noteEditFragmentView.getTextNote());
+        chosenNote.setDate(TaskBook.getInstance().getTimeStamp());
+        chosenNote.setColorRes(currentColorRes);
     }
 }

@@ -7,36 +7,35 @@ import com.twago.TaskBook.Module.Note;
 import java.util.Calendar;
 
 import io.realm.RealmList;
-import io.realm.RealmResults;
 
 public interface ListContract {
     interface View {
 
+        RecyclerView getRecyclerView();
+
         ListAdapter getRecyclerViewAdapter();
-
-        void setRecyclerViewAdapter(ListAdapter listAdapter);
-
-        void setDateInInfoBar(String dayText, String monthText);
 
         void openNewEditor(int id);
 
-        RecyclerView getRecyclerView();
+        void setDateInInfoBar(String dayText, String monthText);
+
+        void setRecyclerViewAdapter(ListAdapter listAdapter);
     }
 
     interface UserActionListener {
 
-        void inflateListFragment();
-
-        void updateRecyclerView(RealmList<Note> notes);
-
-        void showNoteListForDate(boolean isArchived, Calendar calendar);
-
-        void setCurrentDateInInfoBar();
+        void archiveNote(int id);
 
         void deleteNote(int id);
 
-        void archiveNote(int id);
+        void inflateListFragment();
 
         void openNewEditor(int id);
+
+        void setCurrentDateInInfoBar();
+
+        void updateRecyclerView(boolean isArchived, Calendar calendar);
+
+        void updateRecyclerView(RealmList<Note> notes);
     }
 }

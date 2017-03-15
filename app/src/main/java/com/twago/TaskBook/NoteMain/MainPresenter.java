@@ -38,7 +38,7 @@ public class MainPresenter implements MainContract.UserActionListener {
                         calendar.set(year, monthOfYear, dayOfMonth);
                         TaskBook.getInstance().setTimeStamp(calendar.getTimeInMillis());
                         listPresenter.setCurrentDateInInfoBar();
-                        listPresenter.showNoteListForDate(isArchiveOpen, calendar);
+                        listPresenter.updateRecyclerView(isArchiveOpen, calendar);
                     }
                 },
                 calendar.get(Calendar.YEAR),
