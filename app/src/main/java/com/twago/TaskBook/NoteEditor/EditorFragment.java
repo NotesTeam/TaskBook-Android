@@ -14,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.twago.TaskBook.NoteMain.MainInterface;
-import com.twago.TaskBook.NoteMain.NoteMainActivity;
 import com.twago.TaskBook.R;
 
 import butterknife.BindView;
@@ -75,8 +74,8 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
         editedNoteId = getArguments().getInt(TAG_ID);
         userActionListener = new EditorPresenter(mainInterface, this);
         mainInterface.setEditorFragmentView(this);
-        userActionListener.inflateExistNoteData();
         setEditorBackgroundColor(R.color.transparent_light_gray);
+        userActionListener.inflateExistNoteData();
     }
 
     @Override

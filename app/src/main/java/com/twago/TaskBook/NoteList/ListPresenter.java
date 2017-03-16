@@ -43,20 +43,12 @@ class ListPresenter implements ListContract.UserActionListener {
     @Override
     public void inflateListFragment() {
         setAdapter();
-        inflateInfoBar();
         updateRecyclerView(false, calendar);
     }
 
     @Override
     public void openNewEditor(int id) {
         noteListFragmentView.openNewEditor(id);
-    }
-
-    @Override
-    public void setCurrentDateInInfoBar() {
-        noteListFragmentView.setDateInInfoBar(
-                TaskBook.getInstance().getFormattedDayForInfoBarDate(),
-                TaskBook.getInstance().getFormattedMonthForInfoBarDate());
     }
 
     @Override
@@ -98,10 +90,6 @@ class ListPresenter implements ListContract.UserActionListener {
         RealmList<Note> notes = new RealmList<>();
         notes.addAll(realmResults);
         return notes;
-    }
-
-    private void inflateInfoBar() {
-        setCurrentDateInInfoBar();
     }
 
     private void setAdapter() {

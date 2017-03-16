@@ -6,15 +6,18 @@ import java.util.Calendar;
 
 interface MainContract {
     interface View {
-        void setCurrentDateInInfoBar();
 
         void updateRecyclerView(boolean isArchiveOpen, Calendar calendar);
+
+        void setDateInInfoBar(String formattedDayForInfoBarDate, String formattedMonthForInfoBarDate);
     }
 
     interface UserActionListener {
 
+        void setDateInInfoBar();
+
         void openNewEditor(int id, FragmentManager fragmentManager);
 
-        void setInfoBarDate(boolean isArchiveOpen, FragmentManager fragmentManager);
+        void setDate(boolean isArchiveOpen, FragmentManager fragmentManager);
     }
 }

@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.twago.TaskBook.Module.Constants;
 import com.twago.TaskBook.NoteEditor.EditorContract;
@@ -47,6 +48,11 @@ public class NoteMainActivity extends AppCompatActivity implements MainInterface
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
+    @BindView(R.id.note_list_infobar_day_text)
+    TextView dayInfoBarTextView;
+    @BindView(R.id.note_list_infobar_month_text)
+    TextView monthInfoBarTextView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +70,7 @@ public class NoteMainActivity extends AppCompatActivity implements MainInterface
     protected void onStart() {
         super.onStart();
         initMainPresenter();
+        setDateInInfoBar();
         showActiveTaskList();
     }
 
@@ -97,12 +104,13 @@ public class NoteMainActivity extends AppCompatActivity implements MainInterface
 
     @Override
     public void pickDate() {
-        mainUserActionListener.setInfoBarDate(isArchiveOpen, getFragmentManager());
+        mainUserActionListener.setDate(isArchiveOpen, getFragmentManager());
     }
 
     @Override
-    public void setCurrentDateInInfoBar() {
-        noteListFragment.setCurrentDateInInfoBar();
+    public void setDateInInfoBar(String dayText, String monthText) {
+        dayInfoBarTextView.setText(dayText);
+        monthInfoBarTextView.setText(monthText);
     }
 
     @Override
@@ -195,5 +203,10 @@ public class NoteMainActivity extends AppCompatActivity implements MainInterface
     private void initMainPresenter() {
         mainUserActionListener = new MainPresenter(this);
     }
+
+    private void setDateInInfoBar() {
+        mainUserActionListener.setDateInInfoBar();
+    }
+
 }
 

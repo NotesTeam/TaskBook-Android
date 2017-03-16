@@ -19,7 +19,7 @@ class MainPresenter implements MainContract.UserActionListener {
     }
 
     @Override
-    public void setInfoBarDate(final boolean isArchiveOpen, FragmentManager fragmentManager) {
+    public void setDate(final boolean isArchiveOpen, FragmentManager fragmentManager) {
         Calendar calendar = TaskBook.getInstance().getCalendar();
 
         DatePickerDialog dpd = DatePickerDialog.newInstance(
@@ -29,7 +29,7 @@ class MainPresenter implements MainContract.UserActionListener {
                         Calendar calendar = Calendar.getInstance();
                         calendar.set(year, monthOfYear, dayOfMonth);
                         TaskBook.getInstance().setTimeStamp(calendar.getTimeInMillis());
-                        mainActivityView.setCurrentDateInInfoBar();
+                        setDateInInfoBar();
                         mainActivityView.updateRecyclerView(isArchiveOpen, calendar);
                     }
                 },
@@ -38,6 +38,13 @@ class MainPresenter implements MainContract.UserActionListener {
                 calendar.get(Calendar.DAY_OF_MONTH)
         );
         dpd.show(fragmentManager, "Datepickerdialog");
+    }
+
+    @Override
+    public void setDateInInfoBar() {
+        mainActivityView.setDateInInfoBar(
+                TaskBook.getInstance().getFormattedDayForInfoBarDate(),
+                TaskBook.getInstance().getFormattedMonthForInfoBarDate());
     }
 
     @Override

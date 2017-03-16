@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.twago.TaskBook.Module.Note;
 import com.twago.TaskBook.NoteMain.MainInterface;
@@ -29,10 +28,6 @@ public class ListFragment extends Fragment implements ListContract.View {
 
     @BindView(R.id.note_list_recycler_view)
     RecyclerView noteListRecyclerView;
-    @BindView(R.id.note_list_infobar_day_text)
-    TextView dayInfoBarTextView;
-    @BindView(R.id.note_list_infobar_month_text)
-    TextView monthInfoBarTextView;
 
     @Override
     public void onAttach(Context context) {
@@ -83,12 +78,6 @@ public class ListFragment extends Fragment implements ListContract.View {
     }
 
     @Override
-    public void setDateInInfoBar(String dayText, String monthText) {
-        dayInfoBarTextView.setText(dayText);
-        monthInfoBarTextView.setText(monthText);
-    }
-
-    @Override
     public void setRecyclerViewAdapter(ListAdapter listAdapter) {
         noteListRecyclerView.setAdapter(listAdapter);
     }
@@ -102,10 +91,6 @@ public class ListFragment extends Fragment implements ListContract.View {
         getRecyclerViewAdapter().addElement(note);
         getRecyclerViewAdapter().notifyItemInserted(0);
         getRecyclerView().scrollToPosition(0);
-    }
-
-    public void setCurrentDateInInfoBar() {
-        userActionListener.setCurrentDateInInfoBar();
     }
 
     public void updateRecyclerView(boolean isArchived, Calendar calendar) {

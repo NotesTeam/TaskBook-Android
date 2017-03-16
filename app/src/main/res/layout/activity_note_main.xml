@@ -25,6 +25,44 @@
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
+            <RelativeLayout
+                android:id="@+id/infobar_layout"
+                android:layout_width="match_parent"
+                android:layout_height="130dp"
+                android:background="@color/orange">
+
+                <RelativeLayout
+                    android:id="@+id/note_list_infobar_data_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp">
+
+                    <TextView
+                        android:id="@+id/note_list_infobar_day_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="-15dp"
+                        android:text="23"
+                        android:textColor="@color/white"
+                        android:textSize="80sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/note_list_infobar_month_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/note_list_infobar_day_text"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="-15dp"
+                        android:text="NOVEMBER"
+                        android:textColor="@color/white"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+            </RelativeLayout>
+
             <FrameLayout
                 android:id="@+id/main_view"
                 android:layout_width="match_parent"
@@ -66,7 +104,6 @@
 
     </android.support.v4.widget.DrawerLayout>
 
-
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/button_create_note"
         android:layout_width="wrap_content"
@@ -79,4 +116,5 @@
         app:srcCompat="@drawable/ic_add_black_36dp" />
 
 </android.support.design.widget.CoordinatorLayout>
+
 

@@ -2,57 +2,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_repeat">
-
-    <LinearLayout
-        android:id="@+id/noteList"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:orientation="vertical">
-
-        <RelativeLayout
-            android:id="@+id/infobar_layout"
-            android:layout_width="match_parent"
-            android:layout_height="130dp"
-            android:background="@color/orange">
-
-            <RelativeLayout
-                android:id="@+id/note_list_infobar_data_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="10dp">
-
-                <TextView
-                    android:id="@+id/note_list_infobar_day_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="-15dp"
-                    android:text="23"
-                    android:textColor="@color/white"
-                    android:textSize="80sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/note_list_infobar_month_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/note_list_infobar_day_text"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="-15dp"
-                    android:text="NOVEMBER"
-                    android:textColor="@color/white"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
-            </RelativeLayout>
-        </RelativeLayout>
-
         <android.support.v7.widget.RecyclerView
             android:id="@+id/note_list_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-    </LinearLayout>
-
 </RelativeLayout>

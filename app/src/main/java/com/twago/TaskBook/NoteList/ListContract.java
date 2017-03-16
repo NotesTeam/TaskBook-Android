@@ -17,8 +17,6 @@ interface ListContract {
 
         void openNewEditor(int id);
 
-        void setDateInInfoBar(String dayText, String monthText);
-
         void setRecyclerViewAdapter(ListAdapter listAdapter);
 
     }
@@ -32,8 +30,6 @@ interface ListContract {
         void inflateListFragment();
 
         void openNewEditor(int id);
-
-        void setCurrentDateInInfoBar();
 
         void updateRecyclerView(boolean isArchived, Calendar calendar);
 
