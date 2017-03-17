@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/edit_note_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -35,6 +36,69 @@
             android:background="@drawable/ic_color_lens_black_24dp" />
 
     </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <com.github.zagum.switchicon.SwitchIconView
+            android:id="@+id/main_task_view"
+            android:layout_width="@dimen/task_icon_size"
+            android:layout_height="@dimen/task_icon_size"
+            android:layout_margin="8dp"
+            app:si_animation_duration="500"
+            app:si_disabled_alpha=".3"
+            app:si_enabled="false"
+            app:si_no_dash="false"
+            app:srcCompat="@drawable/ic_main" />
+
+        <com.github.zagum.switchicon.SwitchIconView
+            android:id="@+id/urgent_task_view"
+            android:layout_width="@dimen/task_icon_size"
+            android:layout_height="@dimen/task_icon_size"
+            android:layout_margin="8dp"
+            app:si_animation_duration="500"
+            app:si_disabled_alpha=".3"
+            app:si_enabled="false"
+            app:si_no_dash="false"
+            app:srcCompat="@drawable/ic_urgent" />
+
+        <com.github.zagum.switchicon.SwitchIconView
+            android:id="@+id/business_task_view"
+            android:layout_width="@dimen/task_icon_size"
+            android:layout_height="@dimen/task_icon_size"
+            android:layout_margin="8dp"
+            app:si_animation_duration="500"
+            app:si_disabled_alpha=".3"
+            app:si_enabled="false"
+            app:si_no_dash="false"
+            app:srcCompat="@drawable/ic_business" />
+
+        <com.github.zagum.switchicon.SwitchIconView
+            android:id="@+id/skills_task_view"
+            android:layout_width="@dimen/task_icon_size"
+            android:layout_height="@dimen/task_icon_size"
+            android:layout_margin="8dp"
+            app:si_animation_duration="500"
+            app:si_disabled_alpha=".3"
+            app:si_enabled="false"
+            app:si_no_dash="false"
+            app:srcCompat="@drawable/ic_skills" />
+
+        <com.github.zagum.switchicon.SwitchIconView
+            android:id="@+id/buying_task_view"
+            android:layout_width="@dimen/task_icon_size"
+            android:layout_height="@dimen/task_icon_size"
+            android:layout_margin="8dp"
+            app:si_animation_duration="500"
+            app:si_disabled_alpha=".3"
+            app:si_enabled="false"
+            app:si_no_dash="false"
+            app:srcCompat="@drawable/ic_buying" />
+
+    </LinearLayout>
 
     <EditText
         android:id="@+id/title_edit_note"

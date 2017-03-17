@@ -47,14 +47,27 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         noteList.add(0,note);
     }
 
-    public void setData(RealmList<Note> notes) {
-        this.noteList = notes;
+    private int getTaskIconRes(String task) {
+        switch (task) {
+            case Note.MAIN_DAY_TASK:
+                return R.drawable.ic_main;
+            case Note.URGENT_TASK:
+                return R.drawable.ic_urgent;
+            case Note.BUSINESS_TASK:
+                return R.drawable.ic_business;
+            case Note.SKILL_TASK:
+                return R.drawable.ic_skills;
+            case Note.BUYING_TASK:
+                return R.drawable.ic_buying;
+        }
+        return -1;
     }
 
     private void inflateCenterSwipeView(ViewHolder holder, Note note) {
         holder.centerSwipeView.setBackgroundResource(note.getColorRes());
-        holder.title.setText(note.getTitle());
-        holder.text.setText(note.getText());
+        holder.titleView.setText(note.getTitle());
+        holder.textView.setText(note.getText());
+        holder.taskIconView.setImageResource(getTaskIconRes(note.getTask()));
     }
 
     private void inflateRecyclerView(ViewHolder holder, Note note) {
@@ -85,6 +98,10 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         });
     }
 
+    public void setData(RealmList<Note> notes) {
+        this.noteList = notes;
+    }
+
     private void setSwipeLayoutListener(final ViewHolder holder, final Note note) {
         holder.swipeLayout.setOnSwipeListener(new SwipeLayout.OnSwipeListener() {
             @Override
@@ -112,12 +129,12 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
     private void setSwipeViewArchiveStyle(ViewHolder holder) {
         holder.rightSwipeView.setBackgroundResource(R.color.archive_green);
-        holder.deleteIcon.setBackgroundResource(R.drawable.ic_archive_white_36dp);
+        holder.deleteIconView.setBackgroundResource(R.drawable.ic_archive_white_36dp);
     }
 
     private void setSwipeViewDeleteStyle(ViewHolder holder) {
         holder.rightSwipeView.setBackgroundResource(R.color.delete_red);
-        holder.deleteIcon.setBackgroundResource(R.drawable.ic_delete_white_36dp);
+        holder.deleteIconView.setBackgroundResource(R.drawable.ic_delete_white_36dp);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -128,11 +145,14 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         @BindView(R.id.note_list_row_swipe_layout)
         SwipeLayout swipeLayout;
         @BindView(R.id.note_list_row_title)
-        TextView title;
+        TextView titleView;
         @BindView(R.id.note_list_row_text)
-        TextView text;
+        TextView textView;
         @BindView(R.id.note_list_row_right_swipe_icon)
-        ImageView deleteIcon;
+        ImageView deleteIconView;
+        @BindView(R.id.note_list_row_task_icon)
+        ImageView taskIconView;
+
 
         ViewHolder(View itemView) {
             super(itemView);

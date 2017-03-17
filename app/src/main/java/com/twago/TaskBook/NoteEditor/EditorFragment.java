@@ -13,12 +13,16 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.github.zagum.switchicon.SwitchIconView;
+import com.twago.TaskBook.Module.Note;
 import com.twago.TaskBook.NoteMain.MainInterface;
 import com.twago.TaskBook.R;
+import com.twago.TaskBook.TaskBook;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Optional;
 
 
 public class EditorFragment extends DialogFragment implements EditorContract.View {
@@ -38,6 +42,16 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
     EditText titleNoteEdit;
     @BindView(R.id.text_edit_note)
     EditText textNoteEdit;
+    @BindView(R.id.main_task_view)
+    SwitchIconView mainTaskView;
+    @BindView(R.id.urgent_task_view)
+    SwitchIconView urgentTaskView;
+    @BindView(R.id.business_task_view)
+    SwitchIconView businessTaskView;
+    @BindView(R.id.skills_task_view)
+    SwitchIconView skillsTaskView;
+    @BindView(R.id.buying_task_view)
+    SwitchIconView buyingTaskView;
 
     public static EditorFragment newInstance(int id) {
         Bundle args = new Bundle();
@@ -111,6 +125,20 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
     }
 
     @Override
+    public void setTaskView(String currentTask) {
+        setTaskEnabled(currentTask, false);
+    }
+
+    @Override
+    public void unableTaskPicker() {
+        mainTaskView.setEnabled(false);
+        urgentTaskView.setEnabled(false);
+        businessTaskView.setEnabled(false);
+        skillsTaskView.setEnabled(false);
+        buyingTaskView.setEnabled(false);
+    }
+
+    @Override
     public void setTextNoteEditText(String text) {
         textNoteEdit.setText(text);
     }
@@ -138,6 +166,57 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
     @OnClick(R.id.button_set_color)
     public void setColor() {
         userActionListener.openColorFragment(getFragmentManager());
+    }
+
+    @Optional
+    @OnClick({R.id.main_task_view, R.id.urgent_task_view, R.id.business_task_view,
+            R.id.skills_task_view, R.id.buying_task_view})
+    public void setTask(View view) {
+        SwitchIconView switchIconView = (SwitchIconView) view;
+        uncheckedAllTasks();
+        switchIconView.setIconEnabled(true);
+        userActionListener.setNoteTask(getTaskKey(view.getId()));
+    }
+
+    private String getTaskKey(int id) {
+        if (id == R.id.main_task_view)
+            return Note.MAIN_DAY_TASK;
+        else if (id == R.id.urgent_task_view)
+            return Note.URGENT_TASK;
+        else if (id == R.id.business_task_view)
+            return Note.BUSINESS_TASK;
+        else if (id == R.id.skills_task_view)
+            return Note.SKILL_TASK;
+        else
+            return Note.BUYING_TASK;
+    }
+
+    private void setTaskEnabled(String currentTask, boolean anim) {
+        switch (currentTask) {
+            case Note.MAIN_DAY_TASK:
+                mainTaskView.setIconEnabled(true, anim);
+                break;
+            case Note.URGENT_TASK:
+                urgentTaskView.setIconEnabled(true, anim);
+                break;
+            case Note.BUSINESS_TASK:
+                businessTaskView.setIconEnabled(true, anim);
+                break;
+            case Note.SKILL_TASK:
+                skillsTaskView.setIconEnabled(true, anim);
+                break;
+            case Note.BUYING_TASK:
+                buyingTaskView.setIconEnabled(true, anim);
+                break;
+        }
+    }
+
+    private void uncheckedAllTasks() {
+        mainTaskView.setIconEnabled(false);
+        urgentTaskView.setIconEnabled(false);
+        businessTaskView.setIconEnabled(false);
+        skillsTaskView.setIconEnabled(false);
+        buyingTaskView.setIconEnabled(false);
     }
 }
 

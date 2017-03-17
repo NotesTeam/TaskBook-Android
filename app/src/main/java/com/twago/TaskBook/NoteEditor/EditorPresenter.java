@@ -18,14 +18,18 @@ class EditorPresenter implements EditorContract.UserActionListener {
     private static final String TAG = EditorPresenter.class.getSimpleName();
     private int existNoteId;
     private int currentColorRes;
+    private String currentTask;
     private MainInterface mainInterface;
     private EditorContract.View noteEditFragmentView;
+    private Realm realm;
 
     EditorPresenter(MainInterface mainInterface, EditorContract.View noteEditFragmentView) {
         this.mainInterface = mainInterface;
         this.noteEditFragmentView = noteEditFragmentView;
         this.existNoteId = noteEditFragmentView.getEditedNoteId();
         this.currentColorRes = R.color.transparent_light_gray;
+        this.currentTask = Note.MAIN_DAY_TASK;
+        this.realm = Realm.getDefaultInstance();
     }
 
     @Override
@@ -33,7 +37,11 @@ class EditorPresenter implements EditorContract.UserActionListener {
         if (!isNoteNew()) {
             Note existNote = getNoteWithId(existNoteId);
             inflateExistNoteData(existNote);
+            if (getNoteWithId(existNoteId).isArchived())
+                noteEditFragmentView.unableTaskPicker();
         }
+
+        noteEditFragmentView.setTaskView(currentTask);
     }
 
     @Override
@@ -47,7 +55,6 @@ class EditorPresenter implements EditorContract.UserActionListener {
 
     @Override
     public void saveNoteToDatabase() {
-        Realm realm = Realm.getDefaultInstance();
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -68,6 +75,11 @@ class EditorPresenter implements EditorContract.UserActionListener {
         noteEditFragmentView.setEditorBackgroundColor(currentColorRes);
     }
 
+    @Override
+    public void setNoteTask(String currentTask) {
+        this.currentTask = currentTask;
+    }
+
     private Note getNoteWithId(int noteId) {
         return Realm.getDefaultInstance().where(Note.class).equalTo(Note.ID, noteId).findFirst();
     }
@@ -82,8 +94,14 @@ class EditorPresenter implements EditorContract.UserActionListener {
 
     private void createNewNote(Realm realm, int newNoteId) {
         if (!isNoteEmpty()) {
-            Note note = new Note(newNoteId, noteEditFragmentView.getTitleNote(),
-                    noteEditFragmentView.getTextNote(), TaskBook.getInstance().getTimeStamp(), currentColorRes, false);
+            Note note = new Note(
+                    newNoteId,
+                    noteEditFragmentView.getTitleNote(),
+                    noteEditFragmentView.getTextNote(),
+                    TaskBook.getInstance().getTimeStamp(),
+                    currentColorRes,
+                    currentTask,
+                    false);
             realm.copyToRealm(note);
             noteEditFragmentView.notifyItemAdded(newNoteId);
         }
@@ -98,6 +116,7 @@ class EditorPresenter implements EditorContract.UserActionListener {
     private void inflateExistNoteData(Note note) {
         if (note != null) {
             currentColorRes = note.getColorRes();
+            currentTask = note.getTask();
             noteEditFragmentView.setTitleNoteEditText(note.getTitle());
             noteEditFragmentView.setTextNoteEditText(note.getText());
             noteEditFragmentView.setEditorBackgroundColor(currentColorRes);
@@ -110,6 +129,6 @@ class EditorPresenter implements EditorContract.UserActionListener {
         chosenNote.setText(noteEditFragmentView.getTextNote());
         chosenNote.setDate(TaskBook.getInstance().getTimeStamp());
         chosenNote.setColorRes(currentColorRes);
-
+        chosenNote.setTask(currentTask);
     }
 }

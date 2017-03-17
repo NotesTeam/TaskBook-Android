@@ -19,6 +19,10 @@ public interface EditorContract {
         void setTitleNoteEditText(String title);
 
         void updateNoteColor(int currentColorRes);
+
+        void setTaskView(String currentTask);
+
+        void unableTaskPicker();
     }
 
     interface UserActionListener {
@@ -30,5 +34,7 @@ public interface EditorContract {
         void saveNoteToDatabase();
 
         void updateNoteColor(int currentColorRes);
+
+        void setNoteTask(String mainDayTask);
     }
 }
