@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.github.zagum.switchicon.SwitchIconView;
@@ -35,7 +34,7 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
     @BindView(R.id.button_close_note)
     ImageButton closeNoteButton;
     @BindView(R.id.button_set_date)
-    ImageView setDateButton;
+    ImageButton setDateButton;
     @BindView(R.id.title_edit_note)
     EditText titleNoteEdit;
     @BindView(R.id.text_edit_note)
@@ -76,7 +75,7 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_note_editor, container, false);
         ButterKnife.bind(this, view);
-
+        getDialog().getWindow().getAttributes().windowAnimations = R.style.EditorAnimation;
         return view;
     }
 
