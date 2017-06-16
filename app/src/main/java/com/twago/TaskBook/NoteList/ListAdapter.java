@@ -18,7 +18,6 @@ import io.realm.RealmList;
 import ru.rambler.libs.swipe_layout.SwipeLayout;
 
 class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
-    private static final String TAG = ListAdapter.class.getSimpleName();
     private ListContract.UserActionListener userActionListener;
     private RealmList<Note> noteList;
 
@@ -34,7 +33,6 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        Log.d(TAG, "onBindViewHolder");
         final Note note = noteList.get(position);
         inflateRecyclerView(holder, note);
     }

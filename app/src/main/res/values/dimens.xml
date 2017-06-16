@@ -9,5 +9,5 @@
     <dimen name="nav_header_height">160dp</dimen>
     <dimen name="drawer_view_width">50dp</dimen>
     <dimen name="toolbar_height">56dp</dimen>
-    <dimen name="task_icon_size">24dp</dimen>
+    <dimen name="task_icon_size">30dp</dimen>
 </resources>
