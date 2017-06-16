@@ -7,6 +7,7 @@ import android.app.FragmentTransaction;
 import com.twago.TaskBook.ColorEditorFragment;
 import com.twago.TaskBook.Module.Constants;
 import com.twago.TaskBook.Module.Note;
+import com.twago.TaskBook.Module.Task;
 import com.twago.TaskBook.NoteMain.MainInterface;
 import com.twago.TaskBook.R;
 import com.twago.TaskBook.TaskBook;
@@ -18,7 +19,7 @@ class EditorPresenter implements EditorContract.UserActionListener {
     private static final String TAG = EditorPresenter.class.getSimpleName();
     private int existNoteId;
     private int currentColorRes;
-    private String currentTask;
+    private Task currentTask;
     private MainInterface mainInterface;
     private EditorContract.View noteEditFragmentView;
     private Realm realm;
@@ -28,7 +29,7 @@ class EditorPresenter implements EditorContract.UserActionListener {
         this.noteEditFragmentView = noteEditFragmentView;
         this.existNoteId = noteEditFragmentView.getEditedNoteId();
         this.currentColorRes = R.color.transparent_light_gray;
-        this.currentTask = Note.MAIN_DAY_TASK;
+        this.currentTask = Task.MAIN_DAY;
         this.realm = Realm.getDefaultInstance();
     }
 
@@ -76,7 +77,7 @@ class EditorPresenter implements EditorContract.UserActionListener {
     }
 
     @Override
-    public void setNoteTask(String currentTask) {
+    public void setNoteTask(Task currentTask) {
         this.currentTask = currentTask;
     }
 
@@ -100,7 +101,7 @@ class EditorPresenter implements EditorContract.UserActionListener {
                     noteEditFragmentView.getTextNote(),
                     TaskBook.getInstance().getTimeStamp(),
                     currentColorRes,
-                    currentTask,
+                    currentTask.name(),
                     false);
             realm.copyToRealm(note);
             noteEditFragmentView.notifyItemAdded(newNoteId);

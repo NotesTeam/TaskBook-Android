@@ -26,11 +26,10 @@ import butterknife.OnClick;
 import io.realm.Realm;
 
 public class NoteMainActivity extends AppCompatActivity implements MainInterface, MainContract.View {
-    private static final String TAG = NoteMainActivity.class.getSimpleName();
     public static final int NAVIGATION_DRAWER_OPEN = R.string.navigation_drawer_open;
     public static final int NAVIGATION_DRAWER_CLOSE = R.string.navigation_drawer_close;
-    private boolean isArchiveOpen;
 
+    private boolean isArchiveOpen;
     private EditorContract.View editorFragmentView;
     private MainContract.UserActionListener mainUserActionListener;
     private ListFragment noteListFragment;
@@ -62,7 +61,7 @@ public class NoteMainActivity extends AppCompatActivity implements MainInterface
         Realm.init(this);
         ButterKnife.bind(this);
 
-        buildActivity();
+        setupActivity();
         buildListFragment();
     }
 
@@ -125,7 +124,7 @@ public class NoteMainActivity extends AppCompatActivity implements MainInterface
 
     @Override
     public void updateRecyclerView(boolean isArchiveOpen, Calendar calendar) {
-        noteListFragment.updateRecyclerView(isArchiveOpen,calendar);
+        noteListFragment.updateRecyclerView(isArchiveOpen, calendar);
     }
 
     @OnClick(R.id.button_create_note)
@@ -155,7 +154,7 @@ public class NoteMainActivity extends AppCompatActivity implements MainInterface
         closeDrawer();
     }
 
-    private void buildActivity() {
+    private void setupActivity() {
         setSupportActionBar(toolbar);
         buildDrawerLayout();
     }

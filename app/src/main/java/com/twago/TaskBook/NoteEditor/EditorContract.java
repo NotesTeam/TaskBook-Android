@@ -2,6 +2,8 @@ package com.twago.TaskBook.NoteEditor;
 
 import android.app.FragmentManager;
 
+import com.twago.TaskBook.Module.Task;
+
 public interface EditorContract {
     interface View {
         int getEditedNoteId();
@@ -20,7 +22,7 @@ public interface EditorContract {
 
         void updateNoteColor(int currentColorRes);
 
-        void setTaskView(String currentTask);
+        void setTaskView(Task currentTask);
 
         void unableTaskPicker();
     }
@@ -35,6 +37,6 @@ public interface EditorContract {
 
         void updateNoteColor(int currentColorRes);
 
-        void setNoteTask(String mainDayTask);
+        void setNoteTask(Task mainDayTask);
     }
 }

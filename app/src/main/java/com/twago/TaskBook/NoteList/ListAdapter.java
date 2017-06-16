@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.twago.TaskBook.Module.Note;
+import com.twago.TaskBook.Module.Task;
 import com.twago.TaskBook.R;
 
 import butterknife.BindView;
@@ -47,17 +48,17 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         noteList.add(0,note);
     }
 
-    private int getTaskIconRes(String task) {
+    private int getTaskIconRes(Task task) {
         switch (task) {
-            case Note.MAIN_DAY_TASK:
+            case MAIN_DAY:
                 return R.drawable.ic_main;
-            case Note.URGENT_TASK:
+            case URGENT:
                 return R.drawable.ic_urgent;
-            case Note.BUSINESS_TASK:
+            case BUSINESS:
                 return R.drawable.ic_business;
-            case Note.SKILL_TASK:
+            case SKILL:
                 return R.drawable.ic_skills;
-            case Note.BUYING_TASK:
+            case BUYING:
                 return R.drawable.ic_buying;
         }
         return -1;

@@ -10,14 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.github.zagum.switchicon.SwitchIconView;
-import com.twago.TaskBook.Module.Note;
+import com.twago.TaskBook.Module.Task;
 import com.twago.TaskBook.NoteMain.MainInterface;
 import com.twago.TaskBook.R;
-import com.twago.TaskBook.TaskBook;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,7 +24,6 @@ import butterknife.Optional;
 
 
 public class EditorFragment extends DialogFragment implements EditorContract.View {
-    private static final String TAG = EditorFragment.class.getSimpleName();
     private static final String TAG_ID = "TAG_ID";
     private int editedNoteId;
     private MainInterface mainInterface;
@@ -37,7 +34,7 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
     @BindView(R.id.button_close_note)
     ImageButton closeNoteButton;
     @BindView(R.id.button_set_date)
-    ImageView setDateButton;
+    ImageButton setDateButton;
     @BindView(R.id.title_edit_note)
     EditText titleNoteEdit;
     @BindView(R.id.text_edit_note)
@@ -78,7 +75,7 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_note_editor, container, false);
         ButterKnife.bind(this, view);
-
+        getDialog().getWindow().getAttributes().windowAnimations = R.style.EditorAnimation;
         return view;
     }
 
@@ -125,7 +122,7 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
     }
 
     @Override
-    public void setTaskView(String currentTask) {
+    public void setTaskView(Task currentTask) {
         setTaskEnabled(currentTask, false);
     }
 
@@ -178,34 +175,34 @@ public class EditorFragment extends DialogFragment implements EditorContract.Vie
         userActionListener.setNoteTask(getTaskKey(view.getId()));
     }
 
-    private String getTaskKey(int id) {
+    private Task getTaskKey(int id) {
         if (id == R.id.main_task_view)
-            return Note.MAIN_DAY_TASK;
+            return Task.MAIN_DAY;
         else if (id == R.id.urgent_task_view)
-            return Note.URGENT_TASK;
+            return Task.URGENT;
         else if (id == R.id.business_task_view)
-            return Note.BUSINESS_TASK;
+            return Task.BUSINESS;
         else if (id == R.id.skills_task_view)
-            return Note.SKILL_TASK;
+            return Task.SKILL;
         else
-            return Note.BUYING_TASK;
+            return Task.BUYING;
     }
 
-    private void setTaskEnabled(String currentTask, boolean anim) {
+    private void setTaskEnabled(Task currentTask, boolean anim) {
         switch (currentTask) {
-            case Note.MAIN_DAY_TASK:
+            case MAIN_DAY:
                 mainTaskView.setIconEnabled(true, anim);
                 break;
-            case Note.URGENT_TASK:
+            case URGENT:
                 urgentTaskView.setIconEnabled(true, anim);
                 break;
-            case Note.BUSINESS_TASK:
+            case BUSINESS:
                 businessTaskView.setIconEnabled(true, anim);
                 break;
-            case Note.SKILL_TASK:
+            case SKILL:
                 skillsTaskView.setIconEnabled(true, anim);
                 break;
-            case Note.BUYING_TASK:
+            case BUYING:
                 buyingTaskView.setIconEnabled(true, anim);
                 break;
         }
